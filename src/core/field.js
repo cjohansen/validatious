@@ -27,15 +27,16 @@ v2.Field = v2.CompositeFormItem.extend(/** @scope v2.Field.prototype */{
    *                           single object instead of an array
    * @param {boolean} instant
    * @param {boolean} instantWhenValidated
+   * @param {Array}   events   The type of "instant" events the elements support
    */
-  constructor: function(elements, instant, instantWhenValidated) {
+  constructor: function(elements, instant, instantWhenValidated, events) {
     // Regular initialization
     this.base();
 
     // Initialize properties
     this.__monitored = false;
     this.__name = null;
-    this.__events = ['blur'];
+    this.__events = v2.empty(events) ? ['blur'] : v2.array(events);
     this.__elements = v2.array(elements);
     this.instant = typeof instant !== 'undefined' ? instant : this.instant;
     this.instantWhenValidated = typeof instantWhenValidated !== 'undefined' ? instantWhenValidated : this.instantWhenValidated;
@@ -235,7 +236,7 @@ v2.Field = v2.CompositeFormItem.extend(/** @scope v2.Field.prototype */{
     } else if (element.type && element.type == 'checkbox') {
       // Checkboxes
       elements = v2.$$('input[type=checkbox].g_' + element.className.match(/\bg_([^\s]*)\b/)[1], element.form);
-      field = new v2.RadioElement(elements, instant, instantWhenValidated);
+      field = new v2.CheckboxElement(elements, instant, instantWhenValidated);
     } else {
       // Input elements (text inputs)
       field = new v2.Field(element, instant, instantWhenValidated);

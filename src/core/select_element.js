@@ -12,11 +12,8 @@ v2.SelectElement = v2.Field.extend(/** @scope v2.SelectElement.prototype */{
    * @see v2.Field.constructor
    */
   constructor: function(select, instant, instantWhenValidated) {
-    // Regular initialization
-    this.base(select, instant, instantWhenValidated);
-
-    // Add select specific event
-    this.__events.push('change');
+    // Regular initialization, add select specific event
+    this.base(select, instant, instantWhenValidated, 'change');
   },
 
   /**
