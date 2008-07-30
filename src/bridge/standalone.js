@@ -196,10 +196,12 @@ v2.$$ = function $$(query, parent) {
   // WARNING: Extremely uninpressing code ahead...
   parent = parent || document;
 
+  // Use native implementation if available
   if (document.querySelectorAll) {
     return document.querySelectorAll(query, parent);
   }
 
+  // label[for=XXX] queries
   if (/^label/.test(query)) {
     var id = query.match(/label\[for=(.*)\]/)[1];
     var labels = parent.getElementsByTagName('label');
@@ -211,11 +213,17 @@ v2.$$ = function $$(query, parent) {
       }
     }
   } else if (query.indexOf(',') >= 0) {
+    // tag1, tag2, tag3 selectors
+    // Also supports tag1[attr=val], tag2[attr=valu]
     var tagNames = query.split(',');
     var elems = [];
 
     for (var i = 0, els; (els = tagNames[i]); i++) {
-      els = parent.getElementsByTagName(els);
+      if (/\[/.test(els)) {
+        els = v2.$$(els);
+      } else {
+        els = parent.getElementsByTagName(els);
+      }
 
       for (var j = 0; j < els.length; j++) {
         elems.push(els[j]);
@@ -224,6 +232,7 @@ v2.$$ = function $$(query, parent) {
 
     return elems;
   } else {
+    // Supports tag[attr=val][attr=val].class and tag[attr=val].class
     // TODO: Fix this mess........
     var className = query.split('.')[1];
     var pieces = query.match(/([^\[]*)\[([^\]]*)\](\[([^\]]*)\])?(\.(.*))?/);

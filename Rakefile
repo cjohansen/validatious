@@ -1,7 +1,8 @@
 task :default => ['build:standalone:all']
 
-$standalone = ['lib/add_dom_load_event', 'lib/Base', 'lib/events', 'interface/standalone'].collect { |s| "src/#{s}.js" }
-$core = ['core/message', 'core/validator', 'core/field_validator',
+$standalone = ['lib/add_dom_load_event', 'lib/Base', 'lib/events', 'bridge/standalone'].collect { |s| "src/#{s}.js" }
+$core = ['core/composite.interface', 'core/formitem.interface', 'core/composite_formitem'
+         'core/message', 'core/validator', 'core/field_validator',
          'core/field_validation', 'core/field', 'core/form', 'core/v2',
          'messages/errors.en', 'validators/standard'].collect { |s| "src/#{s}.js" }
 $html = ['src/extensions/html.js']
