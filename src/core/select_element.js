@@ -1,19 +1,17 @@
 /**
- * Fields based on select boxes
+ * Input controls based on select boxes
  *
- * @implements v2.Composite
- * @implements v2.FormItem
  * @implements v2.FieldElement
  */
-v2.SelectElement = v2.Field.extend(/** @scope v2.SelectElement.prototype */{
+v2.SelectElement = v2.InputElement.extend(/** @scope v2.SelectElement.prototype */{
 
   /**
    * Construct a new select field
-   * @see v2.Field.constructor
+   * @see v2.FieldElement.constructor
    */
-  constructor: function(select, instant, instantWhenValidated) {
+  constructor: function(select) {
     // Regular initialization, add select specific event
-    this.base(select, instant, instantWhenValidated, 'change');
+    this.base(select, 'change');
   },
 
   /**

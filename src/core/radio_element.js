@@ -5,12 +5,12 @@
  * @implements v2.FormItem
  * @implements v2.FieldElement
  */
-v2.RadioElement = v2.Field.extend(/** @scope v2.RadioElement.prototype */{
+v2.RadioElement = v2.InputElement.extend(/** @scope v2.RadioElement.prototype */{
   /**
    * Construct a new radio field
-   * @see v2.Field.constructor
+   * @see v2.InputElement.constructor
    */
-  constructor: function(elements, instant, instantWhenValidated) {
+  constructor: function(elements) {
     // Regular initialization, override events
     this.base(elements, instant, instantWhenValidated, ['click', 'change']);
   },
@@ -66,13 +66,23 @@ v2.RadioElement = v2.Field.extend(/** @scope v2.RadioElement.prototype */{
    * getLabel() will in this case return the first label element
    */
   getLabel: function() {
+    var parent = this.__elements[0].parentNode;
 
+    if (parent.tagName.toLowerCase() === 'li') {
+      return parent.parentNode.previousSibling;
+    }
+
+    return this.__elements[0].previousSibling;
   },
 
   /**
    * @see v2.FieldElement.getParent
+   * @return the parent node unless it's an li element. If it is, the list
+   *         elements parent is returned
    */
   getParent: function() {
+    var parent = this.__elements[0].parentNode;
 
+    return parent.tagName.toLowerCase() === 'li' ? parent.parentNode.parentNode : parent;
   }
 });

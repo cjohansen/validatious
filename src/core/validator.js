@@ -15,9 +15,10 @@ v2.Validator = Base.extend(/** @scope v2.Validator.prototype */{
   /**
    * Test a value given some parameters.
    */
-  test: function(field, value, params, invert) {
-    invert = typeof invert == 'undefined' ? false : invert;
-    var result = (this.acceptEmpty && value == '') ||
+  test: function(field, params, invert) {
+    invert = typeof invert === 'undefined' ? false : invert;
+    var value = field.value();
+    var result = (this.acceptEmpty && value === '') ||
       this.__test(field, value, params);
 
     return (result && !invert) || (!result && invert);
