@@ -4,7 +4,7 @@
  */
 v2.Validator = Base.extend(/** @scope v2.Validator.prototype */{
   constructor: function(name, fn, message, aliases) {
-    v2.Interface.ensure(error, v2.Message);
+    //v2.Interface.ensure(error, v2.Message);
     this.__name = name;
     this.__test = fn;
     this.__message = message;
@@ -17,7 +17,8 @@ v2.Validator = Base.extend(/** @scope v2.Validator.prototype */{
    */
   test: function(field, params, invert) {
     invert = typeof invert === 'undefined' ? false : invert;
-    var value = field.value();
+
+    var value = field.getValue();
     var result = (this.acceptEmpty && value === '') ||
       this.__test(field, value, params);
 
@@ -29,24 +30,10 @@ v2.Validator = Base.extend(/** @scope v2.Validator.prototype */{
    */
   getName: function() {
     return this.__name;
-  },
-
-  /**
-   * Returns true if the validator responds to the given alias
-   *
-   * @param {String} alias
-   * @return true if the validator responds to the alias
-   */
-  respondsToAlias: function(alias) {
-    for (var i = 0, a; (a = this.__aliases[i]); i++) {
-      if (a === alias) {
-        return true;
-      }
-    }
-
-    return false;
   }
 }, /** @scope v2.Validator */{
+  validators: {},
+
   /**
    * Adds a validator and returns a proper v2.Validator object
    *
@@ -59,43 +46,35 @@ v2.Validator = Base.extend(/** @scope v2.Validator.prototype */{
    * @param {boolean}  acceptEmpty If false, the validator will fail empty
    *                               values. Default is true.
    */
-  add: function(name, fn, msg, aliases, acceptEmpty) {
-    if (typeof v2.Validator.validators == 'undefined') {
-      v2.Validator.validators = [];
+  add: function(options) {
+    if (!options.name || !options.fn || !options.message) {
+      throw new TypeError('Options object should contain name, fn and message');
     }
 
-    var isArray = msg.constructor == Array;
-    var msgStr = isArray ? msg.shift() : msg;
-    msg = new v2.Message(msgStr, isArray ? msg : []);
-    var validator = new v2.Validator(name, fn, msg, aliases);
-    validator.acceptEmpty = typeof acceptEmpty == 'undefined' ? true : acceptEmpty;
-    v2.Validator.validators.push(validator);
+    var message = new v2.Message(options.message, options.params || []);
+    var validator = new v2.Validator(options.name, options.fn, message, options.aliases);
+    validator.acceptEmpty = typeof options.acceptEmpty === 'undefined' ? true : options.acceptEmpty;
+
+    var names = (options.aliases || []).concat([options.name]);
+
+    for (var i = 0, name; (name = names[i]); i++) {
+      v2.Validator.validators[name] = validator;
+    }
 
     return validator;
   },
 
   /**
    * Get the validator with the given name. Searches all validators aliases as
-   * well, unless the skipAliases parameter is false.
+   * well.
    *
    * @param {String}  name        The validator to fetch
-   * @param {boolean} skipAliases If true, aliases will not be searched, default
-   *                              false
    */
-  get: function(name, skipAliases) {
-    skipAliases = typeof skipAliases === 'undefined' ? false : skipAliases;
-    var validator, alias, i, j;
+  get: function(name) {
+    var validator;
 
-    if (typeof v2.Validator.validators === 'undefined') {
-      v2.Validator.validators = [];
-    }
-
-    for (i = 0; (validator = v2.Validator.validators[i]); i++) {
-      if (validator.getName() === name) {
-        return validator;
-      } else if (!skipAliases && validator.respondsToAlias(name)) {
-        return validator;
-      }
+    if ((validator = v2.Validator.validators[name])) {
+      return validator;
     }
 
     return null;

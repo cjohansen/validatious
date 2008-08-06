@@ -52,4 +52,25 @@ v2.Form = v2.CompositeFormItem.extend(/** @scope v2.Form.prototype */{
 
     return valid;
   }
+}, /** @scope v2.Form */{
+  forms: {},
+
+  /**
+   * Get instance for HTML form element or string representing a form element id
+   *
+   * @param {Object} idORElement
+   */
+  get: function(idOrElement) {
+    var element = v2.$(idOrElement), instance;
+
+    if (element === null || element.tagName.toLowerCase() !== 'form') {
+      throw new ArgumentError('idOrElement should represent a form element');
+    }
+
+    if (!v2.empty(instance = v2.Form.forms[element.id])) {
+      return instance;
+    }
+
+    return (v2.Form.forms[element.id] = new v2.Form(element));
+  }
 });

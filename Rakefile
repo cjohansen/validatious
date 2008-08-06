@@ -1,34 +1,38 @@
 task :default => ['build:standalone:all']
 
 $standalone = ['lib/add_dom_load_event', 'lib/Base', 'lib/events', 'bridge/standalone'].collect { |s| "src/#{s}.js" }
-$core = ['core/composite.interface', 'core/formitem.interface', 'core/composite_formitem'
-         'core/message', 'core/validator', 'core/field_validator',
-         'core/field_validation', 'core/field', 'core/form', 'core/v2',
-         'messages/errors.en', 'validators/standard'].collect { |s| "src/#{s}.js" }
+$interfaces = ['core/interface', 'core/composite.interface',
+               'core/field_element.interface', 'core/form_item.interface'].collect { |s| "src/#{s}.js" }
+$core = ['core/composite_form_item', 'core/input_element', 'core/radio_element',
+         'core/select_element', 'core/textarea_element', 'core/checkbox_element',
+         'core/message', 'core/validator', 'core/field', 'core/field_validator',
+         'core/form', 'messages/errors.en', 'validators/standard'].collect { |s| "src/#{s}.js" }
+$core_full = ['src/core/v2.js'] + $interfaces + $core
 $html = ['src/extensions/html.js']
 $dsl = ['src/extensions/dsl.js']
+$reporting = ['src/extensions/reporting.js']
 
 namespace :build do
 
   desc 'Builds the minified standalone core (no extensions)'
   task :standalone do
-    File.merge($standalone + $core, 'standalone', minify?)
+    File.merge($standalone + $core_full, 'standalone', minify?)
   end
 
   namespace :standalone do
     desc 'Builds the minified standalone core with the HTML extension'
     task :html do
-      File.merge($standalone + $core + $html, 'standalone.html', minify?)
+      File.merge($standalone + $core_full + $html, 'standalone.html', minify?)
     end
 
     desc 'Builds the minified standalone core with the DSL extension'
     task :dsl do
-      File.merge($standalone + $core + $dsl, 'standalone.dsl', minify?)
+      File.merge($standalone + $core_full + $dsl, 'standalone.dsl', minify?)
     end
 
     desc 'Builds the minified standalone core with both the HTML and DSL extensions'
     task :full do
-      File.merge($standalone + $core + $html + $dsl, 'standalone.full', minify?)
+      File.merge($standalone + $core_full + $html + $dsl + $reporting, 'standalone.full', minify?)
     end
 
     desc 'Builds all the minified standalone distributions'

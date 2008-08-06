@@ -20,17 +20,19 @@ v2.Interface = Base.extend(/** @scope v2.Interface.prototype */{
    * implements of the interfaces methods.
    *
    * @param {Object} obj        The object to check
-   * @param {Object} interfaces A single or an array of interfaces to check
-   *                            against
+   * @param {Object} interfaces A single object or an array of interface objects
+   *                            to check against
    */
   ensure: function(obj, interfaces) {
-    var i, iface, method;
+    var i, j, iface, method;
     interfaces = v2.array(interfaces);
 
     for (i = 0, iface; (iface = interfaces[i]); i++) {
-      for (method in iface) {
+      for (j = 0; (method = iface.methods[j]); j++) {
         if (typeof obj[method] !== 'function') {
-          throw new TypeError('Object does not implement ' + iface.name);
+          throw new TypeError('Object does not implement ' + iface.name +
+                              ', missing or wrong type: ' + method + ' (' +
+                              typeof(obj[method]) + ')');
         }
       }
     }

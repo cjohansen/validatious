@@ -12,7 +12,7 @@ v2.RadioElement = v2.InputElement.extend(/** @scope v2.RadioElement.prototype */
    */
   constructor: function(elements) {
     // Regular initialization, override events
-    this.base(elements, instant, instantWhenValidated, ['click', 'change']);
+    this.base(elements, ['click', 'change']);
   },
 
   /**
@@ -22,7 +22,7 @@ v2.RadioElement = v2.InputElement.extend(/** @scope v2.RadioElement.prototype */
    */
   getValue: function() {
     for (var i = 0, radio; (radio = this.__elements[i]); i++) {
-      if (radio.selected) {
+      if (radio.checked) {
         return radio.value;
       }
     }

@@ -8,16 +8,6 @@ v2.Field = v2.CompositeFormItem.extend(/** @scope v2.Field.prototype */{
   instant: false,             // If validations should be run instantly
   instantWhenValidated: true, // If validations should be run instantly after
                               // the validation has been run once
-  validateHidden: false,      // If a field should be validated even if it's not
-                              // visible
-  displayErrors: -1,          // How many error messages to display per field
-                              // Default is -1 = all messages
-  positionErrorsAbove: true,  // Whether to display error messages above field
-                              // (true - default) or below field (false)
-  failureClass: 'error',      // Class name to append to fields parent element
-                              // when validation fails
-  successClass: '',           // Class name to append to fields parent element
-                              // when validation succeeds
 
   /**
    * Construct a new field with validation logic

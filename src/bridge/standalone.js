@@ -219,6 +219,8 @@ v2.$$ = function $$(query, parent) {
     var elems = [];
 
     for (var i = 0, els; (els = tagNames[i]); i++) {
+      els = els.replace(/^\s*|\s*$/, '');
+
       if (/\[/.test(els)) {
         els = v2.$$(els);
       } else {

@@ -60,7 +60,7 @@ v2.CompositeFormItem = Base.extend(/** @scope v2.CompositeFormItem.prototype */{
    * @param {int} Index to fetch
    */
   get: function(i) {
-    return this.__validators(i);
+    return this.__validators[i];
   },
 
   /**
@@ -94,7 +94,7 @@ v2.CompositeFormItem = Base.extend(/** @scope v2.CompositeFormItem.prototype */{
     }
 
     return this.passOnAny() && valid > 0 ||
-           !this.passOnAny() && valid == this.__validators.length;
+           !this.passOnAny() && valid === this.__validators.length;
   },
 
   /**
@@ -110,7 +110,7 @@ v2.CompositeFormItem = Base.extend(/** @scope v2.CompositeFormItem.prototype */{
    * @param {v2.Message} message
    */
   setMessage: function(message) {
-    v2.Interface.ensure(message, v2.Message);
+    //v2.Interface.ensure(message, v2.Message);
     this.__message = message;
   },
 
@@ -118,10 +118,6 @@ v2.CompositeFormItem = Base.extend(/** @scope v2.CompositeFormItem.prototype */{
    * @see v2.FormItem.getMessages
    */
   getMessages: function() {
-    if (this.__errors.length === 0) {
-      return [];
-    }
-
     if (!v2.empty(this.__message)) {
       return [this.__message];
     }
@@ -129,7 +125,7 @@ v2.CompositeFormItem = Base.extend(/** @scope v2.CompositeFormItem.prototype */{
     var messages = [], i, validator;
 
     for (i = 0, validator; (validator = this.__errors[i]); i++) {
-      messages.concat(validator.getMessages());
+      messages = messages.concat(validator.getMessages());
     }
 
     return messages;
@@ -138,7 +134,11 @@ v2.CompositeFormItem = Base.extend(/** @scope v2.CompositeFormItem.prototype */{
   /**
    * @see v2.FormItem.passOnAny
    */
-  passOnAny: function() {
+  passOnAny: function(value) {
+    if (typeof value !== 'undefined') {
+      this.__passOnAny = !!value;
+    }
+
     return this.__passOnAny;
   },
 

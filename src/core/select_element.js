@@ -23,7 +23,7 @@ v2.SelectElement = v2.InputElement.extend(/** @scope v2.SelectElement.prototype 
   getValue: function() {
     var select = this.__elements[0];
 
-    if (select.multiple) {
+    if (!select.multiple) {
       return select.options[select.selectedIndex].value;
     }
 

@@ -52,6 +52,8 @@ v2.FormItem = new v2.Interface('v2.FormItem', [
    * method returns true then the component will pass validation if one or more
    * child objects pass validation. If it returns true, all child objects must
    * pass for the component to pass.
+   *
+   * If a parameter i passed in, the internal state is set to this
    */
   'passOnAny',
 
