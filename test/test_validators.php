@@ -14,13 +14,17 @@ function test() {
 
 function testMinLength() {
     var mlv = v2.Validator.get('min-length');
-    assertTrue('Text is not atleast 4 characters', mlv.test(null, 'Text', [4]));
-    assertTrue('Text is not atleast 3 characters', mlv.test(null, 'Text', [3]));
-    assertFalse('Text is not atleast 5 characters', mlv.test(null, 'Text', [5]));
+    assertTrue('Text is not atleast 4 characters', mlv.test(v2.InputElement.get('el'), [4]));
+    assertTrue('Text is not atleast 3 characters', mlv.test(v2.InputElement.get('el'), [3]));
+    assertFalse('Text is not atleast 5 characters', mlv.test(v(2.InputElement.get('el'), [5]));
 }
     </script>
   </head>
   <body>
-    <div id="testDiv"></div>
+    <form>
+      <fieldset>
+        <input type="text" name="el" id="el" value="Text" />
+      </fieldset>
+    </form>
   </body>
 </html>

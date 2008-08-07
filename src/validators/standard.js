@@ -9,87 +9,87 @@
    * Validate the length of a field; the first parameter sets the minimum length
    * required.
    */
-  v.add('min-length', function(field, value, params) {
+  v.reg('min-length', function(field, value, params) {
     return value.length >= params[0];
-  }, [m.minLength, 'min']);
+  }, m.minLength, 'min');
 
   /**
    * Validates the length of a field; the first parameter sets the maximum
    * allowed length.
    */
-   v.add('max-length', function(field, value, params) {
+   v.reg('max-length', function(field, value, params) {
      return value.length < params[0];
-  }, [m.maxLength, 'max']);
+  }, m.maxLength, 'max');
 
   /**
    * Validates that a value is bigger than params[0]. Mostly for numbers, but
    * it'll work for strings as well.
    */
-  v.add('min-val', function(field, value, params) {
+  v.reg('min-val', function(field, value, params) {
     return value >= params[0];
-  }, [m.minVal, 'min']);
+  }, m.minVal, 'min');
 
   /**
    * Validates that a value is no bigger than params[0]. Mostly for numbers, but
    * also works for strings.
    */
-  v.add('max-val', function(field, value, params) {
+  v.reg('max-val', function(field, value, params) {
     return value <= params[0];
-  }, [m.maxVal, 'max']);
+  }, m.maxVal, 'max');
 
   /**
    * Validates a value as an email
    */
-  v.add('email', function(field, value, params) {
+  v.reg('email', function(field, value, params) {
     return /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/.test(value);
   }, m.email);
 
   /**
    * Validates that a value contans only letters
    */
-  v.add('alpha', function(field, value, params) {
+  v.reg('alpha', function(field, value, params) {
     return /^[a-zA-ZæøåÆØÅ]*$/.test(value);
   }, m.alpha);
 
   /**
    * Validates that a value contans only word characters
    */
-  v.add('word', function(field, value, params) {
+  v.reg('word', function(field, value, params) {
     return /^[a-zA-Z_\s\t\-æøåÆØÅ]*$/.test(value);
   }, m.alpha);
 
   /**
    * Validates that a value only contains numbers
    */
-  v.add('numeric', function(field, value, params) {
+  v.reg('numeric', function(field, value, params) {
     return /^[0-9]*$/.test(value);
   }, m.numeric);
 
   /**
    * Validates that a value only contains letters and numbers
    */
-  v.add('alphanum', function(field, value, params) {
+  v.reg('alphanum', function(field, value, params) {
     return /^[a-zA-Z0-9]*$/.test(value);
   }, m.alphaNum);
 
   /**
    * Validates that a value is a valid URL
    */
-  v.add('url', function(field, value, params) {
+  v.reg('url', function(field, value, params) {
     return /^(http|https|ftp):\/\/(([A-Z0-9][A-Z0-9_-]*)(\.[A-Z0-9][A-Z0-9_-]*)+)(:(\d+))?\/?/i.test(value);
   }, m.url);
 
   /**
    * Validates that a value is a valid norwegian telephone number
    */
-  v.add('phone-nor', function(field, value, params) {
+  v.reg('phone-nor', function(field, value, params) {
     return /^((00|\+)\d\d)?\d{8}$/.test(value.replace(/\s/g, ''));
   }, m.phoneNor);
 
   /**
    * Validates that a value is a valid norwegian car registration number
    */
-  v.add('auto-regnum-nor', function(field, value, params) {
+  v.reg('auto-regnum-nor', function(field, value, params) {
     return /^[a-zA-Z]{1,2}[0-9]{3,5}$/.test(value.replace(/\s/g, ''));
   }, m.autoRegNumNor);
 
@@ -99,14 +99,14 @@
    * When validating checkboxes with the required validator you can use it in
    * two ways: with no parameters
    */
-  v.add('required', function(field, value, params) {
+  v.reg('required', function(field, value, params) {
     return value !== null && value !== '';
-  }, m.required, ['not-empty'], false);
+  }, m.required, 'not-empty', false);
 
   /**
    * Checks that a value is a valid norwegian social security number
    */
-  v.add('ssn-nor',
+  v.reg('ssn-nor',
     function(field, value, params) {
       var ok = true;
       var weights1 = [3, 7, 6, 1, 8, 9, 4, 5, 2, 1, 0];

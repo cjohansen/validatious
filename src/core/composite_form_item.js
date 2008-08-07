@@ -67,7 +67,7 @@ v2.CompositeFormItem = Base.extend(/** @scope v2.CompositeFormItem.prototype */{
    * @see v2.FormItem.validate
    */
   validate: function() {
-    var valid = this.test();
+    var valid = this.test('validate');
 
     if (valid) {
       this.__errors = [];
@@ -82,11 +82,12 @@ v2.CompositeFormItem = Base.extend(/** @scope v2.CompositeFormItem.prototype */{
   /**
    * @see v2.FormItem.test
    */
-  test: function() {
+  test: function(fn) {
     var i, validator, valid = 0;
+    fn = fn || 'test';
 
     for (i = 0; (validator = this.__validators[i]); i++) {
-      if (validator.test()) {
+      if (validator[fn]()) {
         valid++;
       } else {
         this.__errors.push(validator);

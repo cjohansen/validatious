@@ -35,12 +35,15 @@ v2.Validator = Base.extend(/** @scope v2.Validator.prototype */{
   validators: {},
 
   /**
-   * Adds a validator and returns a proper v2.Validator object
+   * Adds a validator and returns a proper v2.Validator object. This method
+   * takes a single object as parameter, and fetches options from object
+   * properties:
    *
    * @param {String}   name        Validators name
    * @param {Function} fn          The test function, should accept two
    *                               parameters: value and parameters (array)
-   * @param {String}   msg         Default error message
+   * @param {String}   message     Default error message
+   * @param {Array}    params      Option strings to replace in the message string
    * @param {Array}    aliases     Additional aliases for the validator, may be
    *                               a string, an array or nothing
    * @param {boolean}  acceptEmpty If false, the validator will fail empty
@@ -51,7 +54,8 @@ v2.Validator = Base.extend(/** @scope v2.Validator.prototype */{
       throw new TypeError('Options object should contain name, fn and message');
     }
 
-    var message = new v2.Message(options.message, options.params || []);
+    var params = !!options.params ? v2.array(options.params) : [];
+    var message = new v2.Message(options.message, params);
     var validator = new v2.Validator(options.name, options.fn, message, options.aliases);
     validator.acceptEmpty = typeof options.acceptEmpty === 'undefined' ? true : options.acceptEmpty;
 
@@ -62,6 +66,29 @@ v2.Validator = Base.extend(/** @scope v2.Validator.prototype */{
     }
 
     return validator;
+  },
+
+  /**
+   * Frontend to the add method. Adds a validator, only with "normal" parameters
+   * instead of a single object literal options "hash".
+   *
+   * @param {String}   name        Validators name
+   * @param {Function} fn          The test function, should accept two
+   *                               parameters: value and parameters (array)
+   * @param {String}   message     Default error message
+   * @param {Array}    params      Option strings to replace in the message string
+   * @param {Array}    aliases     Additional aliases for the validator, may be
+   *                               a string, an array or nothing
+   * @param {boolean}  acceptEmpty If false, the validator will fail empty
+   *                               values. Default is true.
+   */
+  reg: function(name, fn, message, params, aliases, acceptEmpty) {
+    return v2.Validator.add({ name: name,
+                              fn: fn,
+                              message: message,
+                              params: params,
+                              aliases: aliases,
+                              acceptEmpty: acceptEmpty });
   },
 
   /**
@@ -80,3 +107,10 @@ v2.Validator = Base.extend(/** @scope v2.Validator.prototype */{
     return null;
   }
 });
+
+/**
+ * Shorthand for v2.Validator.get
+ */
+v2.$v = function(name) {
+  return v2.Validator.get(name);
+};

@@ -16,6 +16,9 @@ v2.FormItem = new v2.Interface('v2.FormItem', [
   /**
    * Checks if the component is valid. Populates the error list returned by
    * getInvalid when component is inalid.
+   *
+   * @param {String} methodName The method to invoke on children elements. This
+   *                            defaults to test, but may also be validate
    */
   'test',
 

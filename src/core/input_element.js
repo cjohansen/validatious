@@ -180,3 +180,10 @@ v2.InputElement = Base.extend(/** @scope v2.InputElement.prototype */{
     return (v2.InputElement.__fields[id] = field);
   }
 });
+
+/**
+ * Shorthand for v2.InputElement.get
+ */
+v2.$f = function(idOrString) {
+  return v2.InputElement.get(idOrString);
+};
