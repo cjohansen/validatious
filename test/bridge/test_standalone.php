@@ -73,6 +73,20 @@ function testExtendEmptyObject() {
 function testExtendObject() {
     var obj = { a: 1, b: 3 };
     v2.Object.extend(obj, { b: 4, c: 5 });
+    assertEquals(4, obj.b);
+    assertEquals(5, obj.c);
+
+    var props = 0;
+    for (p in obj) {
+        props++;
+    }
+
+    assertEquals(3, props);
+}
+
+function testSafeExtendObject() {
+    var obj = { a: 1, b: 3 };
+    v2.Object.extend(obj, { b: 4, c: 5 }, true);
     assertEquals(3, obj.b);
     assertEquals(5, obj.c);
 

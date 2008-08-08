@@ -22,7 +22,7 @@ v2.Field = v2.CompositeFormItem.extend(/** @scope v2.Field.prototype */{
 
     // Initialize properties
     this.__monitored = false;
-    this.__element = v2.InputElement.get(element);
+    this.element = v2.$f(element);
     this.instant = typeof instant !== 'undefined' ? instant : this.instant;
     this.instantWhenValidated = typeof instantWhenValidated !== 'undefined' ? instantWhenValidated : this.instantWhenValidated;
 
@@ -36,7 +36,7 @@ v2.Field = v2.CompositeFormItem.extend(/** @scope v2.Field.prototype */{
    */
   test: function() {
     // Return true if we should not validate hidden fields, and field is hidden
-    if (!this.validateHidden && !this.__element.visible()) {
+    if (!this.validateHidden && !this.element.visible()) {
       return true;
     }
 
@@ -53,6 +53,26 @@ v2.Field = v2.CompositeFormItem.extend(/** @scope v2.Field.prototype */{
   },
 
   /**
+   * Adds a field validator to this field
+   *
+   * @param {String} name    The name of the validator
+   * @param {Array}  params  Parameters for the field validator
+   * @param {String} message Custom error message for this validation
+   */
+  addValidator: function(name, params, message) {
+    var validator = v2.$v(name);
+
+    if (typeof message !== 'undefined') {
+      message = new v2.Message(message, validator.getMessage().params);
+    }
+
+    var fv = new v2.FieldValidator(this.element, validator, v2.array(params), message);
+    this.add(fv);
+
+    return fv;
+  },
+
+  /**
    * Private method: monitor field. Gives immediate respons on whether or not a
    * field is valid by adding the validate method as a listener to element
    * appropriate events.
@@ -65,6 +85,6 @@ v2.Field = v2.CompositeFormItem.extend(/** @scope v2.Field.prototype */{
     }
 
     this.__monitored = true;
-    this.__element.monitor(this.validate.bind(this));
+    this.element.monitor(this.validate.bind(this));
   }
 });

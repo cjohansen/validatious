@@ -20,10 +20,11 @@ function v2TestSuite() {
   v2Suite.addTestPage("../core/test_field_element.php<?php print $query; ?>");
   v2Suite.addTestPage("../core/test_composite_form_item.php<?php print $query; ?>");
   v2Suite.addTestPage("../core/test_form.php<?php print $query; ?>");
-//  v2Suite.addTestPage("../core/test_field.php<?php print $query; ?>");
+  v2Suite.addTestPage("../core/test_field.php<?php print $query; ?>");
   v2Suite.addTestPage("../core/test_field_validator.php<?php print $query; ?>");
   v2Suite.addTestPage("../core/test_validator.php<?php print $query; ?>");
   v2Suite.addTestPage("../core/test_message.php<?php print $query; ?>");
+  v2Suite.addTestPage("../extensions/test_reporting.php<?php print $query; ?>");
 //  v2Suite.addTestPage("../extensions/test_html.php<?php print $query; ?>");
 //  v2Suite.addTestPage("../extensions/test_dsl.php<?php print $query; ?>");
 

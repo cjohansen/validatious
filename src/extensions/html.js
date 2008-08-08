@@ -5,9 +5,6 @@
  * element will be searched for validators through their class names. Validators
  * are class names that correspond to registered validators.
  *
- * By default validator aliases are not searched, but this behaviour may be
- * overridden through v2.Validator.searchAliases
- *
  * @author Christian Johansen (christian@cjohansen.no)
  * @version 0.1
  * @license BSD
@@ -49,7 +46,7 @@
  * system. By default the prefix is empty, which means that
  *   <input ... class="required" />
  *
- * will enable the reqiuired validator.
+ * will enable the required validator.
  *
  * By setting
  *   v2.Validator.prefix = 'v2_';
@@ -68,12 +65,27 @@ v2.Object.extend(v2.Validator, /** @scope v2.Validator */{
 });
 
 /**
- * Addons to the v2.Form object
+ * Adds two settings to the v2.Form "class" object;
+ *
+ * autoValidateClass (default value 'validate')
+ * All forms with this class name will have validation logic added to them. Any
+ * form not having this class will not be touched.
+ *
+ * actionButtonClass (default value 'action')
+ * This property decides which class name to look up action buttons on. Any
+ * buttons with this class name will be added to the button list. If there are
+ * no buttons with this class, all buttons trigger validation. If there are any
+ * buttons with this class name, only these buttons will trigger validation.
  */
 v2.Object.extend(v2.Form, {
   autoValidateClass: 'validate',
-  actionButtonClass: 'action',
+  actionButtonClass: 'action'
+});
 
+/**
+ * Facade for adding validation through semantic markup
+ */
+v2.FormFacade = /** @scope v2.FormFacade */{
   /**
    * Searches through all elements inside the form and adds validators found
    * through class names.
@@ -81,39 +93,44 @@ v2.Object.extend(v2.Form, {
    * @param {Element} form The form element to add validation for
    */
   addValidationFromHTML: function(form) {
-    var fields = v2.$$('input, select, textarea', form);
-    form = new v2.Form(form);
-    var classes, i, j, field, validation;
+    var elements = v2.$$('input, select, textarea', form);
+    form = v2.Form.get(form);
+    var classes, i, j, element, validation;
 
     // Loop through all input elements
-    for (i = 0; (field = fields[i]); i++) {
+    for (i = 0; (element = elements[i]); i++) {
       // Need classes to find validators, skip elements with no classes
-      if (/^\s*$/.test(field.className)) {
+      if (/^\s*$/.test(element.className)) {
         continue;
       }
 
       // Look for button
-      if (v2.Element.hasClassName(field, v2.Form.actionButtonClass)) {
-        form.buttons.push(field);
+      if (v2.Element.hasClassName(element, v2.Form.actionButtonClass)) {
+        form.addButton(element);
         continue;
       }
 
       // Several validators may exist in the class name, separated by spaces
-      classes = field.className;
+      classes = element.className;
 
       // Create field object
-      field = form.field(field);//form.field(field);
+      field = new v2.Field(v2.$f(element));
 
       // "Discover" validators
-      field.addValidation(classes);
+      v2.FieldFacade.add(field, classes);
+
+      // Add to form
+      if (field.__validators.length > 0) {
+        form.add(field);
+      }
     }
   }
-});
+};
 
 /**
- * Addons to the v2.Field object
+ * Facade for facilitating adding validators from a space separated string
  */
-v2.Object.extend(v2.Field.prototype, {
+v2.FieldFacade = /** @scope v2.FieldFacade */{
   /**
    * Adds validation discovery from strings. The method resolves validator names
    * by splitting them on underscores. A string may specify a validator in the
@@ -129,18 +146,16 @@ v2.Object.extend(v2.Field.prototype, {
    *     v2.Validator.searchAliases
    *   - An optional list of parameters, for instance: min-length_3
    *
-   * @param {Array} names Potential validator names. Validators that aren't
-   *                      found are silently ignored
+   * @param {v2.Field} field The field to add validators to
+   * @param {Array}    names Potential validator names. Validators that aren't
+   *                         found are silently ignored
    * @return this field, enables chaining
    */
-  addValidation: function(names) {
-    // Prepare valdation object
-    var validation = new v2.FieldValidation(this.field);
-
-    var prefixStr = v2.Validator.prefix.replace(/^\s*|\s*$/, '');
+  add: function(names) {
+    var prefixStr = v2.Validator.prefix;
     var prefix = new RegExp("^" + prefixStr, '');
-    var className, params, invert, validator;
-    names = typeof names == 'string' ? names.split(' ') : names;
+    var className, params, invert, validator, title;
+    names = typeof names === 'string' ? names.split(' ') : names;
 
     // Loop classes
     for (j = 0; (className = names[j]); j++) {
@@ -149,10 +164,10 @@ v2.Object.extend(v2.Field.prototype, {
       // Don't continue without prefix if a prefix is configured
       if (!v2.empty(prefixStr) && !prefix.test(className)) {
         continue;
-      } else {
-        // Strip out prefix
-        className = className.replace(prefix, '');
       }
+
+      // Strip out prefix
+      className = className.replace(prefix, '');
 
       // Check if validator should be inverted
       if (/^not_/.test(className)) {
@@ -162,14 +177,16 @@ v2.Object.extend(v2.Field.prototype, {
 
       // Get parameters
       params = className.split('_');
-      validator = v2.Validator.get(params.shift(), !v2.Validator.searchAliases);
+      validator = params.shift();
 
       // Add validator if validator was found
       if (validator !== null) {
-        // Custom error messages may be specified through title attribute for
-        // input/select/textarea elements
-        if (!v2.empty(this.field.title)) {
-          validator = validation.addValidator(validator, params, new v2.Message(this.field.title));
+        // Custom error messages may be specified through the title attribute
+        // for input/select/textarea elements
+        title = field.element.getElements()[0].title;
+
+        if (!v2.empty(title)) {
+          validator = field.addValidator(validator, params, title);
         } else {
           validator = validation.addValidator(validator, params);
         }
@@ -178,14 +195,9 @@ v2.Object.extend(v2.Field.prototype, {
       }
     }
 
-    // Add validation to field if validators were added
-    if (validation.validators.length > 0) {
-      this.validations.push(validation);
-    }
-
     return this;
   }
-});
+};
 
 /**
  * Finds forms to validate and runs them through v2.Form.addValidationFromHTML
@@ -195,7 +207,7 @@ v2.addDOMLoadEvent(function() {
 
   for (var i = 0, form; (form = forms[i]); i++) {
     if (v2.Element.hasClassName(form, v2.Form.autoValidateClass)) {
-      v2.Form.addValidationFromHTML(form);
+      v2.FormFacade.addValidationFromHTML(form);
     }
   }
 });

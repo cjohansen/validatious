@@ -148,12 +148,12 @@ v2.CompositeFormItem = Base.extend(/** @scope v2.CompositeFormItem.prototype */{
    *
    * Does nothing
    */
-  onSuccess: function() {},
+  onSuccess: function() { console.log('1!'); },
 
   /**
    * @see v2.FormItem.onFailure
    *
    * Does nothing
    */
-  onFailure: function() {}
+  onFailure: function() { console.log('2!'); }
 });

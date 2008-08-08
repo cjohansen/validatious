@@ -29,7 +29,7 @@ v2.InputElement = Base.extend(/** @scope v2.InputElement.prototype */{
     var i, j, element, event;
 
     for (i = 0; (element = this.__elements[i]); i++) {
-      for (j = 0; (event = this.__events[i]); j++) {
+      for (j = 0; (event = this.__events[j]); j++) {
         v2.Element.observe(element, event, eventHandler);
       }
     }
@@ -134,6 +134,10 @@ v2.InputElement = Base.extend(/** @scope v2.InputElement.prototype */{
    * @return {v2.Field} a field object
    */
   get: function(idNameEl) {
+    if (idNameEl && idNameEl.constructor === v2.InputElement) {
+      return idNameEl;
+    }
+
     var element = v2.$(idNameEl), id, field, elements, selector;
 
     // Argument was name string

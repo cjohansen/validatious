@@ -2,7 +2,7 @@
  * Extension to the v2.Field objects that provide a fairly flexible error
  * reporting system for fields.
  */
-v2.Field = v2.Object.extend(/** @scope stb.Field.prototype */{
+v2.Object.extend(v2.Field.prototype, /** @scope stb.Field.prototype */{
   validateHidden: false,      // If a field should be validated even if it's not
                               // visible
   displayErrors: -1,          // How many error messages to display per field
@@ -21,7 +21,7 @@ v2.Field = v2.Object.extend(/** @scope stb.Field.prototype */{
     var parent = this.onSuccess();
     var str = '', i, error, validation, listElement;
     var used = [];
-    var input = this.field.getElements()[0];
+    var input = this.element.getElements()[0];
     var messages = this.getMessages();
 
     parent.addClassName(this.failureClass);
@@ -44,7 +44,7 @@ v2.Field = v2.Object.extend(/** @scope stb.Field.prototype */{
         continue;
       }
 
-      used.push(err.toString());
+      used.push(error.toString());
       listElement = document.createElement('li');
       listElement.innerHTML = error.toString();
       list.appendChild(listElement);
@@ -63,8 +63,8 @@ v2.Field = v2.Object.extend(/** @scope stb.Field.prototype */{
    * Callback that's called when validation succeeds
    */
   onSuccess: function() {
-    var parent = this.field.getParent();
-    var input = this.field.getElements()[0];
+    var parent = this.element.getParent();
+    var input = this.element.getElements()[0];
 
     // Remove error if it exists
     var list = v2.$((input.id || input.name) + '_errors');

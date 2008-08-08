@@ -30,6 +30,13 @@ v2.Validator = Base.extend(/** @scope v2.Validator.prototype */{
    */
   getName: function() {
     return this.__name;
+  },
+
+  /**
+   * @return the message object
+   */
+  getMessage: function() {
+    return this.__message;
   }
 }, /** @scope v2.Validator */{
   validators: {},

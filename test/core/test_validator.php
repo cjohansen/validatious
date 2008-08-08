@@ -14,7 +14,6 @@ function test() {
 
 function tearDown() {
     document.getElementById('field').value = 'Hello';
-    v2.Validator.validators = {};
 }
 
 function testConstructorNoAlias() {

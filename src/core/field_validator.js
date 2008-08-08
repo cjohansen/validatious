@@ -16,6 +16,7 @@ v2.FieldValidator = Base.extend(/** @scope v2.FieldValidator.prototype */{
    *                                    used.
    */
   constructor: function(field, validator, params, msg) {
+    v2.Interface.ensure(field, v2.FieldElement);
     this.__field = field;
     this.__validator = validator;
     this.__params = v2.array(params);
@@ -44,9 +45,30 @@ v2.FieldValidator = Base.extend(/** @scope v2.FieldValidator.prototype */{
   },
 
   /**
+   * Returns this object if it fails validation
+   */
+  getInvalid: function() {
+    return !this.test() ? this : null;
+  },
+
+  /**
+   * Updates the error message
+   */
+  setMessage: function(message) {
+    this.__message.message = message;
+  },
+
+  /**
    * Returns the error message
    */
   getMessages: function() {
     return [this.__message.toString()];
-  }
+  },
+
+  add: function() {},
+  remove: function() {},
+  get: function() {},
+  passOnAny: function() {},
+  onSuccess: function() {},
+  onFailure: function() {}
 });
