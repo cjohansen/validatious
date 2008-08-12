@@ -40,7 +40,7 @@ function testCallbacks() {
 
     field.onFailure();
     var list = parent.getElementsByTagName('ul');
-console.log(parent);
+
     assertTrue('Parent does not have error', parent.hasClassName('error'));
     assertEquals(1, list.length);
     assertEquals(1, list[0].getElementsByTagName('li').length);

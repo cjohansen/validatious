@@ -118,9 +118,8 @@ qm.BrowserDetect.init();
 
 v2.wait = function(ms) {
   var start = new Date();
-  alert(start)
-  while (new Date() - start > ms) {
+
+  while (new Date() - start < ms) {
     // Wait for it...
   }
-  alert(new Date())
 };

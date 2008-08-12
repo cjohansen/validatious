@@ -20,20 +20,20 @@ function testConstructor() {
 }
 
 function testEnsure() {
-    var TestInterface = new v2.Interface('TestInterface', ['do', 'add']);
-    var Undoable = new v2.Interface('Undoable', ['undo']);
+    var TestInterface = new v2.Interface('TestInterface', ['doIt', 'addIt']);
+    var Undoable = new v2.Interface('Undoable', ['undoIt']);
 
     var impl = {
-        do: function() {},
-        undo: function() {}
+        doIt: function() {},
+        undoIt: function() {}
     };
 
     assertFalse(ensure(impl, TestInterface));
+    impl.addIt = 4;
 
-    impl.add = 4;
     assertFalse(ensure(impl, TestInterface));
+    impl.addIt = function() {};
 
-    impl.add = function() {};
     assertTrue('impl does not implement TestInterface correctly', ensure(impl, TestInterface));
     assertTrue('impl does not implement TestInterface and Undoable correctly', ensure(impl, [Undoable, TestInterface]));
 }
@@ -43,7 +43,9 @@ function ensure(obj, ifs) {
         v2.Interface.ensure(obj, ifs);
         return true;
     } catch(e) {
-        console.log(e);
+        if (typeof console !== 'undefined' && console.log) {
+            console.log(e);
+        }
     };
 
     return false;

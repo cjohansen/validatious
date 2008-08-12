@@ -7,8 +7,9 @@
         print scripts();
     ?>
     <script type="text/javascript">
-function setUp() {
-
+// Opera needs this
+function test() {
+    assert(true);
 }
 
 function testConstructor() {

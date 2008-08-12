@@ -62,6 +62,10 @@ v2.Field = v2.CompositeFormItem.extend(/** @scope v2.Field.prototype */{
   addValidator: function(name, params, message) {
     var validator = v2.$v(name);
 
+    if (validator === null) {
+      throw new Error(name + ' is not a valid validator');
+    }
+
     if (typeof message !== 'undefined') {
       message = new v2.Message(message, validator.getMessage().params);
     }

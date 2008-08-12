@@ -8,67 +8,74 @@
         print scripts(array('extensions/html'));
     ?>
     <script type="text/javascript">
-function testValidate() {
-    var forms = document.getElementsByTagName('form');
+// Opera needs this
+function test() {
+    assert(true);
+}
 
-    assertFalse('field2 already has errors', v2.$(v2.$('field2').parentNode).hasClassName('error'));
+function testValidate() {
+    var parent = v2.$(v2.$('field2').parentNode);
+
+    assertFalse('field2 already has errors', parent.hasClassName('error'));
     v2.$('next').click();
-    assertTrue('field2 does not have errors', v2.$(v2.$('field2').parentNode).hasClassName('error'));
+    v2.wait(500);
+    assertTrue('field2 does not have errors', parent.hasClassName('error'));
 }
 
 function testAddValidatorSimple() {
     var field = new v2.Field('field5');
-    v2.FieldFacade.add('required');
+    v2.FieldFacade.add(field, 'required');
     assertEquals(1, field.__validators.length);
 }
-/*
+
 function testAddValidatorInverted() {
-    var field = v2.Field.instance('field6');
-    field.addValidation('not_required');
-    assertEquals(1, field.validations.length);
-    assertEquals(1, field.validations[0].validators.length);
-    assertTrue(field.validations[0].validators[0].invert);
+    var field = new v2.Field('field6');
+    v2.FieldFacade.add(field, 'not_required');
+
+    assertEquals(1, field.__validators.length);
+    assertTrue(field.__validators[0].invert);
 }
 
 function testAddValidatorParameters() {
-    var field = v2.Field.instance('field7');
-    field.addValidation('min-length_5');
-    assertEquals(1, field.validations.length);
-    assertEquals('5', field.validations[0].validators[0].params[0]);
+    var field = new v2.Field('field7');
+    v2.FieldFacade.add(field, 'min-length_5');
+
+    assertEquals('5', field.get(0).__params[0]);
 }
 
 function testAddValidatorMessage() {
-    var field = v2.Field.instance('field8');
-    field.field.title = 'Please get a hold of your self';
-    field.addValidation('required');
-    assertEquals(1, field.validations.length);
-    assertEquals('Please get a hold of your self', field.validations[0].validators[0].error.toString());
+    var element = v2.$('field8');
+    var field = new v2.Field(element);
+    element.title = 'Please get a hold of your self';
+    v2.FieldFacade.add(field, 'required');
+
+    assertEquals('Please get a hold of your self', field.get(0).getMessages().join());
 }
 
 function testAddValidatorFull() {
-    var field = v2.Field.instance('field9');
-    field.addValidation('required min-length_16 not_email not_exists this_doesnt_either');
-    assertEquals(1, field.validations.length);
-    assertEquals(3, field.validations[0].validators.length);
-    assertTrue(field.validations[0].validators[2].invert);
+    var field = new v2.Field('field9');
+    v2.FieldFacade.add(field, 'required min-length_16 not_email not_exists this_doesnt_either');
+
+    assertEquals(3, field.__validators.length);
+    assertTrue(field.get(2).invert);
 }
 
 function testValidatorPrefix() {
-  var field = v2.Field.instance('field10');
-  var start = field.validations.length;
+  var field = new v2.Field('field10');
+  var start = field.__validators.length;
 
-  field.addValidation('v2_required');
-  assertEquals(start, field.validations.length);
+  v2.FieldFacade.add(field, 'v2_required');
+  assertEquals(start, field.__validators.length);
 
   v2.Validator.prefix = 'v2_';
-  field.addValidation('required');
-  assertEquals(start, field.validations.length);
+  v2.FieldFacade.add(field, 'required');
+  assertEquals(start, field.__validators.length);
 
-  field.addValidation('v2_required');
-  assertEquals(start + 1, field.validations.length);
+  v2.FieldFacade.add(field, 'v2_required');
+  assertEquals(start + 1, field.__validators.length);
 
   v2.Validator.prefix = '';
-}*/
+}
     </script>
     <style>
       .field {

@@ -7,6 +7,11 @@
         print scripts();
     ?>
     <script type="text/javascript">
+// Opera needs this
+function test() {
+    assert(true);
+}
+
 function setUp() {
     v2.$('fs1').className = 'someClass';
 }
@@ -244,23 +249,6 @@ function testFunctionBindCache() {
     // The results should be the same though
     assertEquals(boundThroughFunction(), bound());
 }
-/*
-function testFormValues() {
-    assertEquals('Input 1', v2.FormUtil.value(document.getElementById('testEl')));
-    assertEquals('banana', v2.FormUtil.value(document.getElementById('apple')));
-    assertEquals('banana', v2.FormUtil.value(document.getElementById('banana')));
-    assertNull(v2.FormUtil.value(document.getElementById('carrot')));
-    assertEquals('pref1', v2.FormUtil.value(document.getElementById('pref1'))[0]);
-    assertEquals('pref1', v2.FormUtil.value(document.getElementById('pref2'))[0]);
-    assertNull(v2.FormUtil.value(document.getElementById('pref4')));
-    assertEquals('Hidden!', v2.FormUtil.value(document.getElementById('hidden1')));
-    assertEquals('Password!', v2.FormUtil.value(document.getElementById('pass1')));
-    assertEquals('Submit me!', v2.FormUtil.value(document.getElementById('submit1')));
-    assertEquals('A button!', v2.FormUtil.value(document.getElementById('button1')));
-    assertEquals('2', v2.FormUtil.value(document.getElementById('single')));
-    assertEquals('35', v2.FormUtil.value(document.getElementById('multi')).join(''));
-    assertEquals('This is quite the novel', v2.FormUtil.value(document.getElementById('text')));
-}*/
     </script>
   </head>
   <body>

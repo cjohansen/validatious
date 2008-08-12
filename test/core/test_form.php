@@ -7,6 +7,11 @@
         print scripts();
     ?>
     <script type="text/javascript">
+// Opera needs this
+function test() {
+    assert(true);
+}
+
 function testConstructor() {
     var formEl = document.getElementsByTagName('form')[0];
     var form = new v2.Form('test');

@@ -95,7 +95,7 @@ v2.FormFacade = /** @scope v2.FormFacade */{
   addValidationFromHTML: function(form) {
     var elements = v2.$$('input, select, textarea', form);
     form = v2.Form.get(form);
-    var classes, i, j, element, validation;
+    var classes, i, j, element;
 
     // Loop through all input elements
     for (i = 0; (element = elements[i]); i++) {
@@ -151,7 +151,7 @@ v2.FieldFacade = /** @scope v2.FieldFacade */{
    *                         found are silently ignored
    * @return this field, enables chaining
    */
-  add: function(names) {
+  add: function(field, names) {
     var prefixStr = v2.Validator.prefix;
     var prefix = new RegExp("^" + prefixStr, '');
     var className, params, invert, validator, title;
@@ -185,13 +185,15 @@ v2.FieldFacade = /** @scope v2.FieldFacade */{
         // for input/select/textarea elements
         title = field.element.getElements()[0].title;
 
-        if (!v2.empty(title)) {
-          validator = field.addValidator(validator, params, title);
-        } else {
-          validator = validation.addValidator(validator, params);
-        }
+        try {
+          if (!v2.empty(title)) {
+            validator = field.addValidator(validator, params, title);
+          } else {
+            validator = field.addValidator(validator, params);
+          }
 
-        validator.invert = invert;
+          validator.invert = invert;
+        } catch (e) { /* Fail silently - just a "normal" class name */ }
       }
     }
 
