@@ -38,29 +38,69 @@
  */
 
 /**
- * Creates a validate function. The conditional parameter decides if the
- * function should require all validators, or only one.
- *
- * @param {boolean} conditional   If true, all validators are required
+ * Addons to the global v2 object
  */
-v2.__validateTemplate = function(conditional) {
-  return function() {
-    var field = arguments[0];
+v2.Object.extend(v2, /** @scope v2 */{
+  /**
+   * Creates a validate function. The conditional parameter decides if the
+   * function should require all validators, or only one.
+   *
+   * @param {boolean} conditional   If true, all validators are required
+   */
+  __validateTemplate: function(conditional) {
+    return function() {
+      var field = arguments[0];
 
-    while (!!field && !field.element) {
-      field = field.get(0);
+      while (!!field && !field.element) {
+        field = field.get(0);
+      }
+
+      var form = new v2.FormFacade(field.element.getElements()[0].form);
+      form.form.passOnAny(conditional);
+
+      for (var i = 0, component; (component = arguments[i]); i++) {
+        form.form.add(component);
+      }
+
+      return form;
+    };
+  },
+
+  /**
+   * Returns a function that joins composite form item objects. The conditional
+   * decides if all items are required or not.
+   *
+   * @param {boolean} conditional
+   */
+  __andOr: function(conditional) {
+    return function() {
+      var cfi = new v2.Fieldset();
+      cfi.item.passOnAny(conditional);
+
+      for (var i = 0, component; (component = arguments[i]); i++) {
+        cfi.item.add(component.item);
+      }
+
+      return cfi;
+    };
+  },
+
+  /**
+   * Exposes DSL utilities (validate, validateAll, validateAny, and, or)
+   * to the global namespace
+   */
+  dsl: {
+    expose: function() {
+      v2.Object.extend(window, /** @scope window */{
+        validate: v2.validate,
+        validateAll: v2.validateAll,
+        validateAny: v2.validateAny,
+        and: v2.all,
+        or: v2.or
+      }, false);
     }
-
-    var form = new v2.FormFacade(field.element.getElements()[0].form);
-    form.form.passOnAny(conditional);
-
-    for (var i = 0, component; (component = arguments[i]); i++) {
-      form.form.add(component);
-    }
-
-    return form;
-  };
-};
+  }
+});
 
 /**
  * Validate a form with a set of validators, require all validators to pass in
@@ -68,32 +108,13 @@ v2.__validateTemplate = function(conditional) {
  *
  * Aliased as v2.validate
  */
-v2.validate = v2.validateAll = v2.__validateTemplate(false);
+v2.validateAll = v2.validate = v2.__validateTemplate(false);
 
 /**
  * Validate a form with a set of validators, require only a single validators to
  * pass in order to pass the form.
  */
 v2.validateAny = v2.__validateTemplate(true);
-
-/**
- * Returns a function that joins composite form item objects. The conditional
- * decides if all items are required or not.
- *
- * @param {boolean} conditional
- */
-v2.__andOr = function(conditional) {
-  return function() {
-    var cfi = new v2.Fieldset();
-    cfi.item.passOnAny(conditional);
-
-    for (var i = 0, component; (component = arguments[i]); i++) {
-      cfi.item.add(component.item);
-    }
-
-    return cfi;
-  };
-};
 
 /**
  * Joins composite form item objects. Requires all components to pass.
@@ -104,20 +125,6 @@ v2.and = v2.__andOr(false);
  * Joins composite form item objects. Requires any components to pass.
  */
 v2.or = v2.__andOr(true);
-
-/**
- * Exposes DSL utilities (validate, validateAll, validateAny, and, or)
- * to the global namespace
- */
-v2.dsl = {
-  expose: function() {
-    window.validate = v2.validate;
-    window.validateAll = v2.validateAll;
-    window.validateAny = v2.validateAny;
-    window.and = v2.all;
-    window.or = v2.or;
-  }
-};
 
 /**
  * Augment string objects to allow for syntax where validators are added
