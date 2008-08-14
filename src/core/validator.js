@@ -61,12 +61,15 @@ v2.Validator = Base.extend(/** @scope v2.Validator.prototype */{
       throw new TypeError('Options object should contain name, fn and message');
     }
 
-    var params = !!options.params ? v2.array(options.params) : [];
+    // Merge options with default options
+    options = v2.Object.extend({ params: [], aliases: [], acceptEmpty: true }, options, false);
+
+    var params = v2.array(options.params);
     var message = new v2.Message(options.message, params);
     var validator = new v2.Validator(options.name, options.fn, message, options.aliases);
-    validator.acceptEmpty = typeof options.acceptEmpty === 'undefined' ? true : options.acceptEmpty;
+    validator.acceptEmpty = options.acceptEmpty;
 
-    var names = (options.aliases || []).concat([options.name]);
+    var names = v2.array(options.aliases).concat([options.name]);
 
     for (var i = 0, name; (name = names[i]); i++) {
       v2.Validator.validators[name] = validator;

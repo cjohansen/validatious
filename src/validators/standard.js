@@ -101,7 +101,7 @@
    */
   v.reg('required', function(field, value, params) {
     return value !== null && value !== '';
-  }, m.required, 'not-empty', false);
+  }, m.required, null, 'not-empty', false);
 
   /**
    * Checks that a value is a valid norwegian social security number

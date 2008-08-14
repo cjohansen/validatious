@@ -38,9 +38,10 @@
  */
 
 /**
- * Addons to the global v2 object
+ * Top level DSL functionality. Use v2.dsl.expose() to expose methods to the
+ * global namespace.
  */
-v2.Object.extend(v2, /** @scope v2 */{
+v2.dsl = /** @scope v2.dsl */{
   /**
    * Creates a validate function. The conditional parameter decides if the
    * function should require all validators, or only one.
@@ -55,11 +56,11 @@ v2.Object.extend(v2, /** @scope v2 */{
         field = field.get(0);
       }
 
-      var form = new v2.FormFacade(field.element.getElements()[0].form);
-      form.form.passOnAny(conditional);
+      var form = new v2.Form(field.element.getElements()[0].form);
+      form.passOnAny(conditional);
 
       for (var i = 0, component; (component = arguments[i]); i++) {
-        form.form.add(component);
+        form.add(component);
       }
 
       return form;
@@ -74,7 +75,7 @@ v2.Object.extend(v2, /** @scope v2 */{
    */
   __andOr: function(conditional) {
     return function() {
-      var cfi = new v2.Fieldset();
+      var cfi = new v2.dsl.Collection();
       cfi.item.passOnAny(conditional);
 
       for (var i = 0, component; (component = arguments[i]); i++) {
@@ -89,18 +90,16 @@ v2.Object.extend(v2, /** @scope v2 */{
    * Exposes DSL utilities (validate, validateAll, validateAny, and, or)
    * to the global namespace
    */
-  dsl: {
-    expose: function() {
-      v2.Object.extend(window, /** @scope window */{
-        validate: v2.validate,
-        validateAll: v2.validateAll,
-        validateAny: v2.validateAny,
-        and: v2.all,
-        or: v2.or
-      }, false);
-    }
+  expose: function() {
+    v2.Object.extend(window, /** @scope window */{
+      validate: v2.validate,
+      validateAll: v2.validateAll,
+      validateAny: v2.validateAny,
+      and: v2.all,
+      or: v2.or
+    }, false);
   }
-});
+};
 
 /**
  * Validate a form with a set of validators, require all validators to pass in
@@ -108,23 +107,23 @@ v2.Object.extend(v2, /** @scope v2 */{
  *
  * Aliased as v2.validate
  */
-v2.validateAll = v2.validate = v2.__validateTemplate(false);
+v2.dsl.validateAll = v2.dsl.validate = v2.dsl.__validateTemplate(false);
 
 /**
  * Validate a form with a set of validators, require only a single validators to
  * pass in order to pass the form.
  */
-v2.validateAny = v2.__validateTemplate(true);
+v2.dsl.validateAny = v2.dsl.__validateTemplate(true);
 
 /**
  * Joins composite form item objects. Requires all components to pass.
  */
-v2.and = v2.__andOr(false);
+v2.dsl.and = v2.dsl.__andOr(false);
 
 /**
  * Joins composite form item objects. Requires any components to pass.
  */
-v2.or = v2.__andOr(true);
+v2.dsl.or = v2.dsl.__andOr(true);
 
 /**
  * Augment string objects to allow for syntax where validators are added
@@ -141,13 +140,11 @@ v2.Object.extend(String.prototype, {
    *
    * @param {String} validator The validator to add
    * @param {Array}  params    Optional parameters
-   * @return {v2.FieldDSLFacade} the field object
+   * @return {v2.dsl.Field} the field object
    */
   is: function(validator, params) {
-    var facade = new v2.FieldDSLFacade(this);
-    facade.addValidator(validator, params);
-
-    return facade;
+    var facade = new v2.dsl.Field(this.toString());
+    return facade.addValidator(validator, params);
   }
 });
 
@@ -162,7 +159,7 @@ v2.Object.extend(String.prototype, {
 /**
  * DSL capabilities for fields
  */
-v2.FieldDSLFacade = Base.extend(/** @scope v2.FieldDSLFacade.prototype */{
+v2.dsl.Field = Base.extend(/** @scope v2.dsl.Field.prototype */{
   __currentValidator: null,
   __and: null,
 
@@ -183,7 +180,7 @@ v2.FieldDSLFacade = Base.extend(/** @scope v2.FieldDSLFacade.prototype */{
    * @param {String}  validator The validator to add
    * @param {Array}   params    Optional parameters
    * @param {boolean} and       If true, this field must pass all validators
-   * @return {v2.FieldDSLFacade} this object
+   * @return {v2.dsl.Field} this object
    */
   addValidator: function(validator, params, and) {
     if (typeof and !== "undefined") {
@@ -198,7 +195,7 @@ v2.FieldDSLFacade = Base.extend(/** @scope v2.FieldDSLFacade.prototype */{
     }
 
     this.__currentValidator = this.item.addValidator(validator, params);
-    return this.__currentValidator;
+    return this;
   },
 
   /**
@@ -208,7 +205,7 @@ v2.FieldDSLFacade = Base.extend(/** @scope v2.FieldDSLFacade.prototype */{
    * @param {String}  validator   The validator to add
    * @param {Array}   params      Optional parameters
    * @param {boolean} conditional If true then all validators must pass
-   * @return {v2.FieldDSLFacade} this object
+   * @return {v2.dsl.Field} this object
    */
   and: function(validator, params, conditional) {
     if (!!this.__currentValidator) {
@@ -225,7 +222,7 @@ v2.FieldDSLFacade = Base.extend(/** @scope v2.FieldDSLFacade.prototype */{
    * @param {String}  validator   The validator to add
    * @param {Array}   params      Optional parameters
    * @param {boolean} conditional If true then all validators must pass
-   * @return {v2.FieldDSLFacade} this object
+   * @return {v2.dsl.Field} this object
    */
   or: function(validator, params, conditional) {
     if (!!this.__currentValidator) {
@@ -263,11 +260,11 @@ v2.FieldDSLFacade = Base.extend(/** @scope v2.FieldDSLFacade.prototype */{
 });
 
 /**
- * orIs, orIsA, orIsAn, orHas, orHasA, orHasAn are aliases for v2.FieldDSLFacade.or
- * andIs, andIsA, andIsAn, andHas, andHasA, andHasAn are aliases for v2.FieldDSLFacade.and
+ * orIs, orIsA, orIsAn, orHas, orHasA, orHasAn are aliases for v2.dsl.Field.or
+ * andIs, andIsA, andIsAn, andHas, andHasA, andHasAn are aliases for v2.dsl.Field.and
  */
 (function() {
-  var v = v2.FieldDSLFacade.prototype;
+  var v = v2.dsl.Field.prototype;
   v.orIs = v.orIsA = v.orIsAn = v.orHas = v.orHasA = v.orHasAn = v.or;
   v.andIs = v.andIsA = v.andIsAn = v.andHas = v.andHasA = v.andHasAn = v.and;
 })();
@@ -275,7 +272,7 @@ v2.FieldDSLFacade = Base.extend(/** @scope v2.FieldDSLFacade.prototype */{
 /**
  * Field collections with DSL capabilities
  */
-v2.Fieldset = Base.extend(/** @scope v2.Fieldset.prototype */{
+v2.dsl.Collection = Base.extend(/** @scope v2.dsl.Collection.prototype */{
   /**
    * Create a new fieldset/collection
    */

@@ -68,7 +68,7 @@ v2.Object = {
         continue;
       }
 
-      if (props.hasOwnProperty(prop)) {
+      if (props.hasOwnProperty(prop) && typeof props[prop] !== 'undefined') {
         obj[prop] = props[prop];
       }
     }

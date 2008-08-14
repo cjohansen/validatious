@@ -186,8 +186,6 @@ v2.InputElement = Base.extend(/** @scope v2.InputElement.prototype */{
 });
 
 /**
- * Shorthand for v2.InputElement.get
+ * Alias/shorthand for v2.InputElement.get
  */
-v2.$f = function(idOrString) {
-  return v2.InputElement.get(idOrString);
-};
+v2.$f = v2.InputElement.get;
