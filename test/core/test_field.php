@@ -71,6 +71,10 @@ function testValidate() {
     field.addValidator('min-length', 13);
     assertFalse(field.element.getValue() + ' passes min-length 13 validator', field.validate());
     assertEquals('Callback did not set flag=FAIL', 'FAIL', flag);
+
+    var messages = field.getMessages();
+    field.validate();
+    assertEquals(messages.length, field.getMessages().length);
 }
     </script>
   </head>

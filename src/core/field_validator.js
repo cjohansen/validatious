@@ -16,7 +16,7 @@ v2.FieldValidator = Base.extend(/** @scope v2.FieldValidator.prototype */{
    *                                    used.
    */
   constructor: function(field, validator, params, msg) {
-    v2.Interface.ensure(field, v2.FieldElement);
+    //v2.Interface.ensure(field, v2.FieldElement);
     this.__field = field;
     this.__validator = validator;
     this.__params = v2.array(params);

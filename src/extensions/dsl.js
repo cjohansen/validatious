@@ -51,16 +51,19 @@ v2.dsl = /** @scope v2.dsl */{
   __validateTemplate: function(conditional) {
     return function() {
       var field = arguments[0];
+      var element = field.element || (field.item ? field.item.element : null) || null;
 
-      while (!!field && !field.element) {
-        field = field.get(0);
+      if (element === null) {
+        while (!!field && !field.element) {
+          field = field.get(0);
+        }
       }
 
-      var form = new v2.Form(field.element.getElements()[0].form);
+      var form = v2.Form.get(element.getElements()[0].form);
       form.passOnAny(conditional);
 
       for (var i = 0, component; (component = arguments[i]); i++) {
-        form.add(component);
+        form.add(component.item || component);
       }
 
       return form;
@@ -84,21 +87,23 @@ v2.dsl = /** @scope v2.dsl */{
 
       return cfi;
     };
-  },
-
-  /**
-   * Exposes DSL utilities (validate, validateAll, validateAny, and, or)
-   * to the global namespace
-   */
-  expose: function() {
-    v2.Object.extend(window, /** @scope window */{
-      validate: v2.validate,
-      validateAll: v2.validateAll,
-      validateAny: v2.validateAny,
-      and: v2.all,
-      or: v2.or
-    }, false);
   }
+};
+
+/**
+ * Exposes DSL utilities (validate, validateAll, validateAny, and, or)
+ * to the global namespace
+ */
+v2.dsl.expose = function() {
+  var v = v2.dsl;
+
+  v2.Object.extend(window, /** @scope window */{
+    validate: v.validate,
+    validateAll: v.validateAll,
+    validateAny: v.validateAny,
+    and: v.and,
+    or: v.or
+  }, false);
 };
 
 /**
@@ -184,7 +189,7 @@ v2.dsl.Field = Base.extend(/** @scope v2.dsl.Field.prototype */{
    */
   addValidator: function(validator, params, and) {
     if (typeof and !== "undefined") {
-      if (this.__and !== and) {
+      if (this.__and !== null && this.__and !== and) {
         throw new Error("Field previously set up with " +
                         (this.__and ? "AND" : "OR") +
                         ", unable to shift");
@@ -195,6 +200,7 @@ v2.dsl.Field = Base.extend(/** @scope v2.dsl.Field.prototype */{
     }
 
     this.__currentValidator = this.item.addValidator(validator, params);
+
     return this;
   },
 
@@ -204,15 +210,14 @@ v2.dsl.Field = Base.extend(/** @scope v2.dsl.Field.prototype */{
    *
    * @param {String}  validator   The validator to add
    * @param {Array}   params      Optional parameters
-   * @param {boolean} conditional If true then all validators must pass
    * @return {v2.dsl.Field} this object
    */
-  and: function(validator, params, conditional) {
-    if (!!this.__currentValidator) {
+  and: function(validator, params) {
+    if (!this.__currentValidator) {
       throw new Error("Cannot add more validators when no validators are added yet");
     }
 
-    return this.addValidator(validator, params, conditional);
+    return this.addValidator(validator, params, true);
   },
 
   /**
@@ -221,15 +226,14 @@ v2.dsl.Field = Base.extend(/** @scope v2.dsl.Field.prototype */{
    *
    * @param {String}  validator   The validator to add
    * @param {Array}   params      Optional parameters
-   * @param {boolean} conditional If true then all validators must pass
    * @return {v2.dsl.Field} this object
    */
-  or: function(validator, params, conditional) {
+  or: function(validator, params) {
     if (!!this.__currentValidator) {
       throw new Error("Cannot add more validators when no validators are added yet");
     }
 
-    return this.addValidator(validator, params, conditional);
+    return this.addValidator(validator, params, false);
   },
 
   /**

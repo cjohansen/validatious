@@ -4,7 +4,6 @@
  */
 v2.Validator = Base.extend(/** @scope v2.Validator.prototype */{
   constructor: function(name, fn, message, aliases) {
-    //v2.Interface.ensure(error, v2.Message);
     this.__name = name;
     this.__test = fn;
     this.__message = message;

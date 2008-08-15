@@ -85,14 +85,14 @@ v2.Object.extend(Array.prototype, {
   /**
    * For each loops through every element of an array yielding successive
    * elements to a callback function
-   */
+   *
   forEach: function(callback, thisObj) {
     thisObj = thisObj || this;
 
     for (var i = 0; i < this.length; i++) {
       callback.call(thisObj, this[i]);
     }
-  },
+  },*/
 
   /**
    * Finds the first occurence of an element and returns its index in the array
@@ -109,11 +109,11 @@ v2.Object.extend(Array.prototype, {
     }
 
     return -1;
-  },
+  }/*,
 
   /**
    * Filter implementation, from http://developer.mozilla.org/en/docs/Core_JavaScript_1.5_Reference:Objects:Array:filter
-   */
+   *
   filter: function(fun) {
     var len = this.length;
 
@@ -136,7 +136,7 @@ v2.Object.extend(Array.prototype, {
     }
 
     return res;
-  }
+  }*/
 });
 
 /**

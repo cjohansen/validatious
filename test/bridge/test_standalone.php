@@ -19,7 +19,7 @@ function setUp() {
 function testV2ArrayEmptyArray() {
     var data = [];
     var arr = v2.array(data);
-    assertEquals(Array, arr.constructor);
+    assertNotUndefined(arr.push);
     assertEquals(0, arr.length);
     assertEquals(data, arr);
 }
@@ -27,7 +27,7 @@ function testV2ArrayEmptyArray() {
 function testV2ArrayWithArray() {
     var data = [1, 2, 'a'];
     var arr = v2.array(data);
-    assertEquals(Array, arr.constructor);
+    assertNotUndefined(arr.push);
     assertEquals(3, arr.length);
     assertEquals(data, arr);
 }
@@ -35,7 +35,7 @@ function testV2ArrayWithArray() {
 function testV2ArrayWithString() {
     var data = 'a';
     var arr = v2.array(data);
-    assertEquals(Array, arr.constructor);
+    assertNotUndefined(arr.push);
     assertEquals(1, arr.length);
     assertEquals(data, arr[0]);
 }
@@ -43,13 +43,13 @@ function testV2ArrayWithString() {
 function testV2ArrayWithNull() {
     var data = null;
     var arr = v2.array(data);
-    assertEquals(Array, arr.constructor);
+    assertNotUndefined(arr.push);
     assertEquals(0, arr.length);
 }
 
 function testV2ArrayWithUndefined(data) {
     var arr = v2.array(data);
-    assertEquals(Array, arr.constructor);
+    assertNotUndefined(arr.push);
     assertEquals(0, arr.length);
 }
 
@@ -106,6 +106,7 @@ function testSafeExtendObject() {
 function testArrayIndexOf() {
     var obj = { testProp: 'unit' };
     var arr = [1, 2, 3, 'a', false, obj, 2];
+    assertEquals("function", typeof arr.indexOf);
     assertEquals(1, arr.indexOf(2));
     assertEquals(3, arr.indexOf('a'));
     assertEquals(4, arr.indexOf(false));
@@ -249,7 +250,7 @@ function testFunctionBindCache() {
     // The results should be the same though
     assertEquals(boundThroughFunction(), bound());
 }
-    </script>
+</script>
   </head>
   <body>
     <div id="testDiv"></div>

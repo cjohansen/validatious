@@ -28,7 +28,7 @@ function testAdd() {
     assertEquals(1, cfi.__validators.length);
 }
 
-function testRemoveObject() {
+/*function testRemoveObject() {
     var cfi = new v2.CompositeFormItem();
     var cfi2 = new v2.CompositeFormItem();
     assertEquals(0, cfi.__validators.length);
@@ -53,7 +53,7 @@ function testRemoveIndex() {
     cfi.remove(0);
     assertEquals(1, cfi.__validators.length);
     assertEquals(cfi2, cfi.__validators[0]);
-}
+}*/
 
 function testGet() {
     var cfi = new v2.CompositeFormItem();

@@ -32,7 +32,7 @@ v2.CompositeFormItem = Base.extend(/** @scope v2.CompositeFormItem.prototype */{
    * @param {Object} obj An object that implements v2.Composite and v2.FormItem
    */
   add: function(obj) {
-    v2.Interface.ensure(obj, [v2.Composite, v2.FormItem]);
+    //v2.Interface.ensure(obj, [v2.Composite, v2.FormItem]);
     this.__validators.push(obj);
   },
 
@@ -41,7 +41,7 @@ v2.CompositeFormItem = Base.extend(/** @scope v2.CompositeFormItem.prototype */{
    *
    * @param {mixed} obj Either an integer giving the index to delete or an
    *                    object to search for and delete
-   */
+   *
   remove: function(obj) {
     if (typeof obj === 'number' && obj < this.__validators.length) {
       obj = this.__validators[obj];
@@ -67,9 +67,12 @@ v2.CompositeFormItem = Base.extend(/** @scope v2.CompositeFormItem.prototype */{
    * @see v2.FormItem.validate
    */
   validate: function() {
+    this.__errors = [];
     var valid = this.test('validate');
 
     if (valid) {
+      // OR-validations may cause errors even though the component passes
+      // Clear errors when component is valid
       this.__errors = [];
       this.onSuccess();
     } else {
@@ -111,7 +114,6 @@ v2.CompositeFormItem = Base.extend(/** @scope v2.CompositeFormItem.prototype */{
    * @param {v2.Message} message
    */
   setMessage: function(message) {
-    //v2.Interface.ensure(message, v2.Message);
     this.__message = message;
   },
 
