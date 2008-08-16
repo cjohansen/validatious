@@ -26,7 +26,7 @@ function v2TestSuite() {
   v2Suite.addTestPage("../core/test_message.php<?php print $query; ?>");
   v2Suite.addTestPage("../extensions/test_reporting.php<?php print $query; ?>");
   v2Suite.addTestPage("../extensions/test_html.php<?php print $query; ?>");
-//  v2Suite.addTestPage("../extensions/test_dsl.php<?php print $query; ?>");
+  v2Suite.addTestPage("../extensions/test_dsl.php<?php print $query; ?>");
 
   return v2Suite;
 }

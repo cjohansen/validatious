@@ -26,6 +26,17 @@ v2.empty = function empty(obj) {
  * @return {Array} data if it is an array or an array with data as only element
  */
 v2.array = function array(data) {
+  var arr = [];
+
+  // NodeLists
+  if (data && typeof data.item === 'function') {
+    for (var i = 0; i < data.length; i++) {
+      arr[i] = data[i];
+    }
+
+    data = arr;
+  }
+
   return v2.empty(data) ? [] :
     (typeof data.shift == 'undefined' ? [data] : data);
 };
@@ -198,7 +209,7 @@ v2.$$ = function $$(query, parent) {
 
   // Use native implementation if available
   if (document.querySelectorAll) {
-    return document.querySelectorAll(query, parent);
+    return parent.querySelectorAll(query);
   }
 
   // label[for=XXX] queries

@@ -143,7 +143,7 @@ v2.InputElement = Base.extend(/** @scope v2.InputElement.prototype */{
     // Argument was name string
     if (!element) {
       selector = 'input$, select$, textarea$';
-      elements = v2.$$(selector.replace('$', '[name=' + idNameEl + ']'));
+      elements = v2.$$(selector.replace(/\$/g, '[name=' + idNameEl + ']'));
       element = elements[0];
     }
 

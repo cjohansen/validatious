@@ -113,33 +113,6 @@ function testArrayIndexOf() {
     assertEquals(5, arr.indexOf(obj));
 }
 
-function testArrayForEach() {
-    var obj = { testProp: 'unit' };
-    var arr = [1, 2, 3, 'a'];
-    var str = '';
-    var str2 = '';
-
-    arr.forEach(function(el) { str += el; });
-    arr.forEach(function(el) { str2 += el + this.testProp; }, obj);
-
-    assertEquals('123a', str);
-    assertEquals('1unit2unit3unitaunit', str2);
-}
-
-function testArrayFilter() {
-    var arr = [1, 2, 3, 4, 5, 6, 7, 8, 9];
-    assertNotNull(arr.filter);
-    assertEquals('function', typeof arr.filter);
-
-    var small = arr.filter(function(el) { return el < 6; });
-    assertEquals(5, small.length);
-    assertEquals(1, small[0]);
-    assertEquals(2, small[1]);
-    assertEquals(3, small[2]);
-    assertEquals(4, small[3]);
-    assertEquals(5, small[4]);
-}
-
 function testGetWith$() {
     var div = v2.$('testDiv');
     assertNotUndefined(div.observe);
@@ -152,15 +125,36 @@ function testGetWith$$() {
     var label = v2.$$('label[for=testEl]');
     assertNotNull(label[0]);
     assertEquals(document.getElementById('testElLabel'), label[0]);
-    assertNull(v2.$$('label[for=someStuff]'));
+    var nonExistent = v2.$$('label[for=someStuff]');
+    assert('Non-existent label for some stuff exists', nonExistent === null || nonExistent.length === 0);
 
     var radios = v2.$$('input[type=radio][name=fruit]');
     assertEquals(3, radios.length);
-    assertTrue(radios.indexOf(document.getElementById('carrot')) < 0);
+    var el = document.getElementById('carrot');
+    var flag = false;
+
+    for (var i = 0; i < radios.length; i++) {
+        if (radios[i] === el) {
+            flag = true;
+            break;
+        }
+    }
+
+    assertFalse(flag);
 
     var checkboxes = v2.$$('input[type=checkbox].g_test');
     assertEquals(2, checkboxes.length);
-    assertTrue(checkboxes.indexOf(document.getElementById('pref3')) < 0);
+
+    el = document.getElementById('pref3');
+
+    for (var i = 0; i < checkboxes.length; i++) {
+        if (checkboxes[i] === el) {
+            flag = true;
+            break;
+        }
+    }
+
+    assertFalse(flag);
 
     var elements = v2.$$('input[name=testEl], select[name=single]');
     assertEquals(2, elements.length);

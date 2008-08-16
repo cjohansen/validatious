@@ -11,7 +11,7 @@ v2.SelectElement = v2.InputElement.extend(/** @scope v2.SelectElement.prototype 
    */
   constructor: function(select) {
     // Regular initialization, add select specific event
-    this.base(select, 'change');
+    this.base([select], 'change');
   },
 
   /**
