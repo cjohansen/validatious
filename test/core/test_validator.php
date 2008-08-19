@@ -19,11 +19,11 @@ function tearDown() {
 function testConstructorNoAlias() {
     var validator = new v2.Validator('truth', function(value, params) {
         return true;
-    }, new v2.Message("It's the truth!"));
+    }, "It's the truth!");
 
     assertEquals('truth', validator.__name);
     assertNotNull(validator.__test);
-    assertNotNull(validator.__message);
+    assertEquals("It's the truth!", validator.__message.toString());
     assertEquals(Array, validator.__aliases.constructor);
     assertEquals(0, validator.__aliases.length);
 }
@@ -31,7 +31,7 @@ function testConstructorNoAlias() {
 function testConstructorStringAlias() {
     var validator = new v2.Validator('truth', function(value, params) {
         return true;
-    }, new v2.Message("It's the truth!"), 'THE truth');
+    }, "It's the truth!", null, 'THE truth');
 
     assertEquals(Array, validator.__aliases.constructor);
     assertEquals(1, validator.__aliases.length);
@@ -40,7 +40,7 @@ function testConstructorStringAlias() {
 function testConstructorArrayAlias() {
     var validator = new v2.Validator('truth', function(value, params) {
         return true;
-    }, new v2.Message("It's the truth!"), ['THE truth', 'seriously']);
+    }, "It's the truth!", null, ['THE truth', 'seriously']);
 
     assertEquals(Array, validator.__aliases.constructor);
     assertEquals(2, validator.__aliases.length);

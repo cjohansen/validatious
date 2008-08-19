@@ -25,9 +25,9 @@ v2.CompositeFormItem = Base.extend(/** @scope v2.CompositeFormItem.prototype */{
     this.__passOnAny = false;
     this.__message = null;
 
-    // Exceptions
+    /* Exceptions
     this.__exceptions = [];
-    this.__exceptionFlags = [];
+    this.__exceptionFlags = [];*/
   },
 
   /**
@@ -90,9 +90,9 @@ v2.CompositeFormItem = Base.extend(/** @scope v2.CompositeFormItem.prototype */{
    * @see v2.FormItem.test
    */
   test: function(fn) {
-    if (this.__passExceptions()) {
+    /*if (this.__passExceptions()) {
       return true;
-    }
+    }*/
 
     var i, validator, valid = 0;
     fn = fn || 'test';
@@ -165,23 +165,23 @@ v2.CompositeFormItem = Base.extend(/** @scope v2.CompositeFormItem.prototype */{
    *
    * Does nothing
    */
-  onFailure: function() {},
+  onFailure: function() {}/*,
 
-  /**
+  /*
    * Add a component to depend on. When validating
    *
    * @param {v2.CompositeFormItem} cfi The component to depend on
    * @param {boolean} flag If true the component must pass, otherwise it must
    *                       fail. Default value is true
-   */
+   *
   addException: function(cfi, flag) {
     this.__exceptions.push(cfi);
     this.__exceptionFlags.push(typeof flag === 'undefined' ? true : flag);
   },
 
-  /**
+  /*
    * Checks that all dependencies pass (or fails, depending on the flag value)
-   */
+   *
   __passExceptions: function() {
     if (this.__exceptions.length === 0) {
       return false;
@@ -194,5 +194,5 @@ v2.CompositeFormItem = Base.extend(/** @scope v2.CompositeFormItem.prototype */{
     }
 
     return true;
-  }
+  }*/
 });

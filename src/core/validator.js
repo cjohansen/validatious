@@ -3,10 +3,10 @@
  * some parameters.
  */
 v2.Validator = Base.extend(/** @scope v2.Validator.prototype */{
-  constructor: function(name, fn, message, aliases) {
+  constructor: function(name, fn, message, params, aliases) {
     this.__name = name;
     this.__test = fn;
-    this.__message = message || new v2.Message('${field} does not pass ' + name + ' validator');
+    this.__message = new v2.Message(message || '${field} does not pass ' + name + ' validator', params);
     this.__aliases = v2.array(aliases);
     this.acceptEmpty = true;
   },
@@ -63,16 +63,15 @@ v2.Validator = Base.extend(/** @scope v2.Validator.prototype */{
    *                               values. Default is true.
    */
   add: function(options) {
-    if (!options.name || !options.fn || !options.message) {
-      throw new TypeError('Options object should contain name, fn and message');
+    if (!options.name || !options.fn) {
+      throw new TypeError('Options object should contain name and fn');
     }
 
     // Merge options with default options
     options = v2.Object.extend({ params: [], aliases: [], acceptEmpty: true }, options, false);
 
     var params = v2.array(options.params);
-    var message = new v2.Message(options.message, params);
-    var validator = new v2.Validator(options.name, options.fn, message, options.aliases);
+    var validator = new v2.Validator(options.name, options.fn, options.message, params, options.aliases);
     validator.acceptEmpty = options.acceptEmpty;
 
     var names = v2.array(options.aliases).concat([options.name]);

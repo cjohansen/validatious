@@ -286,6 +286,42 @@ function testDslOr() {
     f1.value = val1;
     f2.value = val2;
 }
+
+// This functionality is not added in yet
+function __testFieldWhenValid() {
+    var field1 = "field1".has("min-length", 5);
+    assertFalse('field1 is valid with min-length 5', field1.item.test());
+
+    var field2 = "field2".has("min-length", 6);
+    assertFalse('field2 is valid with min-length 6', field2.item.test());
+
+    // Now field1 should only checks its validators when field2 is valid
+    field1.whenValid(field2);
+    assertTrue('field2 is invalid, and so field1 should pass', field1.item.test());
+
+    v2.$("field2").value = 'Text Text';
+    assertFalse('field2 is valid, so field1 should run test and fail', field1.item.test());
+
+    v2.$("field2").value = 'Text';
+}
+
+// This functionality is not added in yet
+function __testFieldWhenInvalid() {
+    var field1 = "field1".has("min-length", 5);
+    assertFalse(field1.item.test());
+
+    var field2 = "field2".is("required");
+    assertTrue(field2.item.test());
+
+    // Now field1 should only checks its validators when field2 is invalid
+    field1.whenInvalid(field2);
+    assertTrue(field1.item.test());
+
+    v2.$("field2").value = '';
+    assertFalse(field1.item.test());
+
+    v2.$("field2").value = 'Text';
+}
     </script>
     <style>
       .field {
@@ -310,8 +346,7 @@ function testDslOr() {
         </div>
         <div class="field">
           <label for="field2">Field 2</label>
-          <input type="text" name="field2" id="field2" value="Text" title="This field should be atleast 12 characters!" class
-="min-length_12" />
+          <input type="text" name="field2" id="field2" value="Text" title="This field should be atleast 12 characters!" class="min-length_12" />
         </div>
       </fieldset>
       <fieldset>

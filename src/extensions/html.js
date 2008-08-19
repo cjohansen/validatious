@@ -82,10 +82,39 @@ v2.Object.extend(v2.Form, {
   actionButtonClass: 'action'
 });
 
+v2.html = {
+  collectionAnyClass: 'validate_any',
+  collectionAllClass: 'validate_all',
+
+  processContainer: function(element, callback) {
+    var collection = new v2.CompositeFormItem();
+
+    // Augment element
+    v2.$(element);
+
+    if (element.hasClassName(v2.html.validateAnyClass)) {
+      collection.passOnAny(true);
+    }
+
+    var validators = [];
+    var names = element.className.split(' ');
+
+    for (var i = 0, validator; (validator = names[i]); i++) {
+      if ((validator = v2.$v(validator))) {
+        validators.push(validator);
+      }
+    }
+
+    // Do more clever stuff
+
+    return collection;
+  }
+};
+
 /**
  * Facade for adding validation through semantic markup
  */
-v2.FormFacade = /** @scope v2.FormFacade */{
+v2.html.Form = /** @scope v2.html.Form */{
   /**
    * Searches through all elements inside the form and adds validators found
    * through class names.
@@ -93,31 +122,46 @@ v2.FormFacade = /** @scope v2.FormFacade */{
    * @param {Element} form The form element to add validation for
    */
   addValidationFromHTML: function(form) {
-    var elements = v2.$$('input, select, textarea', form);
+    var elements = v2.$$('input, select, textarea, div, fieldset', form);
     form = v2.Form.get(form);
-    var classes, i, j, element;
+    var classes, i, j, element, marked = {}, tagName, collection;
 
-    // Loop through all input elements
+    // Loop through all elements
     for (i = 0; (element = elements[i]); i++) {
       // Need classes to find validators, skip elements with no classes
-      if (/^\s*$/.test(element.className)) {
+      // Input elements may have been bound to a container collection, skip these too
+      if (/^\s*$/.test(element.className) || used[element.id || element.name]) {
         continue;
       }
 
+      tagName = element.tagName.toLowerCase();
+
       // Look for button
-      if (v2.Element.hasClassName(element, v2.Form.actionButtonClass)) {
+      if (tagName === 'input' &&
+          v2.Element.hasClassName(element, v2.Form.actionButtonClass)) {
         form.addButton(element);
         continue;
       }
 
-      // Several validators may exist in the class name, separated by spaces
-      classes = element.className;
+      // Process block elements/containers
+      if (['div', 'fieldset'].indexOf(tagName) >= 0) {
+        collection = v2.html.processContainer(element, function(input) {
+          used[input.id || input.name] = true;
+        });
+
+        // If a collection was created, add it and start loop over
+        if (collection) {
+          form.add(collection);
+        }
+
+        continue;
+      }
 
       // Create field object
       field = new v2.Field(v2.$f(element));
 
       // "Discover" validators
-      v2.FieldFacade.add(field, classes);
+      v2.html.Field.add(field, element.className);
 
       // Add to form
       if (field.__validators.length > 0) {
@@ -130,7 +174,7 @@ v2.FormFacade = /** @scope v2.FormFacade */{
 /**
  * Facade for facilitating adding validators from a space separated string
  */
-v2.FieldFacade = /** @scope v2.FieldFacade */{
+v2.html.Field = /** @scope v2.html.Field */{
   /**
    * Adds validation discovery from strings. The method resolves validator names
    * by splitting them on underscores. A string may specify a validator in the
@@ -209,7 +253,7 @@ v2.addDOMLoadEvent(function() {
 
   for (var i = 0, form; (form = forms[i]); i++) {
     if (v2.Element.hasClassName(form, v2.Form.autoValidateClass)) {
-      v2.FormFacade.addValidationFromHTML(form);
+      v2.html.Form.addValidationFromHTML(form);
     }
   }
 });
