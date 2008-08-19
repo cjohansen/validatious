@@ -46,6 +46,14 @@ function testConstructorArrayAlias() {
     assertEquals(2, validator.__aliases.length);
 }
 
+function testConstructorNoMessage() {
+    var validator = new v2.Validator('truth', function(value, params) {
+        return true;
+    });
+
+    assertEquals('${field} does not pass truth validator', validator.getMessage().toString());
+}
+
 function testAdd() {
     var validator = v2.Validator.add({ name: 'truth',
                                        fn: function(v, p) { return true; },

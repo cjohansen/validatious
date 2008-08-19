@@ -24,7 +24,7 @@ v2.FieldValidator = Base.extend(/** @scope v2.FieldValidator.prototype */{
     var errorSwitches = this.__message.params;
 
     if (errorSwitches.length < 1 || errorSwitches[0] !== 'field') {
-      this.__message.params = ['field'].concat(this.__message.params);
+      this.__message.params = ['field'].concat(errorSwitches);
     }
 
     this.__message.values = [this.__field.getName()].concat(this.__params);

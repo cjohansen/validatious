@@ -6,7 +6,7 @@ v2.Validator = Base.extend(/** @scope v2.Validator.prototype */{
   constructor: function(name, fn, message, aliases) {
     this.__name = name;
     this.__test = fn;
-    this.__message = message;
+    this.__message = message || new v2.Message('${field} does not pass ' + name + ' validator');
     this.__aliases = v2.array(aliases);
     this.acceptEmpty = true;
   },
@@ -36,6 +36,13 @@ v2.Validator = Base.extend(/** @scope v2.Validator.prototype */{
    */
   getMessage: function() {
     return this.__message;
+  },
+
+  /**
+   * @param {String} message New error message
+   */
+  setMessage: function(message) {
+    this.__message.message = message;
   }
 }, /** @scope v2.Validator */{
   validators: {},
@@ -84,14 +91,14 @@ v2.Validator = Base.extend(/** @scope v2.Validator.prototype */{
    * @param {String}   name        Validators name
    * @param {Function} fn          The test function, should accept two
    *                               parameters: value and parameters (array)
-   * @param {String}   message     Default error message
    * @param {Array}    params      Option strings to replace in the message string
+   * @param {String}   message     Default error message
    * @param {Array}    aliases     Additional aliases for the validator, may be
    *                               a string, an array or nothing
    * @param {boolean}  acceptEmpty If false, the validator will fail empty
    *                               values. Default is true.
    */
-  reg: function(name, fn, message, params, aliases, acceptEmpty) {
+  reg: function(name, fn, params, message, aliases, acceptEmpty) {
     return v2.Validator.add({ name: name,
                               fn: fn,
                               message: message,
@@ -122,4 +129,29 @@ v2.Validator = Base.extend(/** @scope v2.Validator.prototype */{
  */
 v2.$v = function(name) {
   return v2.Validator.get(name);
+};
+
+/**
+ * Set new message for validator. If the validator does not exist, an exception
+ * is thrown. This method will accept either two strings - a validator name and
+ * message, OR an object where the property names will be interpreted as
+ * validator names, and property values as messages. When the single parameter
+ * is an object, non-existent validators are silently bypassed, whereas for two
+ * strings, an exception is thrown for non-existent validators.
+ *
+ * @param {String} name    The validator to update message for, or an object
+ * @param {String} message The new error message
+ */
+v2.$msg = function(/*name, message*/) {
+  if (arguments.length === 2) {
+    return v2.Validator.get(arguments[0]).setMessage(arguments[1]);
+  }
+
+  for (var validator in arguments[0]) {
+    try {
+      v2.Validator.get(validator).setMessage(arguments[0][validator]);
+    } catch(e) {
+      // Fail silently
+    }
+  }
 };

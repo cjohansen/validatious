@@ -19,6 +19,16 @@ namespace :build do
     File.merge($standalone + $core_full, 'standalone', minify?)
   end
 
+  desc 'Joins the validators into a single file'
+  task :validators do
+    validators = Dir.new('src/validators').entries.find_all do |f|
+      f =~ /\.js$/ && f != 'standard.js' && f !~ /(_|\.)nor(_|\.)/
+    end
+
+    puts validators
+    Validator.join validators
+  end
+
   namespace :standalone do
     desc 'Builds the minified standalone core with the HTML extension'
     task :html do
@@ -90,4 +100,27 @@ def File.merge(files, name, minify = true)
   # Print confirmation
   size = File::Stat.new(target).size / 1024.0
   puts "Produced #{target}, #{sprintf '%.2f' % size} kB"
+end
+
+class Validator
+  def self.join(names = nil, output = 'standard.js')
+    dirname = 'src/validators'
+    names ||= Dir.new(dirname).entries.reject { |f| f =~ /^\./ || f == output }
+
+    File.open "#{File.join(dirname, output)}", 'w+' do |f|
+      f.puts <<-EOF
+(function() {
+  var v = v2.Validator;
+      EOF
+
+      contents = File.cat(names.collect { |file| File.join(dirname, file) })
+      f.puts(contents.gsub('v2.Validator', 'v'))
+
+      f.puts <<-EOF
+})();
+      EOF
+    end
+
+    puts "Wrote #{File.join(dirname, output)}"
+  end
 end

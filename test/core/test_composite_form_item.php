@@ -69,6 +69,18 @@ function testTestWithAny() {
     assertTrue(cfi.test());
 }
 
+function testTestWithExceptions() {
+    var cfi = new v2.CompositeFormItem();
+    var cfi2 = new v2.CompositeFormItem();
+    cfi.add(cfi2);
+    cfi2.test = function() { return false; };
+    assertFalse(cfi.test());
+
+    cfi.addException(new v2.CompositeFormItem());
+    assertTrue(cfi.__passExceptions());
+    assertTrue(cfi.test());
+}
+
 function testValidate() {
     var cfi = new v2.CompositeFormItem();
     var cfi2 = new v2.CompositeFormItem();
@@ -121,6 +133,39 @@ function testMessages() {
     cfi.setMessage('A single message');
     assertEquals('Message count expected to be 1 with single message, was ' +
                  cfi.getMessages().length, 1, cfi.getMessages().length);
+}
+
+function testAddException() {
+    var field = new v2.CompositeFormItem();
+    assertEquals(0, field.__exceptions.length);
+    assertEquals(0, field.__exceptionFlags.length);
+
+    field.addException(new v2.CompositeFormItem());
+    assertEquals(1, field.__exceptions.length);
+    assertEquals(1, field.__exceptionFlags.length);
+    assertTrue(field.__exceptionFlags[0]);
+
+    field.addException(new v2.CompositeFormItem(), true);
+    assertEquals(2, field.__exceptions.length);
+    assertEquals(2, field.__exceptionFlags.length);
+    assertTrue(field.__exceptionFlags[1]);
+
+    field.addException(new v2.CompositeFormItem(), false);
+    assertEquals(3, field.__exceptions.length);
+    assertEquals(3, field.__exceptionFlags.length);
+    assertFalse(field.__exceptionFlags[2]);
+}
+
+function testPassExceptions() {
+    var field = new v2.CompositeFormItem();
+    assertFalse('passExceptions does not return false with no exceptions', field.__passExceptions());
+
+    field.addException(new v2.CompositeFormItem());
+    field.addException(new v2.CompositeFormItem(), true);
+    assertTrue(field.__passExceptions());
+
+    field.addException(new v2.CompositeFormItem(), false);
+    assertFalse('passExceptions returns true when an exception fails', field.__passExceptions());
 }
     </script>
   </head>

@@ -17,6 +17,9 @@ v2.FormItem = new v2.Interface('v2.FormItem', [
    * Checks if the component is valid. Populates the error list returned by
    * getInvalid when component is inalid.
    *
+   * If exceptions are added through the addException method then the test will
+   * not be run if all exceptions pass or fails as expected.
+   *
    * @param {String} methodName The method to invoke on children elements. This
    *                            defaults to test, but may also be validate
    */
@@ -67,5 +70,15 @@ v2.FormItem = new v2.Interface('v2.FormItem', [
    * will return an array of messages from failing child objects. Call
    * getInvalid to get a hold of the actual objects that failed.
    */
-  'getMessages']
+   'getMessages',
+
+  /**
+   * Adds an exception. The flag decides if the exception is expected to be
+   * valid or invalid. The exception is tested when the component is validated
+   * (or tested), and the test will not be run if all exceptions pass.
+   *
+   * @param {v2.FormItem + v2.Composite} item
+   * @param {boolean} flag If true, item should pass, if false it should fail
+   */
+  'addException']
 );

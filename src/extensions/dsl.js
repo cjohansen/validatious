@@ -293,3 +293,31 @@ v2.dsl.Collection = Base.extend(/** @scope v2.dsl.Collection.prototype */{
     this.item.setMessage(message);
   }
 });
+
+/**
+ * This anonymous function compresses slightly better than writing the whole
+ * thing out.
+ */
+(function() {
+  var v2dsl = v2.dsl;
+  var field = v2dsl.Field.prototype;
+  var collection = v2dsl.Collection.prototype;
+
+  /**
+   * Makes the validator depend on another validator. If the other validator
+   * passes validation, then this validator is tested.
+   */
+  field.whenValid = collection.whenValid = function(item) {
+    this.item.addException(item.item || item, false);
+    return this;
+  };
+
+  /**
+   * Makes the validator depend on another validator. If the other validator
+   * fails validation, then this validator is tested.
+   */
+  field.whenInvalid = collection.whenInvalid = function(item) {
+    this.item.addException(item.item || item, true);
+    return this;
+  };
+ })();
