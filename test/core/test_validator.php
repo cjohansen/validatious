@@ -72,6 +72,7 @@ function testGet() {
     assertEquals('Get truth failed', validator, v2.Validator.get('truth'));
     assertEquals('Get aliases failed', validator, v2.Validator.get('aliases'));
     assertEquals('Get some failed', validator, v2.Validator.get('some'));
+    assertEquals(validator, v2.Validator.get(validator));
 }
 
 function testExecuteValidator() {

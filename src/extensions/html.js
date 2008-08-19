@@ -86,7 +86,158 @@ v2.html = {
   collectionAnyClass: 'validate_any',
   collectionAllClass: 'validate_all',
 
-  processContainer: function(element, callback) {
+  /**
+   * Resolves validators by splitting a string on underscores. A string may
+   * specify a validator in the following way:
+   *
+   * (prefix)?(not_)?name(_param)*
+   *
+   * That is:
+   *   - Start string with optional prefix. This prefix is configured through
+   *     v2.Validator.prefix
+   *   - Optional not_ prefix. This will cause the validator to be inverted.
+   *   - Validator name can be any existing validator (including aliases).
+   *   - An optional list of parameters, for instance: min-length_3
+   *
+   * @param {String} names Potential validator names. Validators that aren't
+   *                       found are silently ignored
+   * @return an array of objects containing properties validator and params
+   */
+  validatorsFromString: function(field, names) {
+    var prefixStr = v2.Validator.prefix;
+    var prefix = new RegExp("^" + prefixStr, '');
+    var j, className, invert, params, validator, validators = [];
+    names = names.split(' ');
+
+    // Loop classes
+    for (j = 0; (className = names[j]); j++) {
+      invert = false;
+
+      // Don't continue without prefix if a prefix is configured
+      if (!v2.empty(prefixStr) && !prefix.test(className)) {
+        continue;
+      }
+
+      // Strip out prefix
+      className = className.replace(prefix, '');
+
+      // Check if validator should be inverted
+      if (/^not_/.test(className)) {
+        className = className.replace(/^not_/, '');
+        invert = true;
+      }
+
+      // Get parameters
+      params = className.split('_');
+      validator = params.shift();
+
+      if (validator && (validator = v2.$v(validator))) {
+        validators.push({ validator: validator,
+                          params: params,
+                          invert: invert });
+      }
+    }
+
+    return this;
+  }
+};
+
+/**
+ * Resolves validation markup from a form
+ */
+v2.html.Form = Base.extend(/** @scope v2.html.prototype */{
+
+  /**
+   * Constructs a new validation form
+   *
+   * @param {FormElement} form
+   */
+  constructor: function(form) {
+    this.form = v2.Form.get(form);
+    this.__parsed = {};
+
+    this.parseContainer(form, this.form);
+
+    if (v2.Element.hasClassName(form, v2.html.validateAnyClass)) {
+      this.form.passOnAny(true);
+    }
+  },
+
+  parseContainer: function(container, collection, validators) {
+    var elements = v2.$$('input, select, textarea, div, fieldset', collection);
+    var i, j, validator, fieldValidator, element, tagName, subCollection;//, j, element, marked = {}, tagName;
+    this.__parsed[container.id || container.name] = true;
+    validators = validators || [];
+
+    // Loop through all elements
+    for (i = 0; (element = elements[i]); i++) {
+      // Need classes to find validators, skip elements with no classes
+      // Input elements may have been bound to a container collection, skip these too
+      if (/^\s*$/.test(element.className) || this.__parsed[element.id || element.name]) {
+        continue;
+      }
+
+      tagName = element.tagName.toLowerCase();
+
+      // Look for button
+      if (tagName === 'input' &&
+          v2.Element.hasClassName(element, v2.Form.actionButtonClass)) {
+        this.form.addButton(element);
+        continue;
+      }
+
+      // Process block elements/containers
+      if (['div', 'fieldset'].indexOf(tagName) >= 0) {
+        // If a collection was created, add it and start loop over
+        if ((subCollection = this.parseSubContainer(element))) {
+          collection.add(subCollection);
+        }
+
+        continue;
+      }
+
+      // Create field object
+      field = new v2.html.Field(v2.$f(element));
+
+      // "Discover" validators
+      field.discover(element);
+      this.__parsed[element.id || element.name] = true;
+
+      for (j = 0; (validator = validators[j]); j++) {
+        fieldValidator = field.addValidator(validator.validator, validator.params);
+        fieldValidator.invert = validator.invert;
+      }
+
+      // Add to collection
+      if (field.get().length > 0) {
+        collection.add(field);
+      }
+    }
+  },
+
+  /**
+   * Processes a container element and creates a validator collection.
+   *
+   * The container element can have a class name v2.html.collectionAnyClass, or
+   * v2.html.collectionAllClass, which denotes that only one of the elements in
+   * the collection needs to be valid, or that all should be valid.
+   *
+   * These classes control the behaviour of the collection, and validation may
+   * be added to the collection members (input elements or collections in the
+   * subtree of the element) in two ways:
+   *
+   * 1) Normal validation: validators are set up for each input/select/textarea
+   *    in the subtree
+   * 2) Group validation: validators are set through the class name of the
+   *    container. All sub elements will get the same validators (in addition
+   *    to any field specific validators)
+   *
+   * The two ways can be combined.
+   *
+   * If the container element does not have either of the two aforementioned
+   * class names, it is skipped.
+   */
+  processSubContainer: function(element) {
     var collection = new v2.CompositeFormItem();
 
     // Augment element
@@ -94,33 +245,29 @@ v2.html = {
 
     if (element.hasClassName(v2.html.validateAnyClass)) {
       collection.passOnAny(true);
+    } else if (element.hasClassName(v2.html.validateAllClass)) {
+      collection.passOnAny(false);
+    } else {
+      return null;
     }
 
-    var validators = [];
-    var names = element.className.split(' ');
-
-    for (var i = 0, validator; (validator = names[i]); i++) {
-      if ((validator = v2.$v(validator))) {
-        validators.push(validator);
-      }
-    }
-
-    // Do more clever stuff
+    var validators = v2.html.validatorsFromString(element.className);
+    this.processContainer(element, collection, validators);
 
     return collection;
   }
-};
+});
 
 /**
  * Facade for adding validation through semantic markup
- */
-v2.html.Form = /** @scope v2.html.Form */{
-  /**
+ *
+v2.html.Form = /** @scope v2.html.Form *{
+  /*
    * Searches through all elements inside the form and adds validators found
    * through class names.
    *
    * @param {Element} form The form element to add validation for
-   */
+   *
   addValidationFromHTML: function(form) {
     var elements = v2.$$('input, select, textarea, div, fieldset', form);
     form = v2.Form.get(form);
@@ -174,33 +321,20 @@ v2.html.Form = /** @scope v2.html.Form */{
 /**
  * Facade for facilitating adding validators from a space separated string
  */
-v2.html.Field = /** @scope v2.html.Field */{
+v2.html.Field = Base.extend(/** @scope v2.html.Field.prototype */{
+  constructor: function(field) {
+
+  },
+
   /**
-   * Adds validation discovery from strings. The method resolves validator names
-   * by splitting them on underscores. A string may specify a validator in the
-   * following way:
-   *
-   * (not_)?name(_param)*
-   *
-   * That is:
-   *   - Start string with optional not_ prefix. This will cause the validator
-   *     to be inverted.
-   *   - Validator name can be any existing validators. By default aliases
-   *     aren't searched. This behaviour can be configured through
-   *     v2.Validator.searchAliases
-   *   - An optional list of parameters, for instance: min-length_3
-   *
-   * @param {v2.Field} field The field to add validators to
-   * @param {Array}    names Potential validator names. Validators that aren't
-   *                         found are silently ignored
    * @return this field, enables chaining
    */
-  add: function(field, names) {
+  add: function() {
     var prefixStr = v2.Validator.prefix;
     var prefix = new RegExp("^" + prefixStr, '');
-    var className, params, invert, validator, title;
-    names = typeof names === 'string' ? names.split(' ') : names;
-
+    var j, className, invert, params, validator, validators = [];
+    names = names.split(' ');
+/*
     // Loop classes
     for (j = 0; (className = names[j]); j++) {
       invert = false;
@@ -237,13 +371,14 @@ v2.html.Field = /** @scope v2.html.Field */{
           }
 
           validator.invert = invert;
-        } catch (e) { /* Fail silently - just a "normal" class name */ }
-      }
-    }
+        } catch (e) { // Fail silently - just a "normal" class name
+}
+                            }
+      }*/
 
     return this;
   }
-};
+});
 
 /**
  * Finds forms to validate and runs them through v2.Form.addValidationFromHTML
@@ -253,7 +388,7 @@ v2.addDOMLoadEvent(function() {
 
   for (var i = 0, form; (form = forms[i]); i++) {
     if (v2.Element.hasClassName(form, v2.Form.autoValidateClass)) {
-      v2.html.Form.addValidationFromHTML(form);
+      new v2.html.Form(form);
     }
   }
 });

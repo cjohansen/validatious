@@ -37,6 +37,8 @@ function testGet() {
 
     assertEquals(cfi, cfi.get(0));
     assertEquals(cfi2, cfi.get(1));
+
+    assertEquals(2, cfi.get().length);
 }
 
 function testTest() {

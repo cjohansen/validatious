@@ -115,6 +115,10 @@ v2.Validator = Base.extend(/** @scope v2.Validator.prototype */{
   get: function(name) {
     var validator;
 
+    if (name.constructor === v2.Validator) {
+      return name;
+    }
+
     if ((validator = v2.Validator.validators[name])) {
       return validator;
     }
