@@ -66,7 +66,7 @@ v2.Field = v2.CompositeFormItem.extend(/** @scope v2.Field.prototype */{
       throw new Error(name + ' is not a valid validator');
     }
 
-    if (typeof message !== 'undefined') {
+    if (typeof message !== 'undefined' && message !== null) {
       message = new v2.Message(message, validator.getMessage().params);
     }
 

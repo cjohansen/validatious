@@ -83,8 +83,8 @@ v2.Object.extend(v2.Form, {
 });
 
 v2.html = {
-  collectionAnyClass: 'validate_any',
-  collectionAllClass: 'validate_all',
+  validateAnyClass: 'validate_any',
+  validateAllClass: 'validate_all',
 
   /**
    * Resolves validators by splitting a string on underscores. A string may
@@ -103,7 +103,7 @@ v2.html = {
    *                       found are silently ignored
    * @return an array of objects containing properties validator and params
    */
-  validatorsFromString: function(field, names) {
+  validatorsFromString: function(names) {
     var prefixStr = v2.Validator.prefix;
     var prefix = new RegExp("^" + prefixStr, '');
     var j, className, invert, params, validator, validators = [];
@@ -138,7 +138,28 @@ v2.html = {
       }
     }
 
-    return this;
+    return validators;
+  },
+
+  /**
+   * Applies an array of validator objects like those created by
+   * validatorsFromString to a field
+   *
+   * @param {Array} validators The validators to apply
+   * @param {v2.Field} field   The field to apply validators to
+   * @param {String} message   Custom error message for field
+   */
+  applyValidators: function(validators, field, message) {
+    if (!v2.empty(message)) {
+      field.setMessage(message);
+    }
+
+    for (var i = 0, validator, fv; (validator = validators[i]); i++) {
+      fv = field.addValidator(validator.validator, validator.params);
+      fv.invert = validator.invert;
+    }
+
+    return field;
   }
 };
 
@@ -148,24 +169,28 @@ v2.html = {
 v2.html.Form = Base.extend(/** @scope v2.html.prototype */{
 
   /**
-   * Constructs a new validation form
+   * Constructs a new validation form, and parses it for validation hooks
    *
    * @param {FormElement} form
    */
   constructor: function(form) {
     this.form = v2.Form.get(form);
     this.__parsed = {};
-
-    this.parseContainer(form, this.form);
-
-    if (v2.Element.hasClassName(form, v2.html.validateAnyClass)) {
-      this.form.passOnAny(true);
-    }
+    this.parseElement(form, this.form);
+    this.form.passOnAny(v2.$(form).hasClassName(v2.html.validateAnyClass));
   },
 
-  parseContainer: function(container, collection, validators) {
-    var elements = v2.$$('input, select, textarea, div, fieldset', collection);
-    var i, j, validator, fieldValidator, element, tagName, subCollection;//, j, element, marked = {}, tagName;
+  /**
+   * Parses an element and adds validation components to the passed in component
+   *
+   * @param {Element} container The element to handle
+   * @param {Array} collection  The collection to add validators to
+   * @param {Array} validators  Option set of validators to add to every field
+   *                            found (not added to recursive block elements)
+   */
+  parseElement: function(container, collection, validators) {
+    var elements = v2.$$('input, select, textarea, div, fieldset', container);
+    var i, j, validator, fieldValidator, element, tagName, field, fieldValidators;
     this.__parsed[container.id || container.name] = true;
     validators = validators || [];
 
@@ -187,29 +212,21 @@ v2.html.Form = Base.extend(/** @scope v2.html.prototype */{
       }
 
       // Process block elements/containers
-      if (['div', 'fieldset'].indexOf(tagName) >= 0) {
-        // If a collection was created, add it and start loop over
-        if ((subCollection = this.parseSubContainer(element))) {
-          collection.add(subCollection);
-        }
-
+      if(tagName === 'div' || tagName === 'fieldset') {
+        this.parseBlock(element, collection);
         continue;
       }
 
-      // Create field object
-      field = new v2.html.Field(v2.$f(element));
+      field = new v2.Field(element);
 
-      // "Discover" validators
-      field.discover(element);
+      // Custom error messages may be specified through the title attribute
+      // for input/select/textarea elements
+      v2.html.applyValidators(validators.concat(v2.html.validatorsFromString(element.className)), field, element.title);
+
       this.__parsed[element.id || element.name] = true;
 
-      for (j = 0; (validator = validators[j]); j++) {
-        fieldValidator = field.addValidator(validator.validator, validator.params);
-        fieldValidator.invert = validator.invert;
-      }
-
       // Add to collection
-      if (field.get().length > 0) {
+      if (field.get(0)) {
         collection.add(field);
       }
     }
@@ -218,8 +235,8 @@ v2.html.Form = Base.extend(/** @scope v2.html.prototype */{
   /**
    * Processes a container element and creates a validator collection.
    *
-   * The container element can have a class name v2.html.collectionAnyClass, or
-   * v2.html.collectionAllClass, which denotes that only one of the elements in
+   * The container element can have a class name v2.html.validateAnyClass, or
+   * v2.html.validateAllClass, which denotes that only one of the elements in
    * the collection needs to be valid, or that all should be valid.
    *
    * These classes control the behaviour of the collection, and validation may
@@ -237,146 +254,30 @@ v2.html.Form = Base.extend(/** @scope v2.html.prototype */{
    * If the container element does not have either of the two aforementioned
    * class names, it is skipped.
    */
-  processSubContainer: function(element) {
+  parseBlock: function(element, parentCollection) {
     var collection = new v2.CompositeFormItem();
+    var passOnAny = true;
 
     // Augment element
     v2.$(element);
 
     if (element.hasClassName(v2.html.validateAnyClass)) {
-      collection.passOnAny(true);
+      // passOnAny is true by default
     } else if (element.hasClassName(v2.html.validateAllClass)) {
-      collection.passOnAny(false);
+      passOnAny = false;
     } else {
       return null;
     }
 
+    collection.passOnAny(passOnAny);
     var validators = v2.html.validatorsFromString(element.className);
-    this.processContainer(element, collection, validators);
+    this.parseElement(element, collection, validators);
+
+    if (collection.get(0)) {
+      parentCollection.add(collection);
+    }
 
     return collection;
-  }
-});
-
-/**
- * Facade for adding validation through semantic markup
- *
-v2.html.Form = /** @scope v2.html.Form *{
-  /*
-   * Searches through all elements inside the form and adds validators found
-   * through class names.
-   *
-   * @param {Element} form The form element to add validation for
-   *
-  addValidationFromHTML: function(form) {
-    var elements = v2.$$('input, select, textarea, div, fieldset', form);
-    form = v2.Form.get(form);
-    var classes, i, j, element, marked = {}, tagName, collection;
-
-    // Loop through all elements
-    for (i = 0; (element = elements[i]); i++) {
-      // Need classes to find validators, skip elements with no classes
-      // Input elements may have been bound to a container collection, skip these too
-      if (/^\s*$/.test(element.className) || used[element.id || element.name]) {
-        continue;
-      }
-
-      tagName = element.tagName.toLowerCase();
-
-      // Look for button
-      if (tagName === 'input' &&
-          v2.Element.hasClassName(element, v2.Form.actionButtonClass)) {
-        form.addButton(element);
-        continue;
-      }
-
-      // Process block elements/containers
-      if (['div', 'fieldset'].indexOf(tagName) >= 0) {
-        collection = v2.html.processContainer(element, function(input) {
-          used[input.id || input.name] = true;
-        });
-
-        // If a collection was created, add it and start loop over
-        if (collection) {
-          form.add(collection);
-        }
-
-        continue;
-      }
-
-      // Create field object
-      field = new v2.Field(v2.$f(element));
-
-      // "Discover" validators
-      v2.html.Field.add(field, element.className);
-
-      // Add to form
-      if (field.__validators.length > 0) {
-        form.add(field);
-      }
-    }
-  }
-};
-
-/**
- * Facade for facilitating adding validators from a space separated string
- */
-v2.html.Field = Base.extend(/** @scope v2.html.Field.prototype */{
-  constructor: function(field) {
-
-  },
-
-  /**
-   * @return this field, enables chaining
-   */
-  add: function() {
-    var prefixStr = v2.Validator.prefix;
-    var prefix = new RegExp("^" + prefixStr, '');
-    var j, className, invert, params, validator, validators = [];
-    names = names.split(' ');
-/*
-    // Loop classes
-    for (j = 0; (className = names[j]); j++) {
-      invert = false;
-
-      // Don't continue without prefix if a prefix is configured
-      if (!v2.empty(prefixStr) && !prefix.test(className)) {
-        continue;
-      }
-
-      // Strip out prefix
-      className = className.replace(prefix, '');
-
-      // Check if validator should be inverted
-      if (/^not_/.test(className)) {
-        className = className.replace(/^not_/, '');
-        invert = true;
-      }
-
-      // Get parameters
-      params = className.split('_');
-      validator = params.shift();
-
-      // Add validator if validator was found
-      if (validator !== null) {
-        // Custom error messages may be specified through the title attribute
-        // for input/select/textarea elements
-        title = field.element.getElements()[0].title;
-
-        try {
-          if (!v2.empty(title)) {
-            validator = field.addValidator(validator, params, title);
-          } else {
-            validator = field.addValidator(validator, params);
-          }
-
-          validator.invert = invert;
-        } catch (e) { // Fail silently - just a "normal" class name
-}
-                            }
-      }*/
-
-    return this;
   }
 });
 

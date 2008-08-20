@@ -64,7 +64,7 @@ v2.CompositeFormItem = Base.extend(/** @scope v2.CompositeFormItem.prototype */{
    * @param {int} i Index to fetch, if undefined the whole collection is returned
    */
   get: function(i) {
-    return !empty(i) ? this.__validators[i] : this.__validators;
+    return !v2.empty(i) ? this.__validators[i] : this.__validators;
   },
 
   /**

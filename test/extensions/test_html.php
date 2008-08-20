@@ -13,68 +13,183 @@ function test() {
     assert(true);
 }
 
-function testValidate() {
-    var parent = v2.$(v2.$('field2').parentNode);
+function testValidatorExtension() {
+    assertNotUndefined(v2.Validator.prefix);
+    assertEquals('', v2.Validator.prefix);
+}
 
-    assertFalse('field2 already has errors', parent.hasClassName('error'));
-    v2.$('next').click();
+function testFormExtension() {
+    assertEquals('validate', v2.Form.autoValidateClass);
+    assertEquals('action', v2.Form.actionButtonClass);
+}
+
+function testValidatorsFromStringNoPrefixSimpleValidator() {
+    var validator = v2.$v('required');
+    var result = v2.html.validatorsFromString('required');
+
+    assertEquals(1, result.length);
+    assertEquals(validator, result[0].validator);
+    assertEquals(0, result[0].params.length);
+    assertEquals(false, result[0].invert);
+}
+
+function testValidatorsFromStringNoPrefixValidatorWithParams() {
+    var validator = v2.$v('min-length');
+    var result = v2.html.validatorsFromString('min-length_4');
+
+    assertEquals(1, result.length);
+    assertEquals(validator, result[0].validator);
+    assertEquals(1, result[0].params.length);
+    assertEquals("4", result[0].params[0]);
+    assertEquals(false, result[0].invert);
+}
+
+function testValidatorsFromStringNoPrefixValidatorMistyped() {
+    var result = v2.html.validatorsFromString('min_length');
+
+    assertEquals(0, result.length);
+}
+
+function testValidatorsFromStringNoPrefixValidatorAlias() {
+    var validator = v2.$v('required');
+    var result = v2.html.validatorsFromString('not-empty');
+
+    assertEquals(1, result.length);
+    assertEquals(validator, result[0].validator);
+    assertEquals(0, result[0].params.length);
+    assertEquals(false, result[0].invert);
+}
+
+function testValidatorsFromStringNoPrefixValidatorInverted() {
+    var validator = v2.$v('email');
+    var result = v2.html.validatorsFromString('not_email');
+
+    assertEquals(1, result.length);
+    assertEquals(validator, result[0].validator);
+    assertEquals(0, result[0].params.length);
+    assertEquals(true, result[0].invert);
+}
+
+function testValidatorsFromStringNoPrefixSeveralValidators() {
+    var required = v2.$v('required');
+    var minLength = v2.$v('min-length');
+    var email = v2.$v('email');
+    var result = v2.html.validatorsFromString('required bogus min-length_4 not_email text');
+
+    assertEquals(3, result.length);
+    assertEquals(required, result[0].validator);
+    assertEquals(minLength, result[1].validator);
+    assertEquals(email, result[2].validator);
+    assertEquals(0, result[0].params.length);
+    assertEquals("4", result[1].params.join());
+    assertEquals(0, result[2].params.length);
+    assertEquals(false, result[0].invert);
+    assertEquals(false, result[1].invert);
+    assertEquals(true, result[2].invert);
+}
+
+function testValidatorsFromStringPrefix() {
+    var validator = v2.$v('required');
+    assertEquals(0, v2.html.validatorsFromString('v2_required').length);
+
+    v2.Validator.prefix = 'v2';
+    assertEquals(0, v2.html.validatorsFromString('v2_required').length);
+
+    v2.Validator.prefix = 'v2_';
+    assertEquals(validator, v2.html.validatorsFromString('v2_required')[0].validator);
+    assertEquals(validator, v2.html.validatorsFromString('v2_not_required')[0].validator);
+    assertEquals(0, v2.html.validatorsFromString('required').length);
+
+    v2.Validator.prefix = '';
+}
+
+function testApplyValidators() {
+    var validators = v2.html.validatorsFromString('required min-length_4');
+    var field = new v2.Field('field1');
+    assertUndefined(field.get(0));
+
+    v2.html.applyValidators(validators, field);
+    assertEquals(2, field.get().length);
+
+    assertEquals(v2.$v('required'), field.get(0).__validator);
+    assertEquals(v2.$v('min-length'), field.get(1).__validator);
+    assertEquals('4', field.get(1).__params.join());
+
+    field = new v2.Field('field2');
+    v2.html.applyValidators(validators, field, v2.$('field2').title);
+    field.validate();
+    assertEquals('This field should be atleast 12 characters!', field.getMessages().join());
+}
+
+function __testFormConstructor() {
+    var form = v2.$('test2');
+    var validation = new v2.html.Form(form);
+    assertTrue(validation.form.passOnAny());
+
+    v2.$('next2').click();
     v2.wait(500);
-    assertTrue('field2 does not have errors', parent.hasClassName('error'));
+    assertTrue(v2.$(v2.$('field5').parent).hasClassName('error'));
+
+    var value = v2.$('field5').value;
+    v2.$('field5').value = 'This is a really really long value';
+    assertTrue(validation.form.validate());
+    assertFalse(v2.$(v2.$('field5').parent).hasClassName('error'));
+
+    v2.$('field5').value = value;
 }
 
-function testAddValidatorSimple() {
-    var field = new v2.Field('field5');
-    v2.html.Field.add(field, 'required');
-    assertEquals(1, field.__validators.length);
+function testParseElementInputElementNoClassName() {
+    var form = v2.$('test2');
+    var validation = cleanForm(form);
+    var collection = new v2.CompositeFormItem();
+
+    validation.parseElement(v2.$('f6'), collection);
+    assertEquals(0, collection.get().length);
 }
 
-function testAddValidatorInverted() {
-    var field = new v2.Field('field6');
-    v2.html.Field.add(field, 'not_required');
+function testParseElementInputElementClassName() {
+    var form = v2.$('test2');
+    var validation = cleanForm(form);
+    var collection = new v2.CompositeFormItem();
 
-    assertEquals(1, field.__validators.length);
-    assertTrue(field.__validators[0].invert);
+    validation.parseElement(v2.$('f5'), collection);
+    assertEquals(1, collection.get().length);
 }
 
-function testAddValidatorParameters() {
-    var field = new v2.Field('field7');
-    v2.html.Field.add(field, 'min-length_5');
+function testParseElementInputElementInsignificantClassName() {
+    var form = v2.$('test2');
+    var validation = cleanForm(form);
+    var collection = new v2.CompositeFormItem();
 
-    assertEquals('5', field.get(0).__params[0]);
+    validation.parseElement(v2.$('f7'), collection);
+    assertEquals(0, collection.get().length);
 }
 
-function testAddValidatorMessage() {
-    var element = v2.$('field8');
-    var field = new v2.Field(element);
-    element.title = 'Please get a hold of your self';
-    v2.html.Field.add(field, 'required');
+function testParseElementButton() {
+    var form = v2.$('test2');
+    var validation = cleanForm(form);
+    var collection = new v2.CompositeFormItem();
 
-    assertEquals('Please get a hold of your self', field.get(0).getMessages().join());
+    assertEquals(0, validation.form.__buttons.length);
+    validation.parseElement(v2.$('buttons'), collection);
+    assertEquals(1, validation.form.__buttons.length);
 }
 
-function testAddValidatorFull() {
-    var field = new v2.Field('field9');
-    v2.html.Field.add(field, 'required min-length_16 not_email not_exists this_doesnt_either');
-
-    assertEquals(3, field.__validators.length);
-    assertTrue(field.get(2).invert);
+function testParseElementBlockElement() {
 }
 
-function testValidatorPrefix() {
-  var field = new v2.Field('field10');
-  var start = field.__validators.length;
+function testParseBlock() {
 
-  v2.html.Field.add(field, 'v2_required');
-  assertEquals(start, field.__validators.length);
+}
 
-  v2.Validator.prefix = 'v2_';
-  v2.html.Field.add(field, 'required');
-  assertEquals(start, field.__validators.length);
+// Helpers
 
-  v2.html.Field.add(field, 'v2_required');
-  assertEquals(start + 1, field.__validators.length);
+function cleanForm(form) {
+    var validation = new v2.html.Form(form);
+    validation.__parsed = {}; // Reset internal state
+    validation.form = new v2.Form(form); // Create blank form object
 
-  v2.Validator.prefix = '';
+    return validation;
 }
     </script>
     <style>
@@ -117,19 +232,19 @@ function testValidatorPrefix() {
         <div class="button"><input type="submit" name="prev" value="Previous" id="prev" /></div>
       </fieldset>
     </form>
-    <form id="test2">
+    <form id="test2" class="validate_any">
       <fieldset>
-        <div class="field">
+        <div class="field" id="f5">
           <label for="field5">Field 5</label>
-          <input type="text" name="field5" id="field5" value="Text" />
+          <input type="text" name="field5" id="field5" class="min-length_15" value="Text" />
         </div>
-        <div class="field">
+        <div class="field" id="f6">
           <label for="field6">Field 6</label>
           <input type="text" name="field6" id="field6" value="Text" />
         </div>
-        <div class="field">
+        <div class="field" id="f7">
           <label for="field7">Field 7</label>
-          <input type="text" name="field7" id="field7" value="Text" />
+          <input type="text" name="field7" id="field7" class="bogus" value="Text" />
         </div>
         <div class="field">
           <label for="field8">Field 8</label>
@@ -143,6 +258,10 @@ function testValidatorPrefix() {
           <label for="field10">Field 10</label>
           <input type="text" name="field10" id="field10" value="Text" />
         </div>
+      </fieldset>
+      <fieldset id="buttons">
+        <div class="button"><input type="submit" name="next" value="Next" id="next2" class="action" /></div>
+        <div class="button"><input type="submit" name="prev" value="Previous" id="prev2" /></div>
       </fieldset>
     </form>
   </body>
