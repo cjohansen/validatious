@@ -7,7 +7,7 @@ function scripts($additional = array()) {
                   'core/select_element', 'core/textarea_element', 'core/checkbox_element',
                   'core/message', 'core/validator', 'core/field', 'core/field_validator',
                   'core/form', 'validators/standard', 'extensions/reporting',
-                  'messages/errors.en');
+                  'messages/errors.en', 'core/fieldset');
 
     $test_utils = array('jsunit/app/jsUnitCore', 'utils/test_helper');
 

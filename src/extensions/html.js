@@ -198,7 +198,8 @@ v2.html.Form = Base.extend(/** @scope v2.html.prototype */{
     for (i = 0; (element = elements[i]); i++) {
       // Need classes to find validators, skip elements with no classes
       // Input elements may have been bound to a container collection, skip these too
-      if (/^\s*$/.test(element.className) || this.__parsed[element.id || element.name]) {
+      if (validators.length === 0 &&
+          (/^\s*$/.test(element.className) || this.__parsed[element.id || element.name])) {
         continue;
       }
 
@@ -255,7 +256,7 @@ v2.html.Form = Base.extend(/** @scope v2.html.prototype */{
    * class names, it is skipped.
    */
   parseBlock: function(element, parentCollection) {
-    var collection = new v2.CompositeFormItem();
+    var collection = new v2.Fieldset();
     var passOnAny = true;
 
     // Augment element
@@ -266,7 +267,7 @@ v2.html.Form = Base.extend(/** @scope v2.html.prototype */{
     } else if (element.hasClassName(v2.html.validateAllClass)) {
       passOnAny = false;
     } else {
-      return null;
+      return;
     }
 
     collection.passOnAny(passOnAny);
@@ -276,8 +277,6 @@ v2.html.Form = Base.extend(/** @scope v2.html.prototype */{
     if (collection.get(0)) {
       parentCollection.add(collection);
     }
-
-    return collection;
   }
 });
 

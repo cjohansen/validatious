@@ -175,12 +175,70 @@ function testParseElementButton() {
     assertEquals(1, validation.form.__buttons.length);
 }
 
-function testParseElementBlockElement() {
+function testParseBlockNoClassName() {
+    var form = v2.$('test2');
+    var validation = cleanForm(form);
+    var collection = new v2.CompositeFormItem();
+
+    validation.parseBlock(v2.$('fs1'), collection)
+    assertEquals(0, collection.get().length);
 }
 
-function testParseBlock() {
+function testParseBlockAnyClass() {
+    var form = v2.$('test2');
+    var validation = cleanForm(form);
+    var collection = new v2.CompositeFormItem();
+    var fieldset = v2.$('fs2');
+    fieldset.className = 'validate_any';
 
+    validation.parseBlock(fieldset, collection)
+    assertEquals(1, collection.get().length);
+    assertEquals(1, collection.get(0).get().length);
+    assertTrue(collection.get(0).passOnAny());
 }
+
+function testParseBlockAllClass() {
+    var form = v2.$('test2');
+    var validation = cleanForm(form);
+    var collection = new v2.CompositeFormItem();
+    var fieldset = v2.$('fs2');
+    fieldset.className = 'validate_all';
+
+    validation.parseBlock(fieldset, collection)
+    assertEquals(1, collection.get().length);
+    assertEquals(1, collection.get(0).get().length);
+    assertFalse(collection.get(0).passOnAny());
+}
+
+function testParseBlockGlobalValidator() {
+    var form = v2.$('test2');
+    var validation = cleanForm(form);
+    var collection = new v2.CompositeFormItem();
+    var fieldset = v2.$('fs2');
+    fieldset.className = 'validate_all required';
+
+    validation.parseBlock(fieldset, collection)
+    assertEquals(1, collection.get().length);
+    assertEquals(3, collection.get(0).get().length);
+    assertFalse(collection.get(0).passOnAny());
+    assertEquals(2, collection.get(0).get(0).get().length);
+    assertFalse(collection.validate());
+
+    v2.$('field9').value = 'Something';
+    assertFalse(collection.validate());
+
+    v2.$('field10').value = 'Something';
+    assertFalse(collection.validate());
+
+    v2.$('field8').value = 'something@somewhere.com';
+    assertTrue(collection.validate());
+
+    v2.$('field8').value = 'Text';
+    v2.$('field9').value = '';
+    v2.$('field10').value = '';
+}
+
+
 
 // Helpers
 
@@ -190,6 +248,15 @@ function cleanForm(form) {
     validation.form = new v2.Form(form); // Create blank form object
 
     return validation;
+}
+
+function testAutoDiscovery() {
+    var form = v2.Form.get('testForm');
+    assertFalse(form.test());
+
+    v2.$('next').click();
+    v2.wait(500);
+    assertTrue(v2.$(v2.$('field2').parentNode).hasClassName('error'));
 }
     </script>
     <style>
@@ -233,7 +300,7 @@ function cleanForm(form) {
       </fieldset>
     </form>
     <form id="test2" class="validate_any">
-      <fieldset>
+      <fieldset id="fs1">
         <div class="field" id="f5">
           <label for="field5">Field 5</label>
           <input type="text" name="field5" id="field5" class="min-length_15" value="Text" />
@@ -246,17 +313,19 @@ function cleanForm(form) {
           <label for="field7">Field 7</label>
           <input type="text" name="field7" id="field7" class="bogus" value="Text" />
         </div>
+      </fieldset>
+      <fieldset id="fs2">
         <div class="field">
           <label for="field8">Field 8</label>
-          <input type="text" name="field8" id="field8" value="Text" />
+          <input type="text" name="field8" id="field8" value="Text" class="email" />
         </div>
         <div class="field">
           <label for="field9">Field 9</label>
-          <input type="text" name="field9" id="field9" value="Text" />
+          <input type="text" name="field9" id="field9" value="" />
         </div>
         <div class="field">
           <label for="field10">Field 10</label>
-          <input type="text" name="field10" id="field10" value="Text" />
+          <input type="text" name="field10" id="field10" value="" />
         </div>
       </fieldset>
       <fieldset id="buttons">

@@ -9,6 +9,7 @@
  * default value is false.
  */
 v2.CompositeFormItem = Base.extend(/** @scope v2.CompositeFormItem.prototype */{
+  type: 'generic', // Makes for easier type checking
 
   /**
    * Sets up the __validators and __errors arrays if they do'nt already exist
@@ -25,6 +26,8 @@ v2.CompositeFormItem = Base.extend(/** @scope v2.CompositeFormItem.prototype */{
     this.__passOnAny = false;
     this.__message = null;
 
+    this.parent = null;
+
     /* Exceptions
     this.__exceptions = [];
     this.__exceptionFlags = [];*/
@@ -38,6 +41,7 @@ v2.CompositeFormItem = Base.extend(/** @scope v2.CompositeFormItem.prototype */{
   add: function(obj) {
     //v2.Interface.ensure(obj, [v2.Composite, v2.FormItem]);
     this.__validators.push(obj);
+    obj.parent = this;
   },
 
   /*

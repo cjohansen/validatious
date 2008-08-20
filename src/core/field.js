@@ -8,6 +8,7 @@ v2.Field = v2.CompositeFormItem.extend(/** @scope v2.Field.prototype */{
   instant: false,             // If validations should be run instantly
   instantWhenValidated: true, // If validations should be run instantly after
                               // the validation has been run once
+  type: 'field',              // Identifier, makes for easier type checking
 
   /**
    * Construct a new field with validation logic
