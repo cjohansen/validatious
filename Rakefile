@@ -1,6 +1,7 @@
 task :default => ['build:standalone:all']
 
 $standalone = ['lib/add_dom_load_event', 'lib/Base', 'lib/events', 'bridge/standalone'].collect { |s| "src/#{s}.js" }
+$prototype = ['lib/Base', 'bridge/prototype'].collect { |s| "src/#{s}.js" }
 $interfaces = ['core/interface', 'core/composite.interface',
                'core/field_element.interface', 'core/form_item.interface'].collect { |s| "src/#{s}.js" }
 $core = ['core/composite_form_item', 'core/input_element', 'core/radio_element',
@@ -17,6 +18,11 @@ namespace :build do
   desc 'Builds the minified standalone core (no extensions)'
   task :standalone do
     File.merge($standalone + $core_full, 'standalone', minify?)
+  end
+
+  desc 'Builds the minified prototype core (no extensions)'
+  task :prototype do
+    File.merge($prototype + $core_full, 'prototype', minify?)
   end
 
   desc 'Joins the validators into a single file'
@@ -47,6 +53,28 @@ namespace :build do
 
     desc 'Builds all the minified standalone distributions'
     task :all => [:standalone, 'standalone:html', 'standalone:dsl', 'standalone:full'] do
+      # Dependencies does all the job
+    end
+  end
+
+  namespace :prototype do
+    desc 'Builds the minified prototype core with the HTML extension'
+    task :html do
+      File.merge($prototype + $core_full + $html, 'prototype.html', minify?)
+    end
+
+    desc 'Builds the minified prototype core with the DSL extension'
+    task :dsl do
+      File.merge($prototype + $core_full + $dsl, 'prototype.dsl', minify?)
+    end
+
+    desc 'Builds the minified prototype core with both the HTML and DSL extensions'
+    task :full do
+      File.merge($prototype + $core_full + $html + $dsl + $reporting, 'prototype.full', minify?)
+    end
+
+    desc 'Builds all the minified prototype distributions'
+    task :all => [:prototype, 'prototype:html', 'prototype:dsl', 'prototype:full'] do
       # Dependencies does all the job
     end
   end

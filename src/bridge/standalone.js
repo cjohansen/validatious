@@ -430,7 +430,7 @@ v2.Object.extend(Function.prototype, /** @scope Function.prototype */ {
    * Heavily inspired by:
    *   http://laurens.vd.oever.nl/weblog/items2005/closures/closure.js
    *
-   * @param {Object} me Value for this
+   * @param {Object} me            Value for this
    */
    bind: function(me) {
      var fn = this;

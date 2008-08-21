@@ -2,7 +2,6 @@
 <html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="nb-NO">
   <head>
     <title>Test suite for Validatious 2.0 HTML declarative validation</title>
-    <?php if (!isset($_REQUEST['src'])) { ?><script type="text/javascript" src="../../src/lib/add_dom_load_event.js"></script><?php } ?>
     <?php
         require '../utils/core.php';
         print scripts(array('extensions/html'));

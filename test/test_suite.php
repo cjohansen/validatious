@@ -1,9 +1,10 @@
 <?php
 
-$query = '';
+$bridge = isset($_REQUEST['bridge']) ? $_REQUEST['bridge'] : 'standalone';
+$query = '?bridge=' . $bridge;
 
 if (isset($_REQUEST['src'])) {
-    $query = '?src=' . (trim($_REQUEST['src']) != '' ? trim($_REQUEST['src']) : 'v2.standalone.full');
+    $query .= '&src';
 }
 
 ?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/2002/REC-xhtml1-20020801/DTD/xhtml1-transitional.dtd">
@@ -15,7 +16,7 @@ if (isset($_REQUEST['src'])) {
 function v2TestSuite() {
   var v2Suite = new top.jsUnitTestSuite();
   v2Suite.addTestPage("../test_validators.php<?php print $query; ?>");
-  v2Suite.addTestPage("../bridge/test_standalone.php<?php print $query; ?>");
+  v2Suite.addTestPage("../bridge/test_<?php print $bridge; ?>.php<?php print $query; ?>");
   v2Suite.addTestPage("../core/test_interface.php<?php print $query; ?>");
   v2Suite.addTestPage("../core/test_field_element.php<?php print $query; ?>");
   v2Suite.addTestPage("../core/test_composite_form_item.php<?php print $query; ?>");

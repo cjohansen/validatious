@@ -28,10 +28,10 @@ function testEnsure() {
         undoIt: function() {}
     };
 
-    assertFalse(ensure(impl, TestInterface));
+    assertFalse('impl implements TestInterface', ensure(impl, TestInterface));
     impl.addIt = 4;
 
-    assertFalse(ensure(impl, TestInterface));
+    assertFalse('impl implements TestInterface with int for method addIt', ensure(impl, TestInterface));
     impl.addIt = function() {};
 
     assertTrue('impl does not implement TestInterface correctly', ensure(impl, TestInterface));

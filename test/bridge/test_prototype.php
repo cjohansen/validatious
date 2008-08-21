@@ -21,7 +21,6 @@ function testV2ArrayEmptyArray() {
     var arr = v2.array(data);
     assertNotUndefined(arr.push);
     assertEquals(0, arr.length);
-    assertEquals(data, arr);
 }
 
 function testV2ArrayWithArray() {
@@ -99,18 +98,8 @@ function testExtendObject() {
     assertEquals(3, props);
 }
 
-function testSafeExtendObject() {
-    var obj = { a: 1, b: 3 };
-    v2.Object.extend(obj, { b: 4, c: 5 }, true);
-    assertEquals(3, obj.b);
-    assertEquals(5, obj.c);
-
-    var props = 0;
-    for (p in obj) {
-        props++;
-    }
-
-    assertEquals(3, props);
+// Prototype has noe safe extend
+function __testSafeExtendObject() {
 }
 
 function testArrayIndexOf() {
@@ -199,9 +188,9 @@ function testVisible() {
 
 function testHasClassName() {
     var fs1 = v2.$('fs1');
-    assertTrue('fs1 does not have someClass', v2.Element.hasClassName(fs1, 'someClass'));
-    assertFalse('fs1 has otherClass', v2.Element.hasClassName(fs1, 'someOtherClass'));
-    assertTrue('fs1.hasClassName does not work correctly (' + fs1.className + ')', fs1.hasClassName('someClass'));
+    assertTrue(v2.Element.hasClassName(fs1, 'someClass'));
+    assertFalse(v2.Element.hasClassName(fs1, 'someOtherClass'));
+    assertTrue(fs1.hasClassName('someClass'));
 }
 
 function testAddClassName() {
@@ -231,28 +220,8 @@ function testFunctionBind() {
     assertEquals('Another object test', fn.bind({ testStr: 'Another object test' })());
 }
 
-function testFunctionBindCache() {
-    var obj = { testStr: 'Objectus testus' };
-
-    var fn = function() {
-        return this.testStr;
-    };
-
-    // Bind manually twice to assure that manual binding wastes memory
-    // by creating new function objects
-    var bound = function() { return fn.call(obj); };
-    var anotherBound = function() { return fn.call(obj); };
-    assertNotEquals(bound, anotherBound);
-
-    // Assure also that the bind method creates even another one
-    var boundThroughFunction = fn.bind(obj);
-    assertNotEquals(boundThroughFunction, bound);
-
-    // Assert that binding again yields the same object
-    assertEquals(boundThroughFunction, fn.bind(obj));
-
-    // The results should be the same though
-    assertEquals(boundThroughFunction(), bound());
+// Prototype has noe cache for bound functions
+function __testFunctionBindCache() {
 }
 </script>
   </head>
