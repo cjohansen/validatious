@@ -18,6 +18,11 @@ function testConstructor() {
     assertEquals(formEl, form.__form);
 }
 
+function testType() {
+    var cfi = new v2.Form('test');
+    assertEquals('form', cfi.type);
+}
+
 function testAddButton() {
     var form = new v2.Form(document.getElementsByTagName('form')[0]);
     assertEquals(0, form.__buttons.length);

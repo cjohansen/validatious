@@ -3,6 +3,8 @@
  * interfaces.
  */
 v2.Form = v2.CompositeFormItem.extend(/** @scope v2.Form.prototype */{
+  type: 'form', // Eases type checking
+
   /**
    * Construct new form with validation logic.
    *

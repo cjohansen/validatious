@@ -256,7 +256,7 @@ v2.html.Form = Base.extend(/** @scope v2.html.prototype */{
    * class names, it is skipped.
    */
   parseBlock: function(element, parentCollection) {
-    var collection = new v2.Fieldset();
+    var collection = new v2.Fieldset(element);
     var passOnAny = true;
 
     // Augment element

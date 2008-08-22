@@ -40,6 +40,11 @@ function testConstructor() {
     assertTrue(field.instant);
 }
 
+function testType() {
+    var cfi = new v2.Field('field');
+    assertEquals('field', cfi.type);
+}
+
 function testTest() {
     var field = new v2.Field('field');
     var flag = '';
@@ -76,22 +81,41 @@ function testValidate() {
     field.validate();
     assertEquals(messages.length, field.getMessages().length);
 }
+
+function testGetParent() {
+    var field = new v2.Field('field');
+    assertEquals(v2.$('f1'), field.getParent());
+}
     </script>
   </head>
   <body>
     <form id="test">
       <fieldset id="fs">
-        <label for="field" id="label">Field #1</label>
-        <input type="text" name="field" id="field" value="Text" />
-        <label for="field2" id="label2" title="Real field #2">Field #2</label>
-        <input type="text" name="field2" id="field2" value="Text" />
-        <label for="field3" id="label3">Field #3</label>
-        <input type="text" name="field3" id="field3" value="Text" title="Real field #3" />
-        <input type="text" name="field4" id="field4" value="Text" title="Real field #4" />
-        <input type="text" name="field5" id="field5" value="Text" />
-        <label for="field6" id="label6" title="Label for field 6">Field #6</label>
-        <input type="text" name="field6" id="field6" value="Text" />
-        <input type="text" name="field7" value="Text" />
+        <div class="field" id="f1">
+          <label for="field" id="label">Field #1</label>
+          <input type="text" name="field" id="field" value="Text" />
+        </div>
+        <div class="field">
+          <label for="field2" id="label2" title="Real field #2">Field #2</label>
+          <input type="text" name="field2" id="field2" value="Text" />
+        </div>
+        <div class="field">
+          <label for="field3" id="label3">Field #3</label>
+          <input type="text" name="field3" id="field3" value="Text" title="Real field #3" />
+        </div>
+        <div class="field">
+          <input type="text" name="field4" id="field4" value="Text" title="Real field #4" />
+        </div>
+        <div class="field">
+          <input type="text" name="field5" id="field5" value="Text" />
+        </div>
+        <div class="field">
+          <label for="field6" id="label6" title="Label for field 6">Field #6</label>
+          <input type="text" name="field6" id="field6" value="Text" />
+        </div>
+        <div class="field">
+          <input type="text" name="field7" value="Text" />
+        </div>
       </fieldset>
     </form>
   </body>

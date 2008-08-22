@@ -20,6 +20,11 @@ function testConstructor() {
     assertNotUndefined(cfi.__message);
 }
 
+function testType() {
+    var cfi = new v2.CompositeFormItem();
+    assertEquals('generic', cfi.type);
+}
+
 function testAdd() {
     var cfi = new v2.CompositeFormItem();
     assertEquals(0, cfi.__validators.length);

@@ -6,7 +6,7 @@ $interfaces = ['core/interface', 'core/composite.interface',
                'core/field_element.interface', 'core/form_item.interface'].collect { |s| "src/#{s}.js" }
 $core = ['core/composite_form_item', 'core/input_element', 'core/radio_element',
          'core/select_element', 'core/textarea_element', 'core/checkbox_element',
-         'core/message', 'core/validator', 'core/field', 'core/field_validator',
+         'core/message', 'core/validator', 'core/field', 'core/fieldset', 'core/field_validator',
          'core/form', 'messages/errors.en', 'validators/standard'].collect { |s| "src/#{s}.js" }
 $core_full = ['src/core/v2.js'] + $interfaces + $core
 $html = ['src/extensions/html.js']

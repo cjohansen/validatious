@@ -5,6 +5,8 @@
  * @implements v2.FormItem
  */
 v2.Field = v2.CompositeFormItem.extend(/** @scope v2.Field.prototype */{
+  validateHidden: false,      // If a field should be validated even if it's not
+                              // visible
   instant: false,             // If validations should be run instantly
   instantWhenValidated: true, // If validations should be run instantly after
                               // the validation has been run once
@@ -75,6 +77,13 @@ v2.Field = v2.CompositeFormItem.extend(/** @scope v2.Field.prototype */{
     this.add(fv);
 
     return fv;
+  },
+
+  /**
+   * Returns the parent element for the field
+   */
+  getParent: function() {
+    return this.element.getParent();
   },
 
   /**

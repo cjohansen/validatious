@@ -237,8 +237,6 @@ function testParseBlockGlobalValidator() {
     v2.$('field10').value = '';
 }
 
-
-
 // Helpers
 
 function cleanForm(form) {

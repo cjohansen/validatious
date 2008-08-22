@@ -149,7 +149,7 @@ v2.InputElement = Base.extend(/** @scope v2.InputElement.prototype */{
 
     // Invalid element argument
     if (!element) {
-      throw new ArgumentError(idNameEl + ' does not resolve to an HTML element!');
+      throw new TypeError(idNameEl + ' does not resolve to an HTML element!');
     }
 
     // Look up element field object - prefer name over id as identifier since it
