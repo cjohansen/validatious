@@ -24,6 +24,6 @@ v2.Fieldset = v2.CompositeFormItem.extend(/** @scope v2.Fieldset.prototype */{
    * Returns the parent element for the field
    */
   getParent: function() {
-    return this.element.parentNode;
+    return this.element;
   }
 });

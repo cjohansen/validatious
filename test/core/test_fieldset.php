@@ -24,7 +24,7 @@ function testType() {
 
 function testGetParent() {
     var fieldset = new v2.Fieldset('fs');
-    assertEquals(v2.$('fs').parentNode, fieldset.getParent());
+    assertEquals(v2.$('fs'), fieldset.getParent());
 }
     </script>
   </head>

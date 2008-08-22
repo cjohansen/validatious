@@ -67,7 +67,7 @@ v2.ErrorReporting = {
       return null;
     }
 
-    var parent = this.getParent();
+    var parent = v2.$(this.getParent());
 
     // Remove error if it exists
     var list = v2.$(this.__getId());
