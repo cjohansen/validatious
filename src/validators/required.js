@@ -3,6 +3,8 @@
  *
  * When validating checkboxes with the required validator you can use it in
  * two ways: with no parameters
+ *
+ * @builtin
  */
 v2.Validator.reg('required', function(field, value, params) {
   return !v2.empty(value);

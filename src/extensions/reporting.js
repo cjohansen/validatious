@@ -99,6 +99,14 @@ v2.Object.extend(v2.Field.prototype, v2.ErrorReporting);
 v2.Object.extend(v2.Fieldset.prototype, v2.ErrorReporting);
 
 /**
+ * Adds a configuration option for scrolling to the first field when validation
+ * fails.
+ */
+v2.Object.extend(v2.Form, {
+  scrollToFirstWhenFail: true
+});
+
+/**
  * Adds error reporting to forms.
  */
 v2.Object.extend(v2.Form.prototype, /** @scope v2.Form.prototype */{
@@ -107,6 +115,10 @@ v2.Object.extend(v2.Form.prototype, /** @scope v2.Form.prototype */{
    * v2.Field.prototype.failureClass
    */
   onFailure: function() {
+    if (!v2.Form.scrollToFirstWhenFail) {
+      return;
+    }
+
     var errors = this.getInvalid();
 
     for (var i = 0, component; (component = errors[i]); i++) {

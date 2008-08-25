@@ -347,7 +347,7 @@ v2.Element = {
    * @param {String}  className The class name to look for
    */
   hasClassName: function(el, className) {
-    return new RegExp("\\b" + className + "\\b").test(el.className);
+    return new RegExp("(^|\\s)" + className + "(\\s|$)").test(el.className);
   },
 
   /**

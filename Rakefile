@@ -7,8 +7,8 @@ $interfaces = ['core/interface', 'core/composite.interface',
 $core = ['core/composite_form_item', 'core/input_element', 'core/radio_element',
          'core/select_element', 'core/textarea_element', 'core/checkbox_element',
          'core/message', 'core/validator', 'core/field', 'core/fieldset', 'core/field_validator',
-         'core/form', 'messages/errors.en', 'validators/standard'].collect { |s| "src/#{s}.js" }
-$core_full = ['src/core/v2.js'] + $interfaces + $core
+         'core/form', 'validators/standard', 'messages/errors.en'].collect { |s| "src/#{s}.js" }
+$core_full = $core #['src/core/v2.js'] + $core
 $html = ['src/extensions/html.js']
 $dsl = ['src/extensions/dsl.js']
 $reporting = ['src/extensions/reporting.js']
@@ -106,6 +106,7 @@ end
 def File.cat(*files)
   files = files[0] if files.respond_to?(:push)
   files.inject('') do |str, file|
+    #puts file
     str += File.read(file) + "\n"
   end
 end

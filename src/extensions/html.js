@@ -285,7 +285,6 @@ v2.html.Form = Base.extend(/** @scope v2.html.prototype */{
  */
 v2.addDOMLoadEvent(function() {
   var forms = document.getElementsByTagName('form');
-
   for (var i = 0, form; (form = forms[i]); i++) {
     if (v2.Element.hasClassName(form, v2.Form.autoValidateClass)) {
       new v2.html.Form(form);
