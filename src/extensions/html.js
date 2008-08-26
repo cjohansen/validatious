@@ -189,7 +189,7 @@ v2.html.Form = Base.extend(/** @scope v2.html.prototype */{
    *                            found (not added to recursive block elements)
    */
   parseElement: function(container, collection, validators) {
-    var elements = v2.$$('input, select, textarea, div, fieldset', container);
+    var elements = v2.$$('div, fieldset, input, select, textarea', container);
     var i, j, validator, fieldValidator, element, tagName, field, fieldValidators;
     this.__parsed[container.id || container.name] = true;
     validators = validators || [];
@@ -273,6 +273,10 @@ v2.html.Form = Base.extend(/** @scope v2.html.prototype */{
     collection.passOnAny(passOnAny);
     var validators = v2.html.validatorsFromString(element.className);
     this.parseElement(element, collection, validators);
+
+    if (!/^\s*$/.test(element.title)) {
+      collection.setMessage(element.title);
+    }
 
     if (collection.get(0)) {
       parentCollection.add(collection);

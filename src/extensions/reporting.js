@@ -88,7 +88,10 @@ v2.ErrorReporting = {
   __getId: function() {
     var input = this.element.getElements ? this.element.getElements()[0] : null;
     var parent = input || this.getParent();
-    return (parent.id || parent.name || parent.className) + '_error';
+
+    return ((parent.id || parent.name ||
+             parent.className.replace(this.failureClass, '')) +
+             '_' + this.failureClass).replace(' ', '_').replace(/_+/, '_');
   }
 };
 

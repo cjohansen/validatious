@@ -373,7 +373,7 @@ v2.Element = {
    * @return the element, suitable for method chaining
    */
   removeClassName: function(el, className) {
-    var regexp = new RegExp("\\b" + className + "\\b");
+    var regexp = new RegExp("(^|\\s)" + className + "(\\s|$)");
     el.className = el.className.replace(regexp, '').replace('  ', ' ').replace(/^\s|\s$/, '');
 
     return el;

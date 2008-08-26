@@ -21,6 +21,7 @@ function v2TestSuite() {
     <?php $query = "?bridge=" . $bridges[$i] . ($modes[$j] != '' ? "&" . $modes[$j] : ''); ?>
     v2Suite.addTestPage("../test_validators.php<?php print $query; ?>");
     v2Suite.addTestPage("../bridge/test_<?php print $bridges[$i]; ?>.php<?php print $query; ?>");
+    <?php if ($bridges[$i] == 'standalone') { ?>v2Suite.addTestPage("../bridge/test_<?php print $bridges[$i]; ?>_utf8.php<?php print $query; ?>");<?php } ?>
     v2Suite.addTestPage("../core/test_interface.php<?php print $query; ?>");
     v2Suite.addTestPage("../core/test_field_element.php<?php print $query; ?>");
     v2Suite.addTestPage("../core/test_composite_form_item.php<?php print $query; ?>");

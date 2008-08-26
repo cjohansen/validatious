@@ -121,7 +121,17 @@ def File.merge(files, name, minify = true)
   File.open(tmp, 'w') { |f| f.puts(File.cat(files)) }
 
   # Minify with YUI Compressor
-  `java -jar lib/yuicompressor-2.2.5.jar --type js -o #{target} #{tmp}` if minify
+  #`java -jar lib/yuicompressor-2.2.5.jar --charset latin1 --type js -o #{target} #{tmp}` if minify
+  `java -jar lib/yuicompressor-2.3.6.jar --charset latin1 --type js -o #{target} #{tmp}` if minify
+
+  # TMP: Correct YUIC mistake on regexes
+  contents = File.read(target)
+
+  File.open(target, 'w') do |file|
+    contents.gsub!(/\(\^\|\\s\)/, "(^|\\\\\\s)")
+    contents.gsub!(/\(\\s\|\$\)/, "(\\\\\\s|$)")
+    file.puts contents
+  end
 
   # Delete tmp file
   File.delete("#{tmp}") if minify
