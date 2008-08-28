@@ -4,5 +4,5 @@
  * @builtin
  */
 v2.Validator.reg('alphanum', function(field, value, params) {
-  return /^[a-zA-Z0-9]*$/.test(value);
+  return /^([a-zA-Z\u00A1-\uFFFF0-9])*$/.test(value);
 });

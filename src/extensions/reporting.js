@@ -11,6 +11,7 @@ v2.ErrorReporting = {
                               // when validation fails
   successClass: '',           // Class name to append to the parent element
                               // when validation succeeds
+  messagesClass: 'messages',  // Class name used on error lists
 
   /**
    * Callback that's called when validation on the component fails. If the
@@ -31,7 +32,7 @@ v2.ErrorReporting = {
 
     var list = document.createElement('ul');
     list.id = this.__getId();
-    list.className = 'messages';
+    list.className = this.messagesClass;
 
     // Set number of errors to display. -1 is all, maximum is all
     var count = this.displayErrors;
@@ -88,10 +89,13 @@ v2.ErrorReporting = {
   __getId: function() {
     var input = this.element.getElements ? this.element.getElements()[0] : null;
     var parent = input || this.getParent();
+    var className = parent.className;
 
-    return ((parent.id || parent.name ||
-             parent.className.replace(this.failureClass, '')) +
+    var value = ((parent.id || parent.name ||
+             className.replace(this.failureClass, '')) +
              '_' + this.failureClass).replace(' ', '_').replace(/_+/, '_');
+
+    return value;
   }
 };
 
@@ -102,31 +106,27 @@ v2.Object.extend(v2.Field.prototype, v2.ErrorReporting);
 v2.Object.extend(v2.Fieldset.prototype, v2.ErrorReporting);
 
 /**
- * Adds a configuration option for scrolling to the first field when validation
- * fails.
- */
-v2.Object.extend(v2.Form, {
-  scrollToFirstWhenFail: true
-});
-
-/**
  * Adds error reporting to forms.
  */
 v2.Object.extend(v2.Form.prototype, /** @scope v2.Form.prototype */{
+  scrollToFirstWhenFail: true, // scrolling to the first field when validation
+                               // fails
+
   /**
    * Scroll to first element with class name containing
    * v2.Field.prototype.failureClass
    */
   onFailure: function() {
-    if (!v2.Form.scrollToFirstWhenFail) {
+    if (!this.scrollToFirstWhenFail) {
       return;
     }
 
-    var errors = this.getInvalid();
+    var i, element, elements, form = this.__form;
+    elements = form.all || form.getElementsByTagName('*');
 
-    for (var i = 0, component; (component = errors[i]); i++) {
-      if (component.getParent) {
-        v2.$(component.getParent()).scrollTo();
+    for (i = 0; (element = elements[i]); i++) {
+      if (v2.Element.hasClassName(element, v2.ErrorReporting.failureClass)) {
+        v2.Element.scrollTo(element);
         return;
       }
     }

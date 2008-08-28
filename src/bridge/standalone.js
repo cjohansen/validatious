@@ -89,6 +89,15 @@ v2.Object = {
 };
 
 /**
+ * Extensions on the string object
+ */
+v2.Object.extend(String.prototype, {
+  strip: function() {
+    return this.replace(/^\s+|\s+$/, '');
+  }
+});
+
+/**
  * Extensions on the array object
  */
 v2.Object.extend(Array.prototype, {
@@ -203,85 +212,67 @@ v2.$ = function(el, extend) {
  * This method is ONLY intended to help validatious find labels and inputs, DO
  * NOT use this as a general CSS selector utility, it will fail miserably.
  */
-v2.$$ = function $$(query, parent) {
-  // WARNING: Extremely uninpressing code ahead...
+v2.$$ = function $$(selector, parent) {
+  // Warning: brute force selecting ahead!
+
+  // Default value is document
   parent = parent || document;
 
-  // Use native implementation if available
+  // Use native implementation, if any
   if (document.querySelectorAll) {
-    return parent.querySelectorAll(query);
+    v2.$$ = function(sel, p) {
+      return p.querySelectorAll(sel);
+    };
+
+    return v2.$$(sel, p);
   }
 
-  // label[for=XXX] queries
-  if (/^label/.test(query)) {
-    var id = query.match(/label\[for=(.*)\]/)[1];
-    var labels = parent.getElementsByTagName('label');
+  // Split selectors
+  var selectors = selector.split(',');
+  var i, j, k, tagName, tmp, tmp2, elements, element, classes, attributes;
+  var result = [];
 
-    for (var i = 0; i < labels.length; i++) {
-      if (labels[i].htmlFor == id) {
-        // Array expected
-        return [labels[i]];
-      }
-    }
-  } else if (query.indexOf(',') >= 0) {
-    // tag1, tag2, tag3 selectors
-    // Also supports tag1[attr=val], tag2[attr=valu]
-    var tagNames = query.split(',');
-    var elems = [];
+  for (i = 0; (selector = selectors[i]); i++) {
+    tagName = selector.strip().split(/^(\w*)\b/)[1] || '*';
+    tmp = selector.split(/\.(\w*)/);
+    classes = [];
+    attributes = [];
 
-    for (var i = 0, els; (els = tagNames[i]); i++) {
-      els = els.replace(/^\s*|\s*$/, '');
-
-      if (/\[/.test(els)) {
-        els = v2.$$(els);
-      } else {
-        els = parent.getElementsByTagName(els);
-      }
-
-      for (var j = 0; j < els.length; j++) {
-        elems.push(els[j]);
-      }
+    for (j = 0; j < tmp.length-1; j += 2) {
+      classes.push(tmp[j+1]);
     }
 
-    return elems;
-  } else {
-    // Supports tag[attr=val][attr=val].class and tag[attr=val].class
-    // TODO: Fix this mess........
-    var className = query.split('.')[1];
-    var pieces = query.match(/([^\[]*)\[([^\]]*)\](\[([^\]]*)\])?(\.(.*))?/);
+    tmp = selector.split(/\[([^\[\]]*)\]/);
 
-    var attrs = pieces[2].split('=');
-    var elems = parent.getElementsByTagName(pieces[1]);
-    var els = [], valid;
-
-    if (!v2.empty(pieces[4])) {
-      attrs = attrs.concat(pieces[4].split('='));
+    for (j = 0; j < tmp.length-1; j += 2) {
+      tmp2 = tmp[j+1].split('=');
+      tmp2[1] = tmp2[1] || true;
+      attributes.push(tmp2);
     }
 
-    if (!v2.empty(pieces[6])) {
-      attrs.push('className');
-      attrs.push(pieces[6]);
-    }
+    elements = parent.getElementsByTagName(tagName);
 
-    for (var i = 0; i < elems.length; i++) {
-      valid = true;
-
-      for (var j = 0; j < attrs.length; j += 2) {
-        if (elems[i][attrs[j]] != attrs[j+1]) {
-          valid = false;
-          break;
+    elementLoop: for (j = 0; (element = elements[j]); j++) {
+      for (k = 0; k < classes.length; k++) {
+        if (!v2.Element.hasClassName(element, classes[k])) {
+          continue elementLoop;
         }
       }
 
-      if (valid) {
-        els.push(elems[i]);
+      for (k = 0; k < attributes.length; k++) {
+        if (!element.hasAttribute(attributes[k][0]) ||
+            (attributes[k][1] !== true && element.getAttribute(attributes[k][0]) !== attributes[k][1])) {
+          continue elementLoop;
+        }
+      }
+
+      if (result.indexOf(element) < 0) {
+        result.push(element);
       }
     }
-
-    return els;
   }
 
-  return null;
+  return result;
 };
 
 /**
@@ -374,7 +365,7 @@ v2.Element = {
    */
   removeClassName: function(el, className) {
     var regexp = new RegExp("(^|\\s)" + className + "(\\s|$)");
-    el.className = el.className.replace(regexp, '').replace('  ', ' ').replace(/^\s|\s$/, '');
+    el.className = el.className.replace(regexp, ' ').replace('  ', ' ').replace(/^\s|\s$/, '');
 
     return el;
   },

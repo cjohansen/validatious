@@ -226,6 +226,10 @@ function testRemoveClassName() {
     assertTrue(fs1.hasClassName('someOtherClass'));
     fs1.removeClassName('someOtherClass');
     assertFalse(fs1.hasClassName('someOtherClass'));
+
+    var className = fs1.className;
+    fs1.className = 'en to tre';
+    assertEquals('en tre', fs1.removeClassName('to').className);
 }
 
 function testFunctionBind() {
