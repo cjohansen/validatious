@@ -260,6 +260,15 @@ v2.dsl.Field = Base.extend(/** @scope v2.dsl.Field.prototype */{
     this.item.setMessage(message);
 
     return this;
+  },
+
+  /**
+   * Sets the name of the field element
+   */
+  withName: function(name) {
+    this.item.element.setName(name);
+
+    return this;
   }
 });
 
