@@ -13,6 +13,10 @@ function test() {
     assert(true);
 }
 
+function setUp() {
+    v2.Form.forms = {};
+}
+
 function testStringIs() {
     var facade = "field1".is("required");
     var field = facade.item;
@@ -147,6 +151,51 @@ function testDslFieldHelp() {
 
     assertEquals("Help!", field.item.getMessages().join());
     assertNotEquals("Help!", field.item.__validators[0].getMessages().join());
+}
+
+function testDslWithName() {
+    var field = "field1".is("required").withName("Fieldorama");
+    assertEquals("Fieldorama", field.item.element.getName());
+}
+
+function testDslAddButtonButtonId() {
+    var form = validate("field1".is("required").andIs("email"));
+    assertEquals(0, form.item.__buttons.length);
+
+    form.on("next");
+    assertEquals(1, form.item.__buttons.length);
+}
+
+function testDslAddButtonButtonParentId() {
+    var form = validate("field1".is("required").andIs("email"));
+    assertEquals(0, form.item.__buttons.length);
+
+    form.on("nextWrapper");
+    assertEquals(1, form.item.__buttons.length);
+}
+
+function testDslAddButtonButtonElement() {
+    var form = validate("field1".is("required").andIs("email"));
+    assertEquals(0, form.item.__buttons.length);
+
+    form.on(v2.$("next"));
+    assertEquals(1, form.item.__buttons.length);
+}
+
+function testDslAddButtonButtonParentElement() {
+    var form = validate("field1".is("required").andIs("email"));
+    assertEquals(0, form.item.__buttons.length);
+
+    form.on(v2.$("nextWrapper"));
+    assertEquals(1, form.item.__buttons.length);
+}
+
+function testDslAddButtonButtonMixedArguments() {
+    var form = validate("field1".is("required").andIs("email"));
+    assertEquals(0, form.item.__buttons.length);
+
+    form.on(v2.$("nextWrapper"), "prev");
+    assertEquals(2, form.item.__buttons.length);
 }
 
 function testDslFieldAliases() {
@@ -350,7 +399,7 @@ function __testFieldWhenInvalid() {
         </div>
       </fieldset>
       <fieldset>
-        <div class="button"><input type="submit" name="next" value="Next" id="next" /></div>
+        <div class="button" id="nextWrapper"><input type="submit" name="next" value="Next" id="next" /></div>
         <div class="button"><input type="submit" name="prev" value="Previous" id="prev" /></div>
       </fieldset>
     </form>

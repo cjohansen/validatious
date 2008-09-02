@@ -1,6 +1,7 @@
 /**
  * Validates that a value is bigger than params[0]. Mostly for numbers, but
- * it'll work for strings as well.
+ * it'll work for strings as well. The value parameter is available in error messages as
+ * <code>${min}</code>.
  *
  * @builtin
  */

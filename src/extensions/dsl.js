@@ -59,11 +59,11 @@ v2.dsl = /** @scope v2.dsl */{
         }
       }
 
-      var form = v2.Form.get(element.getElements()[0].form);
-      form.passOnAny(conditional);
+      var form = new v2.dsl.Form(element.getElements()[0].form);
+      form.item.passOnAny(conditional);
 
       for (var i = 0, component; (component = arguments[i]); i++) {
-        form.add(component.item || component);
+        form.item.add(component.item || component);
       }
 
       return form;
@@ -303,31 +303,33 @@ v2.dsl.Collection = Base.extend(/** @scope v2.dsl.Collection.prototype */{
   }
 });
 
-/*
- * This anonymous function compresses slightly better than writing the whole
- * thing out.
- *
-(function() {
-  var v2dsl = v2.dsl;
-  var field = v2dsl.Field.prototype;
-  var collection = v2dsl.Collection.prototype;
+/**
+ * Forms with DSL capabilities
+ */
+v2.dsl.Form = Base.extend(/** @scope v2.dsl.Form.prototype */{
+  /**
+   * Create a new form
+   */
+  constructor: function(id) {
+    this.item = v2.Form.get(id);
+  },
 
   /**
-   * Makes the validator depend on another validator. If the other validator
-   * passes validation, then this validator is tested.
+   * Add a button as a validation trigger
    *
-  field.whenValid = collection.whenValid = function(item) {
-    this.item.addException(item.item || item, false);
-    return this;
-  };
+   * @param {String|Object} button Button object or string id. If the element is
+   *                               not an input element, then the first child
+   *                               element that is an input is used.
+   *                               The method accepts arbitrary many arguments
+   */
+  on: function() {
+    var i, button;
 
-  /**
-   * Makes the validator depend on another validator. If the other validator
-   * fails validation, then this validator is tested.
-   *
-  field.whenInvalid = collection.whenInvalid = function(item) {
-    this.item.addException(item.item || item, true);
-    return this;
-  };
- })();
-*/
+    for (i = 0; i < arguments.length; i++) {
+      button = v2.$(arguments[i]);
+
+      this.item.addButton(button.tagName.toLowerCase() !== 'input' ?
+                 button.getElementsByTagName('input')[0] : button);
+    }
+  }
+});

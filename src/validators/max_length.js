@@ -1,6 +1,7 @@
 /**
  * Validates the length of a field; the first parameter sets the maximum
- * allowed length.
+ * allowed length. The length parameter is available in error messages as
+ * <code>${max}</code>.
  *
  * @builtin
  */
