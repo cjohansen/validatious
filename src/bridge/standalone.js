@@ -221,28 +221,33 @@ v2.$$ = function $$(selector, parent) {
   // Use native implementation, if any
   if (document.querySelectorAll) {
     v2.$$ = function(sel, p) {
-      return p.querySelectorAll(sel);
+      return (p || document).querySelectorAll(sel);
     };
 
-    return v2.$$(sel, p);
+    return v2.$$(selector, parent);
   }
 
   // Split selectors
+  // The whole splitting thing is unnecessarily complicated due to IE6 and
+  // others' broken String.prototype.split method
   var selectors = selector.split(',');
-  var i, j, k, tagName, tmp, tmp2, elements, element, classes, attributes;
+  var i, j, k, tagName, tmp, tmp2, elements, element, classes, attributes, attr, value;
   var result = [];
 
   for (i = 0; (selector = selectors[i]); i++) {
-    tagName = selector.strip().split(/^(\w*)\b/)[1] || '*';
-    tmp = selector.split(/\.(\w*)/);
+	tagName = selector.strip().split(/\b/)[0] || '*';
+	// Avoid trouble with empty delimiters in IE6
+    tmp = selector.replace(/^\./, "_.").split(/\./);
+
     classes = [];
     attributes = [];
 
-    for (j = 0; j < tmp.length-1; j += 2) {
-      classes.push(tmp[j+1]);
+    for (j = 1; j < tmp.length; j++) {
+      classes.push(tmp[j].split(/\b/)[0]);
     }
 
-    tmp = selector.split(/\[([^\[\]]*)\]/);
+	// Avoid problems with empty delimiters disappearing in IE6
+    tmp = selector.replace("][", "].[").split(/[\[\]]/);
 
     for (j = 0; j < tmp.length-1; j += 2) {
       tmp2 = tmp[j+1].split('=');
@@ -260,10 +265,23 @@ v2.$$ = function $$(selector, parent) {
       }
 
       for (k = 0; k < attributes.length; k++) {
-        if (!element.hasAttribute(attributes[k][0]) ||
-            (attributes[k][1] !== true && element.getAttribute(attributes[k][0]) !== attributes[k][1])) {
-          continue elementLoop;
-        }
+	    attr = attributes[k][0];
+		value = attributes[k][1];
+
+		if (element.hasAttribute) {
+          if (!element.hasAttribute(attr) ||
+              (value !== true && element.getAttribute(attr) !== value)) {
+            continue elementLoop;
+          }
+		} else {
+		  // IE6 makes it stink...
+		  attr = attr === 'for' ? 'htmlFor' : attr;
+
+          if (typeof element[attr] === 'undefined' ||
+              (value !== true && element[attr] !== value)) {
+            continue elementLoop;
+          }
+		}
       }
 
       if (result.indexOf(element) < 0) {

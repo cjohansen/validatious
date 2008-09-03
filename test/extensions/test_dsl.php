@@ -159,7 +159,7 @@ function testDslWithName() {
 }
 
 function testDslAddButtonButtonId() {
-    var form = validate("field1".is("required").andIs("email"));
+    var form = v2.dsl.validate("field1".is("required").andIs("email"));
     assertEquals(0, form.item.__buttons.length);
 
     form.on("next");
@@ -167,7 +167,7 @@ function testDslAddButtonButtonId() {
 }
 
 function testDslAddButtonButtonParentId() {
-    var form = validate("field1".is("required").andIs("email"));
+    var form = v2.dsl.validate("field1".is("required").andIs("email"));
     assertEquals(0, form.item.__buttons.length);
 
     form.on("nextWrapper");
@@ -175,7 +175,7 @@ function testDslAddButtonButtonParentId() {
 }
 
 function testDslAddButtonButtonElement() {
-    var form = validate("field1".is("required").andIs("email"));
+    var form = v2.dsl.validate("field1".is("required").andIs("email"));
     assertEquals(0, form.item.__buttons.length);
 
     form.on(v2.$("next"));
@@ -183,7 +183,7 @@ function testDslAddButtonButtonElement() {
 }
 
 function testDslAddButtonButtonParentElement() {
-    var form = validate("field1".is("required").andIs("email"));
+    var form = v2.dsl.validate("field1".is("required").andIs("email"));
     assertEquals(0, form.item.__buttons.length);
 
     form.on(v2.$("nextWrapper"));
@@ -191,7 +191,7 @@ function testDslAddButtonButtonParentElement() {
 }
 
 function testDslAddButtonButtonMixedArguments() {
-    var form = validate("field1".is("required").andIs("email"));
+    var form = v2.dsl.validate("field1".is("required").andIs("email"));
     assertEquals(0, form.item.__buttons.length);
 
     form.on(v2.$("nextWrapper"), "prev");
