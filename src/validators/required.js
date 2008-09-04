@@ -1,8 +1,5 @@
 /**
- * Validates that a field has a value
- *
- * When validating checkboxes with the required validator you can use it in
- * two ways: with no parameters
+ * Validates that a field has a value.
  *
  * @builtin
  */

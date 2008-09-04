@@ -1,5 +1,5 @@
 /**
- * Validates that a value is a valid URL
+ * Validates that a value is a valid URL.
  *
  * @builtin
  */

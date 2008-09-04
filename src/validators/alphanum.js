@@ -1,5 +1,5 @@
 /**
- * Validates that a value only contains letters and numbers
+ * Validates that a value only contains letters and numbers.
  *
  * @builtin
  */

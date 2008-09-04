@@ -106,11 +106,11 @@ v2.html = {
   validatorsFromString: function(names) {
     var prefixStr = v2.Validator.prefix;
     var prefix = new RegExp("^" + prefixStr, '');
-    var j, className, invert, params, validator, validators = [];
+    var i/*, j*/, className, invert, /*param, */params, validator, validators = [];
     names = names.split(' ');
 
     // Loop classes
-    for (j = 0; (className = names[j]); j++) {
+    for (i = 0; (className = names[i]); i++) {
       invert = false;
 
       // Don't continue without prefix if a prefix is configured
@@ -130,6 +130,13 @@ v2.html = {
       // Get parameters
       params = className.split('_');
       validator = params.shift();
+
+      /* Check if parameters reference elements
+      for (j = 0; (param = params[j]); j++) {
+        if (['#', '.'].indexOf(param[0]) >= 0) {
+          params[j] = param[0] == '#' ? v2.$(param.substring(1)) : v2.$$(param);
+        }
+      }*/
 
       if (validator && (validator = v2.$v(validator))) {
         validators.push({ validator: validator,
@@ -289,6 +296,7 @@ v2.html.Form = Base.extend(/** @scope v2.html.prototype */{
  */
 v2.addDOMLoadEvent(function() {
   var forms = document.getElementsByTagName('form');
+
   for (var i = 0, form; (form = forms[i]); i++) {
     if (v2.Element.hasClassName(form, v2.Form.autoValidateClass)) {
       new v2.html.Form(form);

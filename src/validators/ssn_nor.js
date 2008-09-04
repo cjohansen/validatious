@@ -1,7 +1,7 @@
 /**
- * Checks that a value is a valid norwegian social security number
+ * Validates that a value is a valid norwegian social security number.
  */
-v.reg('ssn-nor', function(field, value, params) {
+v2.Validator.reg('ssn-nor', function(field, value, params) {
   var ok = true;
   var weights1 = [3, 7, 6, 1, 8, 9, 4, 5, 2, 1, 0];
   var weights2 = [5, 4, 3, 2, 7, 6, 5, 4, 3, 2, 1];

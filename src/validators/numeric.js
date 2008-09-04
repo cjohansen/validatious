@@ -1,8 +1,8 @@
 /**
- * Validates that a value only contains numbers
+ * Validates that a value only contains numbers.
  *
  * @builtin
  */
 v2.Validator.reg('numeric', function(field, value, params) {
-  return /^[0-9]*$/.test(value);
+  return /^[0-9]*(\.[0-9]+)?$/.test(value);
 });
