@@ -80,7 +80,7 @@ function testCarRegnumNor() {
     assertTrue('a453 fails', validator.test(input));
 
     field.value = 'de234';
-    assertFalse('de234 passes', validator.test(input));
+    assertTrue('de234 fails', validator.test(input));
 
     field.value = 'AD 34567';
     assertTrue('AD 34567 fails', validator.test(input));
