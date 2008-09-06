@@ -1,6 +1,6 @@
 /**
  * @fileOverview This file contains various library functions Validatious uses
- * when in standalone mode. When bridging Validacious to frameworks you need
+ * when in standalone mode. When bridging Validatious to frameworks you need
  * to replicate the functionality in this file leveraging the frameworks custom
  * functionality. This will help you minimize duplication.
  */

@@ -1,0 +1,3 @@
+Validatious 0.9 beta - 2008-09-06
+
+* First public release

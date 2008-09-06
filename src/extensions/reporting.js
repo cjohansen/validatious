@@ -1,6 +1,10 @@
 /**
  * Error reporting features as a mixin. Add to components with
  * v2.Object.extend(myKlass, v2.ErrorReporting)
+ *
+ * @author Christian Johansen (christian@cjohansen.no)
+ * @version 0.9
+ * @license BSD
  */
 v2.ErrorReporting = {
   displayErrors: -1,          // How many error messages to display per item

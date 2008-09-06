@@ -232,6 +232,10 @@ function testRemoveClassName() {
     assertEquals('en tre', fs1.removeClassName('to').className);
 }
 
+function testPrevious() {
+    assertEquals(v2.$('apple_label'), v2.$('orange').previous());
+}
+
 function testFunctionBind() {
     var obj = { testStr: 'Object test' };
 
@@ -280,7 +284,7 @@ function testFunctionBindCache() {
       </fieldset>
       <fieldset id="fs2">
         <input type="radio" name="fruit" value="apple" id="apple" />
-        <label for="apple">Apple</label>
+        <label for="apple" id="apple_label">Apple</label>
         <input type="radio" name="fruit" value="orange" id="orange" />
         <label for="orange">Orange</label>
         <input type="radio" name="fruit" value="banana" id="banana" checked="checked" />
