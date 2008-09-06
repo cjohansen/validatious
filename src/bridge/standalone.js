@@ -235,8 +235,8 @@ v2.$$ = function $$(selector, parent) {
   var result = [];
 
   for (i = 0; (selector = selectors[i]); i++) {
-	tagName = selector.strip().split(/\b/)[0] || '*';
-	// Avoid trouble with empty delimiters in IE6
+    tagName = selector.strip().split(/\b/)[0] || '*';
+    // Avoid trouble with empty delimiters in IE6
     tmp = selector.replace(/^\./, "_.").split(/\./);
 
     classes = [];
@@ -246,7 +246,7 @@ v2.$$ = function $$(selector, parent) {
       classes.push(tmp[j].split(/\b/)[0]);
     }
 
-	// Avoid problems with empty delimiters disappearing in IE6
+    // Avoid problems with empty delimiters disappearing in IE6
     tmp = selector.replace("][", "].[").split(/[\[\]]/);
 
     for (j = 0; j < tmp.length-1; j += 2) {
@@ -265,23 +265,23 @@ v2.$$ = function $$(selector, parent) {
       }
 
       for (k = 0; k < attributes.length; k++) {
-	    attr = attributes[k][0];
-		value = attributes[k][1];
+        attr = attributes[k][0];
+        value = attributes[k][1];
 
-		if (element.hasAttribute) {
+        if (element.hasAttribute) {
           if (!element.hasAttribute(attr) ||
               (value !== true && element.getAttribute(attr) !== value)) {
             continue elementLoop;
           }
-		} else {
-		  // IE6 makes it stink...
-		  attr = attr === 'for' ? 'htmlFor' : attr;
+        } else {
+          // IE6 makes it stink...
+          attr = attr === 'for' ? 'htmlFor' : attr;
 
           if (typeof element[attr] === 'undefined' ||
               (value !== true && element[attr] !== value)) {
             continue elementLoop;
           }
-		}
+        }
       }
 
       if (result.indexOf(element) < 0) {
@@ -414,6 +414,20 @@ v2.Element = {
   scrollTo: function(el) {
     var pos = v2.Element.position(el);
     window.scrollTo(pos.x, pos.y);
+  },
+
+  /**
+   * Finds the previous element that has nodeType 1 (ie an element, no white
+   * space, comments or the like).
+   *
+   * @return element
+   */
+  previous: function(el) {
+    do {
+      el = el.previousSibling;
+    } while (el && el.nodeType !== 1);
+
+    return el;
   }
 };
 

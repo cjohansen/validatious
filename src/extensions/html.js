@@ -8,13 +8,11 @@
  * @author Christian Johansen (christian@cjohansen.no)
  * @version 0.1
  * @license BSD
- */
-/*!
+ *
  * Copyright (c) 2008, Christian Johansen
  * All rights reserved.
  * http://opensource.org/licenses/bsd-license.php
- */
-/**
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *

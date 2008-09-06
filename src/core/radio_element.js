@@ -69,7 +69,7 @@ v2.RadioElement = v2.InputElement.extend(/** @scope v2.RadioElement.prototype */
     var parent = this.__elements[0].parentNode;
 
     if (parent.tagName.toLowerCase() === 'li') {
-      return parent.parentNode.previousSibling;
+      return v2.$(parent.parentNode).previous();
     }
 
     return this.__elements[0].previousSibling;
