@@ -1,7 +1,7 @@
 $LOAD_PATH << File.expand_path(File.join(File.dirname(__FILE__), 'lib'))
 require 'vbuilder/vbuilder'
 require 'tmpdir'
-require 'file_utils'
+require 'fileutils'
 
 $verbose = true
 
@@ -71,22 +71,28 @@ task :release do
 
   if ENV['TARGET']
     # Copy files and create zip
-    target = File.join Dir.tmpdir, 'validatious'
+    target = Dir.tmpdir
+    target_file = File.expand_path(ENV['TARGET'])
+
     FileUtils.cp_r(File.dirname(__FILE__), target)
     Dir.chdir target
-    Dir.rm_r Dir.glob(File.join('**', '.svn'))
-    Dir.rm_r Dir.glob(File.join('**', '*interface*js'))
-    Dir.rm_r Dir.glob(File.join('**', 'lib/*prototype*js'))
-    Dir.rm_r Dir.glob(File.join('**', 'dist/*js'))
-    `zip -r #{File.join(ENV['TARGET', "validatious-#{version}-src.js"])}`
+
+    FileUtils.rm_r Dir.glob(File.join('**', '.svn'))
+    FileUtils.rm_r Dir.glob(File.join('**', '*interface*js'))
+    FileUtils.rm_r Dir.glob(File.join('**', 'lib/*prototype*js'))
+    FileUtils.rm_r Dir.glob(File.join('**', 'dist/*js'))
+
+    dirname = File.basename(File.dirname(__FILE__))
+    `zip -r #{File.join(target_file, 'validatious-' + version + '-src.js')} #{dirname}`
+
     Dir.chdir File.dirname(__FILE__)
-    FileUtils.rm_r target
+    FileUtils.rm_r File.join(target, dirname)
   end
 
   # Tag release in subversion
   `svn info` =~ /URL: (.*)\/trunk/
   repo = $1
-  `svn copy #{repo}/trunk #{repo}/tags/#{version} -m "Tagging #{version} release`
+  `svn copy #{repo}/trunk #{repo}/tags/#{version} -m "Tagging #{version} release"`
 end
 
 #
