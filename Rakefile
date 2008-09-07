@@ -1,6 +1,7 @@
 $LOAD_PATH << File.expand_path(File.join(File.dirname(__FILE__), 'lib'))
 require 'vbuilder/vbuilder'
 require 'tmpdir'
+require 'file_utils'
 
 $verbose = true
 
@@ -73,8 +74,13 @@ task :release do
     target = File.join Dir.tmpdir, 'validatious'
     FileUtils.cp_r(File.dirname(__FILE__), target)
     Dir.chdir target
-    directories = Dir.glob File.join('**', '.svn')
-    raise directories.inspect
+    Dir.rm_r Dir.glob(File.join('**', '.svn'))
+    Dir.rm_r Dir.glob(File.join('**', '*interface*js'))
+    Dir.rm_r Dir.glob(File.join('**', 'lib/*prototype*js'))
+    Dir.rm_r Dir.glob(File.join('**', 'dist/*js'))
+    `zip -r #{File.join(ENV['TARGET', "validatious-#{version}-src.js"])}`
+    Dir.chdir File.dirname(__FILE__)
+    FileUtils.rm_r target
   end
 
   # Tag release in subversion
