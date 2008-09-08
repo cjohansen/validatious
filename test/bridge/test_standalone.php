@@ -133,13 +133,15 @@ function testGetWith$() {
 
 function testGetWith$$() {
     var label = v2.$$('label[for=testEl]');
-    assertNotNull(label[0]);
-    assertEquals(document.getElementById('testElLabel'), label[0]);
+    assertNotNull('label[for=testEl] is null', label[0]);
+    assertEquals('label[for=testEl] is wrong element', document.getElementById('testElLabel'), label[0]);
+
     var nonExistent = v2.$$('label[for=someStuff]');
     assert('Non-existent label for some stuff exists', nonExistent === null || nonExistent.length === 0);
 
     var radios = v2.$$('input[type=radio][name=fruit]');
-    assertEquals(3, radios.length);
+    assertEquals('Should be 3 radio buttons', 3, radios.length);
+
     var el = document.getElementById('carrot');
     var flag = false;
 
@@ -150,10 +152,10 @@ function testGetWith$$() {
         }
     }
 
-    assertFalse(flag);
+    assertFalse('Radios does not contain correct elements', flag);
 
     var checkboxes = v2.$$('input[type=checkbox].g_test');
-    assertEquals(2, checkboxes.length);
+    assertEquals('Should be 2 checkboxes', 2, checkboxes.length);
 
     el = document.getElementById('pref3');
 
@@ -164,12 +166,12 @@ function testGetWith$$() {
         }
     }
 
-    assertFalse(flag);
+    assertFalse('Checkboxes does not contain correct elements', flag);
 
     var elements = v2.$$('input[name=testEl], select[name=single]');
-    assertEquals(2, elements.length);
-    assertEquals('testEl', elements[0].id);
-    assertEquals('single', elements[1].id);
+    assertEquals('input[name=testEl], select[name=single] should be 2 elements', 2, elements.length);
+    assertEquals('First element is wrong element', 'testEl', elements[0].id);
+    assertEquals('Second element is wrong element', 'single', elements[1].id);
 }
 
 function testComputedStyle() {

@@ -235,7 +235,9 @@ v2.$$ = function $$(selector, parent) {
   var result = [];
 
   for (i = 0; (selector = selectors[i]); i++) {
-    tagName = selector.strip().split(/\b/)[0] || '*';
+    // Opera splits on every character with \b
+    // tagName = selector.strip().split(/\b/)[0] || '*';
+    tagName = selector.strip().split(/[^a-zA-Z]/)[0] || '*';
     // Avoid trouble with empty delimiters in IE6
     tmp = selector.replace(/^\./, "_.").split(/\./);
 
@@ -243,7 +245,7 @@ v2.$$ = function $$(selector, parent) {
     attributes = [];
 
     for (j = 1; j < tmp.length; j++) {
-      classes.push(tmp[j].split(/\b/)[0]);
+      classes.push(tmp[j].split(/[^a-zA-Z\-_]/)[0]);
     }
 
     // Avoid problems with empty delimiters disappearing in IE6

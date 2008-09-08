@@ -45,7 +45,7 @@ class ValidatiousBuilder
 
   def assemble(filename = nil, minify = true)
     fname = filename || 'tmp.min.js'
-    Validator.join(File.join(@basedir, 'src/validators/standard.js'), @validators)
+    V2::Validator.join(File.join(@basedir, 'src/validators/standard.js'), @validators)
 
     files = (@library + @core + ['validators/standard'] +
              ["messages/errors.#{@language}"] + @extensions).collect do |file|

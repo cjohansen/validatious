@@ -35,9 +35,22 @@ function scripts($additional = array()) {
 
 function get_script_tags($scripts, $path) {
     $str = '';
+    $param = '?cache_buster=' . rand_str();
 
     foreach ($scripts as $script) {
-        $str .= "    <script type=\"text/javascript\" src=\"$path$script.js\"></script>\n";
+        $str .= "    <script type=\"text/javascript\" src=\"$path$script.js$param\"></script>\n";
+    }
+
+    return $str;
+}
+
+function rand_str() {
+    $chars = "abcdefghijklmnopqrstuvwxyz0123456789";
+    srand((double)microtime()*1000000);
+    $str = '' ;
+
+    while (strlen($str) < 8) {
+        $str .= substr($chars, rand() % 33, 1);
     }
 
     return $str;

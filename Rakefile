@@ -16,7 +16,7 @@ namespace :build do
 
   desc 'Joins standard (builtin) validators to the file src/validators/standard.js'
   task :validators do
-    Validator.join(File.join(File.dirname(__FILE__), 'src/validators/standard.js'))
+    V2::Validator.join(File.join(File.dirname(__FILE__), 'src/validators/standard.js'))
   end
 
   desc 'Builds the minified standalone core (no extensions)'

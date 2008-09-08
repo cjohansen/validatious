@@ -65,7 +65,15 @@ v2.Object = {
    * @return the extended object
    */
   extend: function(obj, props, safe) {
-    return Object.extend(obj, props);
+    var newProps = {};
+
+    for (var p in props) {
+      if (typeof props[p] !== 'undefined') {
+        newProps[p] = props[p];
+      }
+    }
+
+    return Object.extend(obj, newProps);
   }
 };
 
