@@ -83,7 +83,7 @@ task :release do
     FileUtils.rm_r Dir.glob(File.join('**', 'dist/*js'))
 
     dirname = File.basename(File.dirname(__FILE__))
-    `zip -r #{File.join(target_file, 'validatious-' + version + '-src.js')} #{dirname}`
+    `zip -r #{File.join(target_file, 'validatious-' + version + '-src.zip')} #{dirname}`
 
     Dir.chdir File.dirname(__FILE__)
     FileUtils.rm_r File.join(target, dirname)
