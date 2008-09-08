@@ -12,12 +12,13 @@ end
 def File.merge(files, target, minify = true)
   tmp = "#{target}.tmp"
   tmp = target unless minify
+  jar_dir = File.expand_path(File.join(File.dirname(__FILE__), '..'))
 
   # Write concatenated contents to tmp file
   File.open(tmp, 'w') { |f| f.puts(File.cat(files)) }
 
   # Minify with YUI Compressor
-  `java -jar lib/yuicompressor-2.3.6.jar --charset latin1 --type js -o #{target} #{tmp}` if minify
+  `java -jar #{jar_dir}/yuicompressor-2.3.6.jar --charset latin1 --type js -o #{target} #{tmp}` if minify
 
   # TMP: Correct YUIC mistake on regexes
   contents = File.read(target)
