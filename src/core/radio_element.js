@@ -59,7 +59,7 @@ v2.RadioElement = v2.InputElement.extend(/** @scope v2.RadioElement.prototype */
    *
    *   <label class="groupLabel">Favourite food:</label>
    *   <input type="radio" name="food" value="hamburger" id="food_hamburger" />
-   *   <label for="food_hamburger">Haburger</label>
+   *   <label for="food_hamburger">Hamburger</label>
    *   <input type="radio" name="food" value="pizza" id="food_pizza" />
    *   <label for="food_pizza">Pizza</label>
    *
@@ -72,7 +72,8 @@ v2.RadioElement = v2.InputElement.extend(/** @scope v2.RadioElement.prototype */
       return v2.$(parent.parentNode).previous();
     }
 
-    return this.__elements[0].previousSibling;
+    var element = v2.$(this.__elements[0]).previous();
+    return element || this.base();
   },
 
   /**
