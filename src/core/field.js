@@ -99,7 +99,7 @@ v2.Field = v2.CompositeFormItem.extend(/** @scope v2.Field.prototype */{
     }
 
     this.__monitored = true;
-    var obj = this.parent.type === 'fieldset' ? this.parent : this;
+    var obj = this.parent && this.parent.type === 'fieldset' ? this.parent : this;
 
     this.element.monitor(obj.validate.bind(this));
   }
