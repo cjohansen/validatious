@@ -195,16 +195,18 @@ v2.html.Form = Base.extend(/** @scope v2.html.prototype */{
         continue;
       }
 
-      field = new v2.Field(element);
+      fieldValidators = validators.concat(v2.html.validatorsFromString(element.className));
 
-      // Custom error messages may be specified through the title attribute
-      // for input/select/textarea elements
-      v2.html.applyValidators(validators.concat(v2.html.validatorsFromString(element.className)), field, element.title);
+      if (fieldValidators.length > 0) {
+        field = new v2.Field(element);
 
-      this.__parsed[element.id || element.name] = true;
+        // Custom error messages may be specified through the title attribute
+        // for input/select/textarea elements
+        v2.html.applyValidators(fieldValidators, field, element.title);
 
-      // Add to collection
-      if (field.get(0)) {
+        this.__parsed[element.id || element.name] = true;
+
+        // Add to collection
         collection.add(field);
       }
     }

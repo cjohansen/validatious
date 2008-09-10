@@ -138,7 +138,7 @@ v2.InputElement = Base.extend(/** @scope v2.InputElement.prototype */{
       return idNameEl;
     }
 
-    var element = v2.$(idNameEl), id, field, elements, selector;
+    var element = v2.$(idNameEl), id, field, elements, selector, className, pattern;
 
     // Argument was name string
     if (!element) {
@@ -174,7 +174,9 @@ v2.InputElement = Base.extend(/** @scope v2.InputElement.prototype */{
       field = new v2.RadioElement(elements);
     } else if (element.type && element.type == 'checkbox') {
       // Checkboxes
-      elements = v2.$$('input[type=checkbox].g_' + element.className.match(/\bg_([^\s]*)\b/)[1], element.form);
+      className = element.className;
+      pattern = /\bg_([^\s]*)\b/;
+      elements = pattern.test(className) ? v2.$$('input[type=checkbox].g_' + className.match(pattern)[1], element.form) : [element];
       field = new v2.CheckboxElement(elements);
     } else {
       // Input elements (text inputs)
