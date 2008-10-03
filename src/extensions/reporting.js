@@ -34,14 +34,18 @@ v2.ErrorReporting = {
     parent.addClassName(this.failureClass);
     parent.removeClassName(this.successClass);
 
-    var list = document.createElement('ul');
-    list.id = this.__getId();
-    list.className = this.messagesClass;
-
-    // Set number of errors to display. -1 is all, maximum is all
+    // Set number of errors to display. -1 is all, maximum is all. Abort if 0
     var count = this.displayErrors;
     var max = this.__errors.length;
     count = count < 0 || count > max ? max : count;
+
+    if (count === 0) {
+      return;
+    }
+
+    var list = document.createElement('ul');
+    list.id = this.__getId();
+    list.className = this.messagesClass;
 
     for (i = 0; i < count; i++) {
       error = messages[i];

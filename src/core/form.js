@@ -16,6 +16,7 @@ v2.Form = v2.CompositeFormItem.extend(/** @scope v2.Form.prototype */{
     this.__form = v2.$(form);
     this.__form.observe('submit', this.validate.bind(this));
     this.__buttons = [];
+    this.__activeButton = null;
   },
 
   /**
@@ -25,8 +26,12 @@ v2.Form = v2.CompositeFormItem.extend(/** @scope v2.Form.prototype */{
    *
    * @param {InputElement} button An input element
    */
-  addButton: function(input) {
-    this.__buttons.push(input);
+  addButton: function(button) {
+    this.__buttons.push(button);
+
+    v2.Element.observe(button, 'click', (function(e) {
+      this.__activeButton = button;
+    }).bind(this));
   },
 
   /**
@@ -38,10 +43,12 @@ v2.Form = v2.CompositeFormItem.extend(/** @scope v2.Form.prototype */{
    */
   validate: function() {
     var event = arguments.length > 0 ? arguments[0] : null;
-    var target = v2.target(event);
     var buttons = this.__buttons;
+    var button = this.__activeButton;
+    this.__activeButton = null;
 
-    if (buttons.length > 0 && target && buttons.indexOf(target) < 0) {
+    if (buttons.length > 0 &&
+        buttons.indexOf(button) < 0) {
       return true;
     }
 

@@ -38,14 +38,15 @@ v2.array = function array(data) {
  *
  * @param {Event} e
  * @return {Element} the original target element
- */
+ *
+ * NB! This relies on proprietary functionality and is discouraged
 v2.target = function(e) {
   if (!e) {
     return null;
   }
 
   return e.explicitOriginalTarget || e.srcElement || e.target || null;
-};
+};*/
 
 /**
  * Provides som object level operations. Only used inside this file. When

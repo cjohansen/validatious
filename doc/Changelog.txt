@@ -1,3 +1,15 @@
-Validatious 0.9 beta - 2008-09-06
+### Validatious 0.9.1 - 2008-10-03
 
-* First public release
+[Core] Added click events to buttons in v2.Form.prototype.addButton to track
+       which button caused a submit.
+
+[Core] Removed v2.target() which relied on proprietary functionality (ie, bad
+       cross browsersness)
+
+[Reporting] onFailure no longer creates an empty list if it's configured to
+            display 0 messages.
+
+
+### Validatious 0.9 beta - 2008-09-06
+
+First public release
