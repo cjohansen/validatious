@@ -1,10 +1,14 @@
-### Validatious 0.9.1 - 2008-10-03
+### Validatious 0.9.1 - 2008-10-07
 
 [Core] Added click events to buttons in v2.Form.prototype.addButton to track
        which button caused a submit.
 
 [Core] Removed v2.target() which relied on proprietary functionality (ie, bad
        cross browsersness)
+
+[Core] Wrapped v2.Field.prototype.validate in an anonymous function when run as
+       an event handler for field elements to avoid a false return value to
+       break radio buttons and checkboxes in IE6+7
 
 [Reporting] onFailure no longer creates an empty list if it's configured to
             display 0 messages.
