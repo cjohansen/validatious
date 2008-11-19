@@ -1,3 +1,12 @@
+### Validatious 0.9.2 - 2008-12-xx
+
+[Bridges] Added Mootools bridge
+
+[Core] Removed event handler for change event on radio buttons and checkboxes
+       to (very slightly) improve performance
+
+[Core] Cleaned up source - removed some outdated code and files
+
 ### Validatious 0.9.1 - 2008-10-07
 
 [Core] Added click events to buttons in v2.Form.prototype.addButton to track

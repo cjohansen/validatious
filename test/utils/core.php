@@ -3,6 +3,7 @@ function scripts($additional = array()) {
     $bridges = array();
     $bridges['standalone'] = array(array(), array('lib/add_dom_load_event', 'lib/Base', 'lib/events', 'bridge/standalone'));
     $bridges['prototype'] = array(array('lib/prototype'), array('lib/Base', 'lib/prototype', 'bridge/prototype'));
+    $bridges['mootools'] = array(array('lib/mootools'), array('lib/Base', 'lib/mootools', 'bridge/mootools'));
 
     $core = array('core/v2', 'core/interface', 'core/composite.interface',
                   'core/field_element.interface', 'core/form_item.interface',
