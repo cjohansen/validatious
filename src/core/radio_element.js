@@ -12,7 +12,7 @@ v2.RadioElement = v2.InputElement.extend(/** @scope v2.RadioElement.prototype */
    */
   constructor: function(elements) {
     // Regular initialization, override events
-    this.base(elements, ['click', 'change']);
+    this.base(elements, ['click']);
   },
 
   /**

@@ -42,24 +42,7 @@ v2.array = function array(data) {
 };
 
 /**
- * Fetches the original target for an event
- *
- * @param {Event} e
- * @return {Element} the original target element
- *
- * NB! This relies on proprietary functionality and is discouraged
-v2.target = function(e) {
-  if (!e) {
-    return null;
-  }
-
-  return e.explicitOriginalTarget || e.srcElement || e.target || null;
-};*/
-
-/**
- * Provides som object level operations. Only used inside this file. When
- * bridging, this object may be omitted if it's usage is removed from this
- * file. It is not referred from the main v2 file.
+ * Provides some object level operations.
  */
 v2.Object = {
   /**

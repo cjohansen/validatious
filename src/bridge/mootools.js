@@ -1,5 +1,5 @@
 /**
- * @fileOverview Prototype bridge for validatious
+ * @fileOverview Mootools bridge for validatious
  */
 // Global namespace
 if (typeof v2 === 'undefined' || v2 === null) {
@@ -10,7 +10,7 @@ if (typeof v2 === 'undefined' || v2 === null) {
  * Checks if a string is undefined, null or empty
  */
 v2.empty = function empty(obj) {
-  return typeof obj == 'undefined' || obj === null || obj === '';
+  return !$defined(obj) || obj === '';
 };
 
 /**
@@ -22,16 +22,7 @@ v2.empty = function empty(obj) {
  * @param {Object} data
  * @return {Array} data if it is an array or an array with data as only element
  */
-v2.array = function array(data) {
-  if (!v2.empty(data) && data.push) {
-    return data;
-  }
-
-  data = typeof data == 'string' ? [data] : data;
-  var arr = $A(data);
-
-  return !v2.empty(data) && arr.length === 0 ? $A([data]) : arr;
-};
+v2.array = $splat;
 
 /**
  * Provides some object level operations.
@@ -44,7 +35,7 @@ v2.Object = {
    * @param {Object}  obj   Source object
    * @param {Object}  props Object literal with properties to add
    * @param {boolean} safe  If true then properties will not be overwritten
-   *                        Default is false. Prototype implementation does not
+   *                        Default is false. Mootools implementation does not
    *                        support this feature
    * @return the extended object
    */
@@ -57,9 +48,12 @@ v2.Object = {
       }
     }
 
-    return Object.extend(obj, newProps);
+    return $extend(obj, newProps);
   }
 };
+
+String.prototype.strip = String.prototype.trim;
+
 
 /**
  * Basically wraps document.getElementById
@@ -71,20 +65,13 @@ v2.$ = function(el, extend) {
 };
 
 /**
- * Uses Element.select
+ * Uses Element.getElements (requires the selector engine)
  */
 v2.$$ = function $$(query, parent) {
-  return Element.select(parent || document, query);
+  return $(parent || document).getElements(query);
 };
 
 v2.Element = {
-  /**
-   * Delegates to prototypes Element.getStyle
-   */
-  computedStyle: function(element, property) {
-    return Element.getStyle(element, property);
-  },
-
   /**
    * Checks if an element is visible by checking that its display property
    * isn't set to none, that it's visibility property is not hidden and that
@@ -100,34 +87,62 @@ v2.Element = {
            Element.getStyle(el, 'visibility') != 'hidden' &&
            (el.parentNode === null ||
             el.parentNode.nodeType != 1 ||
-            Element.visible(el.parentNode));
-  },
-
-  /**
-   * Returns the elements position
-   *
-   * @param {Element} el The element to find position for
-   * @return an object with x and y properties
-   */
-  position: function(el) {
-    var pos = { x: 0, y: 0 };
-
-    while (el !== null) {
-      pos.x += el.offsetLeft;
-      pos.y += el.offsetTop;
-      el = el.offsetParent;
-    }
-
-    return pos;
+            v2.Element.visible(el.parentNode));
   }
 };
 
-Element.addMethods(v2.Element);
+v2.Element.observe = Element.addEvent;
+v2.Element.computedStyle = Element.getStyle;
+v2.Element.previous = Element.getPrevious;
+v2.Element.addClassName = Element.addClass;
+v2.Element.hasClassName = Element.hasClass;
+v2.Element.removeClassName = Element.removeClass;
+v2.Element.position = Element.getPosition;
+
+Element.implement({
+  observe: function(event, handler) {
+    return this.addEvent(event, handler);
+  },
+
+  computedStyle: function(property) {
+    return this.getStyle(property);
+  },
+
+  previous: function() {
+    return this.getPrevious();
+  },
+
+  addClassName: function(className) {
+    return this.addClass(className);
+  },
+
+  hasClassName: function(className) {
+    return this.hasClass(className);
+  },
+
+  removeClassName: function(className) {
+    return this.removeClass(className);
+  },
+
+  position: function() {
+    return this.getPosition();
+  },
+
+  visible: function() {
+    return v2.Element.visible(this);
+  }
+});
+
+/**
+ * Make sure elements returned from Mootools dollar functions have required
+ * functionality.
+ */
+//Element.implement(v2.Element);
 Object.extend(v2.Element, Element);
 
 /**
  * Dom content loaded event
  */
 v2.addDOMLoadEvent = function(event) {
-  document.observe("dom:loaded", event);
+  window.addEvent('domready', event);
 };
