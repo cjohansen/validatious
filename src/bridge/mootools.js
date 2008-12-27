@@ -98,6 +98,7 @@ v2.Element.addClassName = Element.addClass;
 v2.Element.hasClassName = Element.hasClass;
 v2.Element.removeClassName = Element.removeClass;
 v2.Element.position = Element.getPosition;
+v2.Element.scrollTo = Element.scrollTo;
 
 Element.implement({
   observe: function(event, handler) {
@@ -130,6 +131,11 @@ Element.implement({
 
   visible: function() {
     return v2.Element.visible(this);
+  },
+
+  scrollTo: function(el) {
+    var pos = Element.position(el);
+    window.scrollTo(pos.x, pos.y);
   }
 });
 

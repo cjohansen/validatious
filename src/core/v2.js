@@ -11,6 +11,6 @@
  * @license BSD
  */
 v2.Object.extend(v2, {
-  version: '0.9 beta',
+  version: '0.9.2',
   name: 'Validatious 2.0'
 });

@@ -214,7 +214,6 @@ function testFieldset() {
     assertFalse('Field 6 passes validation', field6.test());
     assertFalse('Field 7 has error on parent', v2.$('f7').hasClassName(errorClass));
     assertFalse('Field 7 passes validation', field7.test());
-
     assertTrue('f567 does not have error', v2.$('f567').hasClassName(errorClass));
 }
     </script>

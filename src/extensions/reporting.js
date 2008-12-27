@@ -95,7 +95,7 @@ v2.ErrorReporting = {
    * Creates an ID string for error lists
    */
   __getId: function() {
-    var input = this.element.getElements ? this.element.getElements()[0] : null;
+    var input = this.element instanceof v2.InputElement ? this.element.getElements()[0] : null;
     var parent = input || this.getParent();
     var className = parent.className;
 
