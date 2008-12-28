@@ -4,6 +4,7 @@
  * @implements v2.Composite
  * @implements v2.FormItem
  * @implements v2.FieldElement
+ * @depends input_element.js
  */
 v2.RadioElement = v2.InputElement.extend(/** @scope v2.RadioElement.prototype */{
   /**

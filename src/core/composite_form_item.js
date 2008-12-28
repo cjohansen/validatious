@@ -7,6 +7,8 @@
  *
  * The private boolean __passOnAny is used to serve the passOnAny() method. It's
  * default value is false.
+ *
+ * @depends v2.js
  */
 v2.CompositeFormItem = Base.extend(/** @scope v2.CompositeFormItem.prototype */{
   type: 'generic', // Makes for easier type checking

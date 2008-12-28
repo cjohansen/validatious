@@ -2,6 +2,7 @@
  * Checkbox input controls
  *
  * @implements v2.FieldElement
+ * @depends input_element.js
  */
 v2.CheckboxElement = v2.RadioElement.extend(/** @scope v2.CheckboxElement.prototype */{
 

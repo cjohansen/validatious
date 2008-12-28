@@ -1,5 +1,7 @@
 /**
  * English default error messages
+ *
+ * @depends ../core/message.js
  */
 v2.$msg({
   'alpha': '${field} should only contain letters',

@@ -5,6 +5,9 @@
  * @author Christian Johansen (christian@cjohansen.no)
  * @version 0.9
  * @license BSD
+ * @depends ../core/form.js
+ * @depends ../core/fieldset.js
+ * @depends ../core/field.js
  */
 v2.ErrorReporting = {
   displayErrors: -1,          // How many error messages to display per item

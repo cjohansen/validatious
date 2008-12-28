@@ -1,5 +1,7 @@
 /**
  * Norwegian default error messages
+ *
+ * @depends ../core/message.js
  */
 v2.$msg({
   'alpha': '${field} skal bare inneholde bokstaver',

@@ -5,6 +5,8 @@
  * @author Christian Johansen (christian@cjohansen.no)
  * @version 0.9
  * @license BSD
+ * @depends ../core/field.js
+ * @depends ../core/form.js
  */
 
 /**

@@ -4,6 +4,7 @@
  * <code>${max}</code>.
  *
  * @builtin
+ * @depends ../core/validator.js
  */
 v2.Validator.reg('max-length', function(field, value, params) {
   return value.length < params[0];

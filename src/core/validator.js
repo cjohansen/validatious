@@ -1,6 +1,9 @@
 /**
  * @class A validator encapsulates the logic required to validate a value with
  * some parameters.
+ *
+ * @depends v2.js
+ * @depends message.js
  */
 v2.Validator = Base.extend(/** @scope v2.Validator.prototype */{
   constructor: function(name, fn, message, params, aliases) {

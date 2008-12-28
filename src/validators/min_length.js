@@ -4,6 +4,7 @@
  * <code>${min}</code>.
  *
  * @builtin
+ * @depends ../core/validator.js
  */
 v2.Validator.reg('min-length', function(field, value, params) {
   return value.length >= params[0];

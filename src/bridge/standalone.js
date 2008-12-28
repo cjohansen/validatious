@@ -3,6 +3,10 @@
  * when in standalone mode. When bridging Validatious to frameworks you need
  * to replicate the functionality in this file leveraging the frameworks custom
  * functionality. This will help you minimize duplication.
+ *
+ * @depends ../lib/add_dom_load_event.js
+ * @depends ../lib/Base.js
+ * @depends ../lib/events.js
  */
 // Global namespace
 if (typeof v2 === 'undefined' || v2 === null) {

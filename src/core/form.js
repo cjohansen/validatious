@@ -1,6 +1,8 @@
 /**
  * Forms with validation logic. Implements the v2.Composite and v2.FormItem
  * interfaces.
+ *
+ * @depends composite_form_item.js
  */
 v2.Form = v2.CompositeFormItem.extend(/** @scope v2.Form.prototype */{
   type: 'form', // Eases type checking

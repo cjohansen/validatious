@@ -5,6 +5,7 @@
  *
  * @implements v2.Composite
  * @implements v2.FormItem
+ * @depends composite_form_item.js
  */
 v2.Fieldset = v2.CompositeFormItem.extend(/** @scope v2.Fieldset.prototype */{
   type: 'fieldset', // Makes for easier typechecking

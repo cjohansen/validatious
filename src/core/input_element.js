@@ -2,6 +2,7 @@
  * Generic input control
  *
  * @implements v2.FieldElement
+ * @depends composite_form_item.js
  */
 v2.InputElement = Base.extend(/** @scope v2.InputElement.prototype */{
 

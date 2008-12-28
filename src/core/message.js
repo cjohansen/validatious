@@ -1,6 +1,8 @@
 /**
  * @class The message object store an error message with interpolated
  * parameters.
+ *
+ * @depends v2.js
  */
 v2.Message = Base.extend(/** @scope v2.Message */{
   /**

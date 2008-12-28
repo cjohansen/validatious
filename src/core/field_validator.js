@@ -1,6 +1,10 @@
 /**
  * @class Represents a single field and validator along with an optional custom
  * error message when the default message is not suitable.
+ *
+ * @depends field.js
+ * @depends validator.js
+ * @depends message.js
  */
 v2.FieldValidator = Base.extend(/** @scope v2.FieldValidator.prototype */{
   invert: false,

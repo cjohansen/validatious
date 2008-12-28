@@ -3,6 +3,8 @@
  *
  * @implements v2.Composite
  * @implements v2.FormItem
+ * @depends composite_form_item.js
+ * @depends input_element.js
  */
 v2.Field = v2.CompositeFormItem.extend(/** @scope v2.Field.prototype */{
   validateHidden: false,      // If a field should be validated even if it's not
@@ -100,10 +102,10 @@ v2.Field = v2.CompositeFormItem.extend(/** @scope v2.Field.prototype */{
 
     this.__monitored = true;
     var obj = this.parent && this.parent.type === 'fieldset' ? this.parent : this;
-	var validate = obj.validate.bind(this);
+    var validate = obj.validate.bind(this);
 
     this.element.monitor(function(e) {
-		validate(e);
-	});
+        validate(e);
+    });
   }
 });

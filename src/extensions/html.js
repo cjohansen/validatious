@@ -8,6 +8,9 @@
  * @author Christian Johansen (christian@cjohansen.no)
  * @version 0.9
  * @license BSD
+ * @depends ../core/validator.js
+ * @depends ../core/form.js
+ * @depends ../core/message.js
  */
 
 /**

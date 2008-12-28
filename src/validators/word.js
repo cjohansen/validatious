@@ -3,6 +3,7 @@
  * underscores and dashes.
  *
  * @builtin
+ * @depends ../core/validator.js
  */
 v2.Validator.reg('word', function(field, value, params) {
   return /^([a-zA-Z\u00A1-\uFFFF0-9_\-\s\t])*$/.test(value);

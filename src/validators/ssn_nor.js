@@ -1,5 +1,7 @@
 /**
  * Validates that a value is a valid norwegian social security number.
+ *
+ * @depends ../core/validator.js
  */
 v2.Validator.reg('ssn-nor', function(field, value, params) {
   var ok = true;
