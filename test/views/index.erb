@@ -1,0 +1,11 @@
+<h1>Validatious 2.0 test suite</h1>
+<ul>
+  <li><%= suite_link "Full test suite, all bridges, both full and minified sources", :full %></li>
+  <li><%= suite_link "Full test suite, all bridges, only full sources", :full, "full" %></li>
+  <li><%= suite_link "Full test suite, all bridges, only minified sources", :full, "minified" %></li>
+  <% @bridges.each do |bridge| %>
+    <% bridge_name = bridge == "standalone" ? "Standalone" : "#{bridge.capitalize} bridge" %>
+    <li><%= suite_link "#{bridge_name} test suite, full sources", bridge, "full" %></li>
+    <li><%= suite_link "#{bridge_name} test suite, minified sources", bridge, "minified" %></li>
+  <% end %>
+</ul>

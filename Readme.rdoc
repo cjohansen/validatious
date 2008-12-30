@@ -1,0 +1,54 @@
+= Validatious 2.0
+
+Validatious 2.0 is a JavaScript library that provides very flexible unobtrusive
+client side form validation.
+
+== Features
+
+* Library agnostic (there's even a standalone version)
+* Multilingual (just include the right language file alongside the core file)
+* Easy to create custom validators (just use v2.Validator.add())
+* Easy to validate forms with semantic HTML (use class names to annotate
+  validation)
+* Create complex validations using a simple DSL
+* Completely unobtrusive
+* Modular - take only the pieces you need (don't need DSL features? Don't
+  download it!)
+* Easy to configure error reporting
+* Easy to create completely custom error reporting using callbacks (per form,
+  per fieldset, per field - your choice)
+* Can make a lot of good guesses about field names, error messages and more -
+  or you can provide your own.
+* Makes no assumptions you cannot override.
+* Good test coverage
+* Cross browser
+
+== Library agnostic
+
+Validatious was originally built standalone. A small standalone library gives
+Validatious essential tools. However, if you're already using a library there's
+no need to duplicate efforts. For this reason, bridges have been built to both
+MooTools and Prototype.js. These bridges simply map the API of the standalone
+library, allowing you to shave off a few kB's on the total file size.
+
+If Validatious doesn't have a bridge to your favourite library, don't panic! You
+don't actually need one, it's only convenient as a measure to save a few kB's.
+
+Validatious is designed to be truly unobtrusive, meaning it should work
+regardless of what other code you're running on your site. As long as you don't
+override the v2 object, everything should work nicely. You can, for instance,
+use jQuery along with Validatious standalone without problems.
+
+== Tests
+
+To run tests you need Ruby. Because Validatious is shipped both standalone, as
+well with bridges for Prototype.js and Mootools, it's important to be able to
+run the whole test suite against different sets of scripts. For this reason a
+small web application has been built using Sinatra.
+
+* Install Ruby
+* Install RubyGems
+* gem install sinatra
+* gem install juicer
+* ruby test/validatious-suite.rb
+* Go to http://localhost:4567 and click on the suite you'd like to test

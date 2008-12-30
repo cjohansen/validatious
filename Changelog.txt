@@ -1,4 +1,4 @@
-### Validatious 0.9.2 - 2008-12-xx
+### Validatious 0.9.2 - 2008-12-30
 
 [Bridges] Added Mootools bridge
 
@@ -6,6 +6,10 @@
        to (very slightly) improve performance
 
 [Core] Cleaned up source - removed some outdated code and files
+
+[Backend] Ported test backend from PHP to Ruby via Sinatra
+
+[Backend] Cleaned up Rakefile and distribution builder
 
 ### Validatious 0.9.1 - 2008-10-07
 

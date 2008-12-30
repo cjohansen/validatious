@@ -1,5 +1,6 @@
 #
 # Joins the content of several files with a newline between
+# TODO: Use Juicer API instead
 #
 def File.cat(*files)
   files = files[0] if files.respond_to?(:push)
@@ -9,6 +10,10 @@ def File.cat(*files)
   end
 end
 
+#
+# Merge files into a single minified file
+# TODO: Use Juicer API instead
+#
 def File.merge(files, target, minify = true)
   tmp = "#{target}.tmp"
   tmp = target unless minify
@@ -32,7 +37,7 @@ def File.merge(files, target, minify = true)
 /**
  * TERMS OF USE - Validatious 2.0
  * Open source under the BSD License.
- * Copyright 2008 Christian Johansen.
+ * Copyright 2008-2009 Christian Johansen.
  * All rights reserved.
  */
 EOF

@@ -4,11 +4,14 @@ require 'tmpdir'
 require 'fileutils'
 
 $verbose = true
+bridges = Dir.glob("src/bridge/*.js").collect do |bridge|
+  File.basename(bridge).sub(/\.js$/, "")
+end
 
 task :default => :build
 
 desc 'Builds all files'
-task :build => ['build:standalone:all', 'build:prototype:all'] do
+task :build => ["build:standalone:all"].concat(bridges.collect { |bridge| "build:#{bridge}:all" }) do
   # It's all in the prerequisites
 end
 
@@ -19,75 +22,39 @@ namespace :build do
     V2::Validator.join(File.join(File.dirname(__FILE__), 'src/validators/standard.js'))
   end
 
-  desc 'Builds the minified standalone core (no extensions)'
-  task :standalone do
-    builder = ValidatiousBuilder.new(File.dirname(__FILE__))
-    builder.assemble(File.join(builder.basedir, "dist/v2.standalone#{suffix}"), minify?)
-  end
-
-  desc 'Builds the minified prototype core (no extensions)'
-  task :prototype do
-    builder = ValidatiousBuilder.new(File.dirname(__FILE__))
-    builder.set_library :prototype
-    builder.assemble(File.join(builder.basedir, "dist/v2.prototype#{suffix}"), minify?)
-  end
-
-  namespace :standalone do
-
-    desc 'Builds all the standalone files'
-    task :all => ['build:standalone', 'build:standalone:full'] do
-      # It's all in the prerequisites...
-    end
-
-    desc 'Builds the minified standalone core with all extensions'
-    task :full do
+  #
+  # Define individual build tasks for each supported library
+  #
+  bridges.each do |bridge|
+    desc "Builds the minified #{bridge} core (no extensions)"
+    task bridge.to_sym do
       builder = ValidatiousBuilder.new(File.dirname(__FILE__))
-      builder.add_extension(:reporting, :html, :dsl)
-      builder.assemble(File.join(builder.basedir, "dist/v2.standalone.full#{suffix}"), minify?)
-    end
-  end
-
-  namespace :prototype do
-
-    desc 'Builds all the prototype files'
-    task :all => ['build:prototype', 'build:prototype:full'] do
-      # It's all in the prerequisites...
+      builder.set_library(bridge.to_sym)
+      builder.assemble(File.join(builder.basedir, "dist/v2.#{bridge}#{suffix}"), minify?)
     end
 
-    desc 'Builds the minified prototype core with all extensions'
-    task :full do
-      builder = ValidatiousBuilder.new(File.dirname(__FILE__))
-      builder.set_library :prototype
-      builder.add_extension(:reporting, :html, :dsl)
-      builder.assemble(File.join(builder.basedir, "dist/v2.prototype.full#{suffix}"), minify?)
+    namespace bridge.to_sym do
+      desc "Builds all the #{bridge} files"
+      task :all => ["build:#{bridge}", "build:#{bridge}:full"] do
+        # It's all in the prerequisites...
+      end
+
+      desc "Builds the minified #{bridge} core with all extensions"
+      task :full do
+        builder = ValidatiousBuilder.new(File.dirname(__FILE__))
+        builder.set_library(bridge)
+        builder.add_extension(:reporting, :html, :dsl)
+        builder.assemble(File.join(builder.basedir, "dist/v2.#{bridge}.full#{suffix}"), minify?)
+      end
     end
+
   end
 end
 
 desc 'Produces a new release of validatious'
 task :release do
-  raise 'Usage: rake release VERSION=x.y.z [TARGET=dir]' unless ENV.key? 'VERSION'
+  raise 'Usage: rake release VERSION=x.y.z' unless ENV.key? 'VERSION'
   version = ENV['VERSION']
-
-  if ENV['TARGET']
-    # Copy files and create zip
-    target = Dir.tmpdir
-    target_file = File.expand_path(ENV['TARGET'])
-
-    FileUtils.cp_r(File.dirname(__FILE__), target)
-    Dir.chdir target
-
-    FileUtils.rm_r Dir.glob(File.join('**', '.svn'))
-    FileUtils.rm_r Dir.glob(File.join('**', '*interface*js'))
-    FileUtils.rm_r Dir.glob(File.join('**', 'lib/*prototype*js'))
-    FileUtils.rm_r Dir.glob(File.join('**', 'dist/*js'))
-
-    dirname = File.basename(File.dirname(__FILE__))
-    `zip -r #{File.join(target_file, 'validatious-' + version + '-src.zip')} #{dirname}`
-
-    Dir.chdir File.dirname(__FILE__)
-    FileUtils.rm_r File.join(target, dirname)
-  end
 
   # Tag release in subversion
   `svn info` =~ /URL: (.*)\/trunk/

@@ -1,0 +1,41 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/2002/REC-xhtml1-20020801/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="nb-NO">
+  <head>
+    <title>Test suite for Validatious 2.0</title>
+    <script type="text/javascript" src="/jsunit/app/jsUnitCore.js"></script>
+    <script type="text/javascript">
+function v2TestSuite() {
+    var v2Suite = new top.jsUnitTestSuite();
+
+    <% @bridges.each do |bridge| %>
+      <% @modes.each do |mode| %>
+        <% query = "?bridge=#{bridge}&#{mode}" %>
+        v2Suite.addTestPage("../test_validators<%= query %>");
+        v2Suite.addTestPage("../bridge/test_<%= "#{bridge}#{query}" %>");
+        v2Suite.addTestPage("../core/test_field_element<%= query %>");
+        v2Suite.addTestPage("../core/test_composite_form_item<%= query %>");
+        v2Suite.addTestPage("../core/test_form<%= query %>");
+        v2Suite.addTestPage("../core/test_field<%= query %>");
+        v2Suite.addTestPage("../core/test_field_validator<%= query %>");
+        v2Suite.addTestPage("../core/test_validator<%= query %>");
+        v2Suite.addTestPage("../core/test_message<%= query %>");
+        v2Suite.addTestPage("../extensions/test_reporting<%= query %>");
+        v2Suite.addTestPage("../extensions/test_html<%= query %>");
+        v2Suite.addTestPage("../extensions/test_dsl<%= query %>");
+      <% end %>
+    <% end %>
+
+    return v2Suite;
+}
+
+function suite() {
+    var fullSuite = new top.jsUnitTestSuite();
+    fullSuite.addTestSuite(v2TestSuite());
+    return fullSuite;
+}
+    </script>
+  </head>
+  <body>
+    <div id="test"></div>
+  </body>
+</html>

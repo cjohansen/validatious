@@ -1,4 +1,7 @@
 module V2
+  #
+  # Ruby representation of Validatious validator source
+  #
   class Validator
     attr_reader :name, :description, :source, :since
 
@@ -26,6 +29,10 @@ module V2
       name <=> other.name
     end
 
+    #
+    # Reads a Validatious validator source file and creates a V2::Validator
+    # object representing it.
+    #
     def self.from_file(file)
       comment = ''
       name = nil
@@ -62,6 +69,10 @@ module V2
       Validator.new(name, comment.strip.gsub(/  /, ' '), source.sub(/\);$/, ''), builtin, since)
     end
 
+    #
+    # Finds all validators in a given directory. All .js files in the given
+    # directory are assumed to be validators.
+    #
     def self.find_all(path, builtin = false)
       validators = []
 
@@ -75,6 +86,18 @@ module V2
       validators.sort
     end
 
+    #
+    # Joins together several validator files. The point of this operation is to
+    # save a few bytes in the generated JS source. This is achieved by creating
+    # an anonymous closure that holds the uncompressable v2.Validator namespace
+    # in the local variable v, and uses this instead of v2.Validator for each
+    # added validator.
+    #
+    # This technique saves 11 bytes per validator. The overhead is 35 bytes, so
+    # use this when you have 4 or more validators to join.
+    #
+    # Every byte counts! :)
+    #
     def self.join(output, names = nil)
       dirname = File.dirname(output)
       names ||= Validator.find_all(dirname, true).collect { |v| v.filename }

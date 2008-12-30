@@ -1,12 +1,5 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/2002/REC-xhtml1-20020801/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="nb-NO">
-  <head>
-    <title>Test suite for Validatious 2.0 validator</title>
-    <?php
-        require '../utils/core.php';
-        print scripts();
-    ?>
-    <script type="text/javascript">
+<% @title = "v2.Validator" %>
+<script type="text/javascript">
 // Opera seems to fail if this function is missing
 function test() {
     assertTrue(true);
@@ -108,14 +101,10 @@ function testExecuteInverse() {
     fieldEl.value = 'Hello!';
     assertTrue(validator.test(field, ['H', 'e', 'l', 'l', 'o'], true));
 }
-    </script>
-  </head>
-  <body>
-    <!-- Safari gets thouroughly confused when there's test() and id="test" -->
-    <form id="testForm">
-      <fieldset>
-        <input type="text" name="field" id="field" value="Hello" />
-      </fieldset>
-    </form>
-  </body>
-</html>
+</script>
+<!-- Safari gets thouroughly confused when there's test() and id="test" -->
+<form id="testForm">
+  <fieldset>
+    <input type="text" name="field" id="field" value="Hello" />
+  </fieldset>
+</form>

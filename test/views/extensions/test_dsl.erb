@@ -1,13 +1,8 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/2002/REC-xhtml1-20020801/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="nb-NO">
-  <head>
-    <title>Test suite for Validatious 2.0 DSL validation "language"</title>
-    <?php if (!isset($_REQUEST['src'])) { ?><script type="text/javascript" src="../../src/lib/add_dom_load_event.js"></script><?php } ?>
-    <?php
-        require '../utils/core.php';
-        print scripts(array('extensions/dsl'));
-    ?>
-    <script type="text/javascript">
+<%
+@title = "DSL Extension"
+@scripts << "extensions/dsl"
+%>
+<script type="text/javascript">
 // Opera needs this
 function test() {
     assert(true);
@@ -371,37 +366,33 @@ function __testFieldWhenInvalid() {
 
     v2.$("field2").value = 'Text';
 }
-    </script>
-    <style>
-      .field {
-          padding: 12px;
-      }
+</script>
+<style>
+  .field {
+      padding: 12px;
+  }
 
-      .error {
-          border: 1px solid #c00;
-      }
+  .error {
+      border: 1px solid #c00;
+  }
 
-      .error .messages {
-          color: #c00;
-      }
-    </style>
-  </head>
-  <body>
-    <form id="testForm" class="validate">
-      <fieldset>
-        <div class="field">
-          <label for="field1">Field 1</label>
-          <input type="text" name="field1" id="field1" value="Text" class="min-length_4" />
-        </div>
-        <div class="field">
-          <label for="field2">Field 2</label>
-          <input type="text" name="field2" id="field2" value="Text" title="This field should be atleast 12 characters!" class="min-length_12" />
-        </div>
-      </fieldset>
-      <fieldset>
-        <div class="button" id="nextWrapper"><input type="submit" name="next" value="Next" id="next" /></div>
-        <div class="button"><input type="submit" name="prev" value="Previous" id="prev" /></div>
-      </fieldset>
-    </form>
-  </body>
-</html>
+  .error .messages {
+      color: #c00;
+  }
+</style>
+<form id="testForm" class="validate">
+  <fieldset>
+    <div class="field">
+      <label for="field1">Field 1</label>
+      <input type="text" name="field1" id="field1" value="Text" class="min-length_4" />
+    </div>
+    <div class="field">
+      <label for="field2">Field 2</label>
+      <input type="text" name="field2" id="field2" value="Text" title="This field should be atleast 12 characters!" class="min-length_12" />
+    </div>
+  </fieldset>
+  <fieldset>
+    <div class="button" id="nextWrapper"><input type="submit" name="next" value="Next" id="next" /></div>
+    <div class="button"><input type="submit" name="prev" value="Previous" id="prev" /></div>
+  </fieldset>
+</form>

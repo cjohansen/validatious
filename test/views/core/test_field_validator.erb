@@ -1,12 +1,5 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/2002/REC-xhtml1-20020801/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="nb-NO">
-  <head>
-    <title>Test suite for Validatious 2.0 field validator</title>
-    <?php
-        require '../utils/core.php';
-        print scripts();
-    ?>
-    <script type="text/javascript">
+<% @title = "v2.FieldValidator" %>
+<script type="text/javascript">
 // Opera seems to fail if this function is missing
 function test() {
     assertTrue(true);
@@ -56,13 +49,9 @@ function testFieldValidatorTest() {
     field.getElements()[0].value = 'Go';
     assertFalse('fv.test() on Go yielded ' + fv.getMessages().join(), fv.test());
 }
-    </script>
-  </head>
-  <body>
-    <form id="testForm">
-      <fieldset>
-        <input type="text" name="field" id="field" value="Text" />
-      </fieldset>
-    </form>
-  </body>
-</html>
+</script>
+<form id="testForm">
+  <fieldset>
+    <input type="text" name="field" id="field" value="Text" />
+  </fieldset>
+</form>

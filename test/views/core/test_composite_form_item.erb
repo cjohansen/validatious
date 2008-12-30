@@ -1,12 +1,5 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/2002/REC-xhtml1-20020801/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="nb-NO">
-  <head>
-    <title>Test suite for Validatious 2.0 composite form item</title>
-    <?php
-        require '../utils/core.php';
-        print scripts();
-    ?>
-    <script type="text/javascript">
+<% @title = "v2.CompositeFormItem" %>
+<script type="text/javascript">
 // Opera needs this
 function test() {
     assert(true);
@@ -177,8 +170,4 @@ function __testPassExceptions() {
     field.addException(new v2.CompositeFormItem(), false);
     assertFalse('passExceptions returns true when an exception fails', field.__passExceptions());
 }
-    </script>
-  </head>
-  <body>
-  </body>
-</html>
+</script>

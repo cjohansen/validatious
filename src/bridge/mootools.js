@@ -1,5 +1,6 @@
 /**
  * @fileOverview Mootools bridge for validatious
+ * @depends ../lib/Base.js
  */
 // Global namespace
 if (typeof v2 === 'undefined' || v2 === null) {

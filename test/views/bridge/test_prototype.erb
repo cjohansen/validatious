@@ -1,12 +1,5 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/2002/REC-xhtml1-20020801/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="nb-NO">
-  <head>
-    <title>Test suite for Validatious 2.0 standalone</title>
-    <?php
-        require '../utils/core.php';
-        print scripts();
-    ?>
-    <script type="text/javascript">
+<% @title = "Prototype.js bridge" %>
+<script type="text/javascript">
 // Opera needs this
 function test() {
     assert(true);
@@ -224,79 +217,75 @@ function testFunctionBind() {
 function __testFunctionBindCache() {
 }
 </script>
-  </head>
-  <body>
-    <div id="testDiv"></div>
-    <form>
-      <fieldset id="fs1" class="someClass">
-        <label for="testEl" id="testElLabel">Label 1</label>
-        <input type="text" name="testEl" id="testEl" value="Input 1" />
-        <label for="testEl2" id="testElLabel2">Label 2</label>
-        <input type="text" name="testEl2" id="testEl2" value="Input 2" />
-      </fieldset>
-      <fieldset id="fs2">
-        <input type="radio" name="fruit" value="apple" id="apple" />
-        <label for="apple">Apple</label>
-        <input type="radio" name="fruit" value="orange" id="orange" />
-        <label for="orange">Orange</label>
-        <input type="radio" name="fruit" value="banana" id="banana" checked="checked" />
-        <label for="banana">Banana</label>
-      </fieldset>
-      <fieldset>
-        <input type="radio" name="vegetable" value="carrot" id="carrot" class="g_test" />
-        <label for="carrot">Carrot</label>
-        <input type="radio" name="vegetable" value="cucumber" id="cucumber" class="g_test other" />
-        <label for="cucumber">Cucumber</label>
-      </fieldset>
-      <fieldset>
-        <input type="checkbox" name="somePref1" value="pref1" id="pref1" class="g_test" checked="checked" />
-        <label for="pref1">Preference 1</label>
-        <input type="checkbox" name="somePref2" value="pref2" id="pref2" class="g_test" />
-        <label for="pref2">Preference 2</label>
-        <input type="checkbox" name="somePref3" value="pref3" id="pref3" class="g_other_group" checked="checked" />
-        <label for="pref3">Preference 3</label>
-      </fieldset>
-      <fieldset>
-        <input type="checkbox" name="somePref4" value="pref4" id="pref4" class="g_test2" />
-        <label for="pref4">Preference 4</label>
-        <input type="checkbox" name="somePref5" value="pref5" id="pref5" class="g_test2" />
-        <label for="pref5">Preference 5</label>
-        <input type="checkbox" name="somePref6" value="pref6" id="pref6" class="g_test2" />
-        <label for="pref6">Preference 6</label>
-      </fieldset>
-      <fieldset>
-        <input type="hidden" name="hidden1" id="hidden1" value="Hidden!" />
-        <input type="password" name="pass1" id="pass1" value="Password!" />
-        <input type="submit" name="submit1" id="submit1" value="Submit me!" />
-        <input type="button" name="button1" id="button1" value="A button!" />
-      </fieldset>
-      <fieldset>
-        <select name="single" id="single">
-          <option value="">Choose</option>
-          <option value="1">First choice</option>
-          <option selected="selected" value="2">Second choice</option>
-          <option value="3">Third choice</option>
-          <option value="4">Fourth choice</option>
-          <option value="5">Fifth choice</option>
-          <option value="6">Sixth choice</option>
-          <option value="7">Seventh choice</option>
-        </select>
-      </fieldset>
-      <fieldset>
-        <select name="multi" id="multi" multiple="multiple">
-          <option value="">Choose</option>
-          <option value="1">First choice</option>
-          <option value="2">Second choice</option>
-          <option selected="selected" value="3">Third choice</option>
-          <option value="4">Fourth choice</option>
-          <option selected="selected" value="5">Fifth choice</option>
-          <option value="6">Sixth choice</option>
-          <option value="7">Seventh choice</option>
-        </select>
-      </fieldset>
-      <fieldset>
-        <textarea name="text" id="text">This is quite the novel</textarea>
-      </fieldset>
-    </form>
-  </body>
-</html>
+<div id="testDiv"></div>
+<form>
+  <fieldset id="fs1" class="someClass">
+    <label for="testEl" id="testElLabel">Label 1</label>
+    <input type="text" name="testEl" id="testEl" value="Input 1" />
+    <label for="testEl2" id="testElLabel2">Label 2</label>
+    <input type="text" name="testEl2" id="testEl2" value="Input 2" />
+  </fieldset>
+  <fieldset id="fs2">
+    <input type="radio" name="fruit" value="apple" id="apple" />
+    <label for="apple">Apple</label>
+    <input type="radio" name="fruit" value="orange" id="orange" />
+    <label for="orange">Orange</label>
+    <input type="radio" name="fruit" value="banana" id="banana" checked="checked" />
+    <label for="banana">Banana</label>
+  </fieldset>
+  <fieldset>
+    <input type="radio" name="vegetable" value="carrot" id="carrot" class="g_test" />
+    <label for="carrot">Carrot</label>
+    <input type="radio" name="vegetable" value="cucumber" id="cucumber" class="g_test other" />
+    <label for="cucumber">Cucumber</label>
+  </fieldset>
+  <fieldset>
+    <input type="checkbox" name="somePref1" value="pref1" id="pref1" class="g_test" checked="checked" />
+    <label for="pref1">Preference 1</label>
+    <input type="checkbox" name="somePref2" value="pref2" id="pref2" class="g_test" />
+    <label for="pref2">Preference 2</label>
+    <input type="checkbox" name="somePref3" value="pref3" id="pref3" class="g_other_group" checked="checked" />
+    <label for="pref3">Preference 3</label>
+  </fieldset>
+  <fieldset>
+    <input type="checkbox" name="somePref4" value="pref4" id="pref4" class="g_test2" />
+    <label for="pref4">Preference 4</label>
+    <input type="checkbox" name="somePref5" value="pref5" id="pref5" class="g_test2" />
+    <label for="pref5">Preference 5</label>
+    <input type="checkbox" name="somePref6" value="pref6" id="pref6" class="g_test2" />
+    <label for="pref6">Preference 6</label>
+  </fieldset>
+  <fieldset>
+    <input type="hidden" name="hidden1" id="hidden1" value="Hidden!" />
+    <input type="password" name="pass1" id="pass1" value="Password!" />
+    <input type="submit" name="submit1" id="submit1" value="Submit me!" />
+    <input type="button" name="button1" id="button1" value="A button!" />
+  </fieldset>
+  <fieldset>
+    <select name="single" id="single">
+      <option value="">Choose</option>
+      <option value="1">First choice</option>
+      <option selected="selected" value="2">Second choice</option>
+      <option value="3">Third choice</option>
+      <option value="4">Fourth choice</option>
+      <option value="5">Fifth choice</option>
+      <option value="6">Sixth choice</option>
+      <option value="7">Seventh choice</option>
+    </select>
+  </fieldset>
+  <fieldset>
+    <select name="multi" id="multi" multiple="multiple">
+      <option value="">Choose</option>
+      <option value="1">First choice</option>
+      <option value="2">Second choice</option>
+      <option selected="selected" value="3">Third choice</option>
+      <option value="4">Fourth choice</option>
+      <option selected="selected" value="5">Fifth choice</option>
+      <option value="6">Sixth choice</option>
+      <option value="7">Seventh choice</option>
+    </select>
+  </fieldset>
+  <fieldset>
+    <textarea name="text" id="text">This is quite the novel</textarea>
+  </fieldset>
+</form>

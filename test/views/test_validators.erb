@@ -1,15 +1,8 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/2002/REC-xhtml1-20020801/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="nb-NO">
-  <head>
-    <title>Test suite for Validatious 2.0 validator</title>
-    <?php
-        require 'utils/core.php';
-        print scripts();
-    ?>
-    <script type="text/javascript" src="../src/validators/car_regnum_nor.js"></script>
-    <script type="text/javascript" src="../src/validators/phone_nor.js"></script>
-    <script type="text/javascript" src="../src/validators/ssn_nor.js"></script>
-    <script type="text/javascript">
+<% @title = "Validators" %>
+<script type="text/javascript" src="/validatious/validators/car_regnum_nor.js"></script>
+<script type="text/javascript" src="/validatious/validators/phone_nor.js"></script>
+<script type="text/javascript" src="/validatious/validators/ssn_nor.js"></script>
+<script type="text/javascript">
 // Opera seems to fail if this function is missing
 function test() {
     assertTrue(true);
@@ -292,18 +285,14 @@ function testMinLengthCheckboxes() {
     v2.$('a4').checked = true;
     assertTrue('min-length 4 with four checked fails', validator.test(input, [4]));
 }
-    </script>
-  </head>
-  <body>
-    <form>
-      <fieldset>
-        <input type="text" name="el" id="el" value="Text" />
-        <input type="text" name="el2" id="el2" value="Text" />
-        <input type="checkbox" name="a" value="1" id="a1" checked="checked" class="g_a" />
-        <input type="checkbox" name="a" value="2" id="a2" checked="checked" class="g_a" />
-        <input type="checkbox" name="a" value="3" id="a3" checked="checked" class="g_a" />
-        <input type="checkbox" name="a" value="4" id="a4" class="g_a" />
-      </fieldset>
-    </form>
-  </body>
-</html>
+</script>
+<form>
+  <fieldset>
+    <input type="text" name="el" id="el" value="Text" />
+    <input type="text" name="el2" id="el2" value="Text" />
+    <input type="checkbox" name="a" value="1" id="a1" checked="checked" class="g_a" />
+    <input type="checkbox" name="a" value="2" id="a2" checked="checked" class="g_a" />
+    <input type="checkbox" name="a" value="3" id="a3" checked="checked" class="g_a" />
+    <input type="checkbox" name="a" value="4" id="a4" class="g_a" />
+  </fieldset>
+</form>
