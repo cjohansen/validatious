@@ -1,9 +1,10 @@
 $LOAD_PATH << File.expand_path(File.join(File.dirname(__FILE__), 'lib'))
 require 'vbuilder/vbuilder'
-require 'tmpdir'
 require 'fileutils'
 
 $verbose = true
+
+# Get all existing library bridges
 bridges = Dir.glob("src/bridge/*.js").collect do |bridge|
   File.basename(bridge).sub(/\.js$/, "")
 end
@@ -17,7 +18,7 @@ end
 
 namespace :build do
 
-  desc 'Joins standard (builtin) validators to the file src/validators/standard.js'
+  desc 'Joins standard (@builtin) validators to src/validators/standard.js'
   task :validators do
     V2::Validator.join(File.join(File.dirname(__FILE__), 'src/validators/standard.js'))
   end
@@ -49,17 +50,6 @@ namespace :build do
     end
 
   end
-end
-
-desc 'Produces a new release of validatious'
-task :release do
-  raise 'Usage: rake release VERSION=x.y.z' unless ENV.key? 'VERSION'
-  version = ENV['VERSION']
-
-  # Tag release in subversion
-  `svn info` =~ /URL: (.*)\/trunk/
-  repo = $1
-  `svn copy #{repo}/trunk #{repo}/tags/#{version} -m "Tagging #{version} release"`
 end
 
 #
