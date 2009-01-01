@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 $LOAD_PATH << File.expand_path(File.dirname(__FILE__))
-require 'file_extra'
+#require 'file_extra'
+require 'juicer'
 require 'validator'
 
 #
@@ -8,75 +9,109 @@ require 'validator'
 #
 class ValidatiousBuilder
   attr_reader :basedir
+  attr_accessor :language, :library, :extensions, :validators
 
   def initialize(basedir)
-    @core = ['composite_form_item', 'input_element', 'radio_element',
-             'select_element', 'textarea_element', 'checkbox_element',
-             'message', 'validator', 'field', 'fieldset', 'field_validator',
-             'form'].collect { |s| "core/#{s}" }
+    @core = ["v2", "input_element", "radio_element", "select_element",
+             "textarea_element", "checkbox_element", "field_validator",
+             "form", "fieldset", "field"].collect { |s| "core/#{s}" }
 
     @basedir = basedir
-    set_library(:standalone)
-    @validators = nil
+    @library = :standalone
+    @validators = nil # nil = standard validators, [] = no validators
     @extensions = []
-    @language = 'en'
-  end
-
-  #
-  # Set which library to base distribution on. Default distribution is
-  # standalone. Parameter should be a symbol representation, like :mootools
-  #
-  def set_library(library)
-    if library == :standalone
-      @library = ['lib/add_dom_load_event', 'lib/Base', 'lib/events', 'bridge/standalone']
-    else
-      @library = ["lib/Base", "bridge/#{library}"]
-    end
-  end
-
-  #
-  # Add a Validatious extension (like :dsl, :html, :reporting)
-  #
-  def add_extension(*name)
-    name = name[0] if name[0].respond_to?(:push)
-    @extensions.concat(name.collect { |n| "extensions/#{n}" })
-  end
-
-  #
-  # Add a validator to the mix
-  #
-  def add_validator(*name)
-    name = name[0] if name[0].respond_to?(:push)
-
-    @validators = [] if @validators.nil?
-    @validators.concat name
-  end
-
-  #
-  # Set language of default error messages
-  #
-  def set_language(lang)
-    @language = lang
+    @language = "en"
   end
 
   #
   # Assemble distribution into file and optionally minify it
   #
   def assemble(filename = nil, minify = true)
-    fname = filename || 'tmp.min.js'
-    V2::Validator.join(File.join(@basedir, 'src/validators/standard.js'), @validators) unless @validators.nil?
+    fname = filename || "tmp.min.js"
 
-    files = (@library + @core + ['validators/standard'] +
-             ["messages/errors.#{@language}"] + @extensions).collect do |file|
-      "#{File.join(@basedir, 'src', file + '.js')}"
+    # Merge files
+    merger = Juicer::Merger::JavaScriptFileMerger.new(scripts)
+    merger.save(fname)
+
+    # Minify
+    if minify
+      begin
+        minifyer = Juicer::Minifyer::YuiCompressor.new
+        minifyer.compress(fname, fname)
+      rescue Exception => e
+        puts e.message
+        exit
+      end
     end
 
-    File.merge(files, fname, minify)
+    # TMP: Correct YUIC mistake on regexes
+    contents = File.read(fname)
 
-    if filename.nil?
-      str = File.read(fname)
-      File.delete(fname)
-      return str
+    File.open(fname, 'w') do |file|
+      contents.gsub!(/\(\^\|\\s\)/, "(^|\\\\\\s)")
+      contents.gsub!(/\(\\s\|\$\)/, "(\\\\\\s|$)")
+
+      license = <<EOF
+/**
+ * TERMS OF USE - Validatious 2.0
+ * Open source under the BSD License.
+ * Copyright 2008-2009 Christian Johansen.
+ * All rights reserved.
+ */
+EOF
+
+      file.puts license + contents
     end
+
+    # Print confirmation
+    if $verbose
+      size = File::Stat.new(fname).size / 1024.0
+      puts "Produced #{fname}, #{sprintf '%.2f' % size} kB"
+    end
+
+    # Delete file if temporary
+    File.delete(fname) if filename.nil?
+    contents
+  end
+
+ private
+  #
+  # Builds and returns an array of script files to include in distribution
+  #
+  def scripts
+    scripts = []
+
+    # Make sure library exists
+    @library = :standalone unless File.exists?("src/lib/#{@library}.js")
+
+    # Add files
+    scripts << "bridge/#{@library}"
+    scripts.concat @core
+    scripts.concat validator_files
+    scripts << "messages/errors.#{@language}"
+    scripts.concat @extensions.collect { |extension| "extensions/#{extension}" }
+
+    # Expand paths
+    scripts.collect { |s| File.join(@basedir, "src", "#{s}.js") }
+  end
+
+  #
+  # Figures out which validator files to include. If there are less than 4 validators
+  # they're added individually. If there are 4 or more, the V2::Validator.join method
+  # is called to reduce total file size.
+  #
+  # Returns an array of files
+  #
+  def validator_files
+    files = []
+
+    if @validators.nil? ||@validators.size > 3
+      V2::Validator.join(File.join(@basedir, "src/validators/standard.js"), @validators)
+      files << "validators/standard"
+    else
+      files.concat @validators.collect { |validator| "validators/#{validator}" }
+    end
+
+    files
   end
 end

@@ -100,6 +100,14 @@ module V2
     #
     def self.join(output, names = nil)
       dirname = File.dirname(output)
+
+      # If the standard validators are required, and the standard.js file is the
+      # most recent one, abort.
+      if names.nil?
+        most_recent = `ls -ltc #{dirname}`.split("\n")[1].split(/([^\s]*)$/)[1]
+        return if most_recent == File.basename(output)
+      end
+
       names ||= Validator.find_all(dirname, true).collect { |v| v.filename }
 
       str = <<-EOF
@@ -118,5 +126,16 @@ module V2
 
       str
     end
+  end
+end
+
+#
+# Joins the content of several files with a newline between
+#
+def File.cat(*files)
+  files = files[0] if files.respond_to?(:push)
+
+  files.inject('') do |str, file|
+    str += File.read(file) + "\n"
   end
 end

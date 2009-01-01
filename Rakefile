@@ -30,7 +30,7 @@ namespace :build do
     desc "Builds the minified #{bridge} core (no extensions)"
     task bridge.to_sym do
       builder = ValidatiousBuilder.new(File.dirname(__FILE__))
-      builder.set_library(bridge.to_sym)
+      builder.library = bridge.to_sym
       builder.assemble(File.join(builder.basedir, "dist/v2.#{bridge}#{suffix}"), minify?)
     end
 
@@ -43,8 +43,8 @@ namespace :build do
       desc "Builds the minified #{bridge} core with all extensions"
       task :full do
         builder = ValidatiousBuilder.new(File.dirname(__FILE__))
-        builder.set_library(bridge)
-        builder.add_extension(:reporting, :html, :dsl)
+        builder.library = bridge
+        builder.extensions.concat [:reporting, :html, :dsl]
         builder.assemble(File.join(builder.basedir, "dist/v2.#{bridge}.full#{suffix}"), minify?)
       end
     end
