@@ -2,6 +2,15 @@ $LOAD_PATH << File.expand_path(File.join(File.dirname(__FILE__), 'lib'))
 require 'vbuilder/vbuilder'
 require 'fileutils'
 
+#
+# Build tool for Validatious distribution files.
+#
+# TODO:
+# The custom download form on validatious.org uses this same backend, and for
+# easier sharing, the whole builder really should be separated out as its own
+# gem. And there should be a test suite for this code. Shame on me.
+#
+
 $verbose = true
 
 # Get all existing library bridges
