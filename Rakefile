@@ -6,7 +6,7 @@ $verbose = true
 
 # Get all existing library bridges
 bridges = Dir.glob("src/bridge/*.js").collect do |bridge|
-  File.basename(bridge).sub(/\.js$/, "")
+  File.basename(bridge).sub(/\.js$/, "").to_sym
 end
 
 task :default => :build
@@ -28,13 +28,13 @@ namespace :build do
   #
   bridges.each do |bridge|
     desc "Builds the minified #{bridge} core (no extensions)"
-    task bridge.to_sym do
+    task bridge do
       builder = ValidatiousBuilder.new(File.dirname(__FILE__))
-      builder.library = bridge.to_sym
-      builder.assemble(File.join(builder.basedir, "dist/v2.#{bridge}#{suffix}"), minify?)
+      builder.library = bridge
+      builder.assemble(File.join(builder.basedir, "pkg/v2.#{bridge}#{suffix}"), minify?)
     end
 
-    namespace bridge.to_sym do
+    namespace bridge do
       desc "Builds all the #{bridge} files"
       task :all => ["build:#{bridge}", "build:#{bridge}:full"] do
         # It's all in the prerequisites...
@@ -45,7 +45,7 @@ namespace :build do
         builder = ValidatiousBuilder.new(File.dirname(__FILE__))
         builder.library = bridge
         builder.extensions.concat [:reporting, :html, :dsl]
-        builder.assemble(File.join(builder.basedir, "dist/v2.#{bridge}.full#{suffix}"), minify?)
+        builder.assemble(File.join(builder.basedir, "pkg/v2.#{bridge}.full#{suffix}"), minify?)
       end
     end
 

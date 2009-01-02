@@ -2,6 +2,7 @@
 $LOAD_PATH << File.expand_path(File.dirname(__FILE__))
 require 'juicer'
 require 'validator'
+require 'fileutils'
 
 #
 # Builds Validatious distribution files
@@ -27,6 +28,7 @@ class ValidatiousBuilder
   #
   def assemble(filename = nil, minify = true)
     fname = filename || "tmp.min.js"
+    FileUtils.mkdir_p(File.dirname(fname))
 
     # Merge files
     merger = Juicer::Merger::JavaScriptFileMerger.new(scripts)

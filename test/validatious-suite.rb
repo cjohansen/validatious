@@ -80,7 +80,7 @@ end
 # Source files
 #
 get "/validatious/*" do
-  dir = params[:splat].first =~ /\.min\.js$/ ? "dist" : "src"
+  dir = params[:splat].first =~ /\.min\.js$/ ? "pkg" : "src"
   path = path(File.join(dir, params[:splat].first))
   raise "File does not exist" unless File.exists?(path)
 
