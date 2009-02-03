@@ -169,7 +169,7 @@ v2.html.Form = Base.extend(/** @scope v2.html.prototype */{
    *                            found (not added to recursive block elements)
    */
   parseElement: function(container, collection, validators) {
-    var elements = v2.$$('div, fieldset, input, select, textarea', container);
+    var elements = v2.$$('div, fieldset, input, select, textarea, button', container);
     var i, j, validator, fieldValidator, element, tagName, field, fieldValidators;
     this.__parsed[container.id || container.name] = true;
     validators = validators || [];
@@ -179,14 +179,14 @@ v2.html.Form = Base.extend(/** @scope v2.html.prototype */{
       // Need classes to find validators, skip elements with no classes
       // Input elements may have been bound to a container collection, skip these too
       if (validators.length === 0 &&
-          (/^\s*$/.test(element.className) || this.__parsed[element.id || element.name])) {
+          (/^\s*$/.test(element.className) || this.__parsed[element.id || element.name || element.value || element.innerHTML])) {
         continue;
       }
 
       tagName = element.tagName.toLowerCase();
 
       // Look for button
-      if (tagName === 'input' &&
+      if ((tagName === 'input' || tagName == 'button') &&
           v2.Element.hasClassName(element, v2.Form.actionButtonClass)) {
         this.form.addButton(element);
         continue;
