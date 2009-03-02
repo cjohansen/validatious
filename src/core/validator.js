@@ -153,9 +153,11 @@ v2.$msg = function(/*name, message*/) {
     return v2.Validator.get(arguments[0]).setMessage(arguments[1]);
   }
 
-  for (var validator in arguments[0]) {
+  var args = arguments[0];
+
+  for (var validator in args) {
     try {
-      v2.Validator.get(validator).setMessage(arguments[0][validator]);
+      v2.Validator.get(validator).setMessage(args[validator]);
     } catch(e) {
       // Fail silently
     }
