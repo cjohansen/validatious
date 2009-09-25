@@ -8,9 +8,9 @@ v2.$msg({
   'alphanum': '${field} får enbart innehålla bokstäver och/eller siffror',
   'confirmation-of': '${field} måsta vara samma som ${field-id}',
   'email': '${field} måste vara en giltig e-postaddress',
-  'max-length': '${field} får inte vara längre än ${max} karaktärer'
+  'max-length': '${field} får inte vara längre än max ${max} tecken'
   'max-val': '${field} får inte vara större än ${min}',
-  'min-length': '${field} måste vara minst ${min} karaktärer lång',
+  'min-length': '${field} måste vara minst ${min} tecken lång',
   'min-val': '${field} får inte vara mindre än ${min}',
   'numeric': '${field} får enbart bestå av siffror',
   'required': '${field} är obligatorisk',
