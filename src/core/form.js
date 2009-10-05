@@ -15,8 +15,12 @@ v2.Form = v2.CompositeFormItem.extend(/** @scope v2.Form.prototype */{
   constructor: function(form) {
     // Superclass constructor
     this.base();
-    this.__form = v2.$(form);
-    this.__form.observe('submit', this.validate.bind(this));
+
+    if (form) {
+      this.__form = v2.$(form);
+      this.__form.observe('submit', this.validate.bind(this));
+    }
+
     this.__buttons = [];
     this.__activeButton = null;
   },
