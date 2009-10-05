@@ -48,7 +48,11 @@ small web application has been built using Sinatra.
 
 * Install Ruby
 * Install RubyGems
-* gem install sinatra
-* gem install juicer
+* sudo gem install --no-ri --no-rdoc sinatra juicer rake
+* juicer install yui_compressor
+* juicer install jslint
+* rake build:standalone # Needed to build the src/validators/standard.js file
 * ruby test/validatious-suite.rb
+* Download JsUnit, and unpack to test/public/jsunit
+  http://sourceforge.net/projects/jsunit/files/jsunit/2.2alpha/jsunit2.2alpha11.zip/download
 * Go to http://localhost:4567 and click on the suite you'd like to test
