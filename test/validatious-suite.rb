@@ -34,7 +34,7 @@ before do
              "core/field_validator", "validators/standard", "messages/errors.en",
              "extensions/reporting"].collect { |file| path("src/#{file}.js") }
 
-    resolver = Juicer::Merger::JavaScriptFileMerger.new(files)
+    resolver = Juicer::Merger::JavaScriptMerger.new(files)
     @scripts.concat(resolver.files.collect { |file| relative(file).sub(/\.js$/, "") })
   end
 end

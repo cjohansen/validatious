@@ -31,14 +31,15 @@ class ValidatiousBuilder
     FileUtils.mkdir_p(File.dirname(fname))
 
     # Merge files
-    merger = Juicer::Merger::JavaScriptFileMerger.new(scripts)
+    merger = Juicer::Merger::JavaScriptMerger.new(scripts)
     merger.save(fname)
 
     # Minify
     if minify
       begin
-        minifyer = Juicer::Minifyer::YuiCompressor.new
-        minifyer.compress(fname, fname)
+        path = File.join(Juicer.home, "lib/yui_compressor/bin")
+        minifyer = Juicer::Minifyer::YuiCompressor.new(:bin_path => path)
+        minifyer.save(fname, fname)
       rescue Exception => e
         puts e.message
         exit
