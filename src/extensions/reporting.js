@@ -132,7 +132,22 @@ v2.Object.extend(v2.Form.prototype, /** @scope v2.Form.prototype */{
       return;
     }
 
-    var i, element, elements, form = this.__form;
+    var i, element, elements, form;
+
+    try {
+        form = this.getInvalid()[0].getParent();
+
+        while (form.tagName.toLowerCase() != "form") {
+            form = form.parentNode;
+        }
+    } catch(e) {
+        form = this.__form;
+    }
+
+    if (!form) {
+        return;
+    }
+
     elements = form.all || form.getElementsByTagName('*');
 
     for (i = 0; (element = elements[i]); i++) {
