@@ -103,9 +103,13 @@ module V2
 
       # If the standard validators are required, and the standard.js file is the
       # most recent one, abort.
-      if names.nil?
-        most_recent = `ls -ltc #{dirname}`.split("\n")[1].split(/([^\s]*)$/)[1]
-        return if most_recent == File.basename(output)
+      begin
+        if names.nil?
+          most_recent = `ls -ltc #{dirname}`.split("\n")[1].split(/([^\s]*)$/)[1]
+          return if most_recent == File.basename(output)
+        end
+      rescue Errno::ENOENT => err
+        # We're probably on Windows, no biggie, just build it over
       end
 
       names ||= Validator.find_all(dirname, true).collect { |v| v.filename }
