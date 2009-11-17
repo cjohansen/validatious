@@ -10,7 +10,7 @@ v2.$msg({
   'confirmation-of': '${field} should be a confirmation of ${field-id}',
   'email': '${field} should be a valid email address',
   'max-length': '${field} should be no more than ${max} characters long',
-  'max-val': '${field} should be no bigger than ${min}',
+  'max-val': '${field} should be no bigger than ${max}',
   'min-length': '${field} should be atleast ${min} characters long',
   'min-val': '${field} should be atleast ${min}',
   'numeric': '${field} should only contain numbers',
