@@ -25,7 +25,11 @@ v2.SelectElement = v2.InputElement.extend(/** @scope v2.SelectElement.prototype 
     var select = this.__elements[0];
 
     if (!select.multiple) {
-      return select.options.length > 0 && select.options[select.selectedIndex].value;
+      if (select.options.length > 0 && select.selectedIndex >= 0) {
+        return select.options[select.selectedIndex].value;
+      } else {
+        return null;
+      }
     }
 
     var values = [];
