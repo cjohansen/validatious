@@ -39,7 +39,7 @@ v2.ErrorReporting = {
 
     // Set number of errors to display. -1 is all, maximum is all. Abort if 0
     var count = this.displayErrors;
-    var max = this.__errors.length;
+    var max = messages.length;
     count = count < 0 || count > max ? max : count;
 
     if (count === 0) {
