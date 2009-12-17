@@ -1,11 +1,10 @@
 /**
- * Validates that a value is no bigger than params[0]. Mostly for numbers, but
- * also works for strings. The value parameter is available in error messages as
- * <code>${max}</code>.
+ * Validates that a number is no bigger than params[0]. The value parameter is
+ * available in error messages as <code>${max}</code>.
  *
  * @builtin
  * @depends ../core/validator.js
  */
 v2.Validator.reg('max-val', function(field, value, params) {
-  return value <= params[0];
+  return Number(value) <= Number(params[0]);
 }, 'max');
