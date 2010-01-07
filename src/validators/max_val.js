@@ -6,5 +6,5 @@
  * @depends ../core/validator.js
  */
 v2.Validator.reg('max-val', function(field, value, params) {
-  return Number(value) <= Number(params[0]);
+  return +value <= params[0];
 }, 'max');
